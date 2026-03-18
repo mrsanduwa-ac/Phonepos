@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Track Your Repair - SmartX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #f1f5f9; -webkit-tap-highlight-color: transparent; }
+    
+    .status-step { display: flex; align-items: flex-start; position: relative; padding-bottom: 30px; }
+    .status-step:not(:last-child)::before { content: ''; position: absolute; left: 19px; top: 38px; bottom: 0; width: 2px; background-color: #e2e8f0; z-index: 1; }
+    .status-step.completed-path:not(:last-child)::before { background-color: #4f46e5; }
+    
+    .step-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.1rem; z-index: 2; border: 4px solid #f1f5f9; transition: all 0.4s ease; background-color: #cbd5e1; color: white;}
+    
+    /* Active & Done States */
+    .step-active { background-color: #4f46e5; box-shadow: 0 0 15px rgba(79, 70, 229, 0.5); transform: scale(1.1); }
+    .step-done { background-color: #10b981; }
+    
+    /* Highlight "Ready for Pickup" */
+    .highlight-pickup { border: 2px solid #10b981; background-color: #ecfdf5; transform: scale(1.02); box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3); padding: 15px; border-radius: 12px; margin-left: -15px; margin-right: -15px;}
+    
+    .watermark-text { text-align: center; font-size: 10px; color: #94a3b8; padding: 20px 0; font-weight: bold;}
+  </style>
+</head>
+<body class="font-sans text-gray-800 flex flex-col min-h-screen">
+
+  <!-- ============================================================================ -->
+  <!-- 🛑🛑🛑 ඔබගේ ලින්ක් මෙතනට දාන්න (EDIT THESE VARIABLES) 🛑🛑🛑 -->
+  <script>
+    // 1. ගූගල් ඇප්ස්ක්‍රිප්ට් ලින්ක් එක (සජීවීව දත්ත ලබා ගැනීමට)
+    const CONFIG_GAS_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"; 
+    
+    // 2. වෝටර්මාර්ක් එක එබුවම යන්න ඕන ලින්ක් එක
+    const CONFIG_WATERMARK_LINK = "https://designverse.lk"; 
+  </script>
+  <!-- ============================================================================ -->
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center sticky top-0 z-50">
+    <div class="flex items-center">
+      <!-- 🛑 SHOP LOGO 🛑 -->
+      <img src="phonelogo.png" alt="SmartX Logo" onerror="this.outerHTML='<h1 class=\'text-xl font-black text-gray-800 tracking-wider\'>SMART<span class=\'text-indigo-600\'>X</span></h1>'" class="h-8 w-auto object-contain">
+    </div>
+    <div class="text-xs font-bold text-gray-400 uppercase tracking-wider border border-gray-200 px-3 py-1 rounded-full bg-gray-50">
+      Repair Portal
+    </div>
+  </header>
+
+  <main class="flex-1 flex justify-center items-start pt-6 px-4 pb-10">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-xl p-6 md:p-8 relative overflow-hidden">
+      
+      <!-- Search Area -->
+      <div id="searchArea" class="text-center mb-6 transition-all duration-500">
+        <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-search text-2xl text-indigo-500"></i>
+        </div>
+        <h2 class="text-xl font-black text-gray-800 mb-1 tracking-tight">Track Your Device</h2>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6">Enter your Invoice Number</p>
+        
+        <div class="flex shadow-inner rounded-xl bg-gray-50 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-200 transition-all border border-gray-100 p-1">
+          <input type="text" id="invInput" placeholder="INVSA0035" class="flex-1 bg-transparent border-transparent py-3 px-4 focus:outline-none font-black text-gray-800 tracking-wider uppercase text-center placeholder-gray-300">
+          <button onclick="trackRepair()" id="trackBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold w-12 rounded-lg transition-transform hover:scale-105 flex items-center justify-center shadow-md"><i class="fas fa-arrow-right"></i></button>
+        </div>
+        <p id="errorMsg" class="text-red-500 text-xs mt-3 font-bold hidden bg-red-50 p-2 rounded-lg"><i class="fas fa-exclamation-triangle mr-1"></i> Invoice not found. Please try again.</p>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="hidden flex-col items-center justify-center py-10">
+        <i class="fas fa-circle-notch fa-spin text-4xl text-indigo-500 mb-4"></i>
+        <p class="text-sm font-bold text-gray-500 uppercase tracking-widest animate-pulse">Fetching Secure Data...</p>
+      </div>
+
+      <!-- Result Area -->
+      <div id="resultArea" class="hidden">
+        <button onclick="resetSearch()" class="text-xs font-bold text-indigo-500 mb-4 hover:underline"><i class="fas fa-arrow-left mr-1"></i> Track another</button>
+        
+        <!-- Header Info -->
+        <div class="bg-gray-800 text-white p-5 rounded-2xl mb-6 relative overflow-hidden shadow-lg">
+          <div class="absolute -right-4 -top-4 opacity-10"><i class="fas fa-mobile-alt text-8xl"></i></div>
+          <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Invoice <span id="t-inv" class="text-white ml-1">INVSA0035</span></p>
+          <h3 class="font-black text-xl mb-1 truncate pr-8" id="t-customer">Customer Name</h3>
+          <p class="text-xs font-medium text-gray-300"><i class="fas fa-calendar-alt mr-1"></i> Received: <span id="t-date">18/03/2026</span></p>
+        </div>
+
+        <!-- Vertical Status Stepper -->
+        <div class="mb-8 px-2">
+          
+          <!-- Step 1: Received -->
+          <div class="status-step completed-path">
+            <div class="step-icon step-done"><i class="fas fa-clipboard-check"></i></div>
+            <div class="ml-4 mt-1">
+              <h4 class="font-black text-gray-800 text-sm">Device Received</h4>
+              <p class="text-xs text-gray-500 font-medium">Order accepted and queued.</p>
+            </div>
+          </div>
+          
+          <!-- Step 2: Repairing / Completed -->
+          <div class="status-step" id="step-path-2">
+            <div class="step-icon" id="icon-2"><i class="fas fa-tools"></i></div>
+            <div class="ml-4 mt-1 transition-all" id="content-2">
+              <h4 class="font-black text-gray-400 text-sm" id="title-2">In Progress</h4>
+              <p class="text-xs text-gray-400 font-medium" id="desc-2">Currently diagnosing and repairing.</p>
+            </div>
+          </div>
+          
+          <!-- Step 3: Delivered -->
+          <div class="status-step border-none pb-0">
+            <div class="step-icon" id="icon-3"><i class="fas fa-box-open"></i></div>
+            <div class="ml-4 mt-1">
+              <h4 class="font-black text-gray-400 text-sm" id="title-3">Handed Over</h4>
+              <p class="text-xs text-gray-400 font-medium" id="desc-3">Device delivered to customer.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Repair Items & Warranty Summary -->
+        <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 mb-5">
+          <h4 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3 border-b border-indigo-100 pb-1"><i class="fas fa-shield-alt mr-1"></i> Repaired Items & Warranty</h4>
+          <div id="t-items" class="space-y-3">
+            <!-- Items Injected Here -->
+          </div>
+        </div>
+
+        <!-- Customer Note -->
+        <div id="t-note-container" class="bg-yellow-50 border border-yellow-100 rounded-xl p-4 mb-5 hidden">
+          <p class="text-[10px] font-black text-yellow-600 uppercase tracking-widest mb-1"><i class="fas fa-comment-dots mr-1"></i> Note from Shop</p>
+          <p class="text-xs text-gray-700 font-bold italic" id="t-note"></p>
+        </div>
+
+        <!-- Financial Summary -->
+        <div class="flex justify-between items-center bg-gray-50 border border-gray-200 rounded-xl p-4">
+          <div>
+            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Total Amount</p>
+            <p class="font-black text-gray-800 text-base" id="t-total">Rs. 0</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] text-red-400 font-bold uppercase tracking-wider mb-0.5">Balance Due</p>
+            <p class="font-black text-red-600 text-xl" id="t-balance">Rs. 0</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer Watermark -->
+  <footer class="w-full shrink-0">
+    <a id="watermark-link" href="#" target="_blank" class="watermark-text block hover:text-indigo-500 transition-colors">
+      &copy; 2026 DesignVerse by Sandusha Avishkha. All rights reserved.
+    </a>
+  </footer>
+
+  <script>
+    document.getElementById('watermark-link').href = CONFIG_WATERMARK_LINK;
+
+    // Auto search if URL has ?inv= parameter
+    window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const inv = urlParams.get('inv');
+      if(inv) { document.getElementById('invInput').value = inv; trackRepair(); }
+    };
+
+    async function trackRepair() {
+      const input = document.getElementById('invInput').value.trim().toUpperCase();
+      const errorMsg = document.getElementById('errorMsg');
+      
+      if(!input) return;
+
+      document.getElementById('searchArea').classList.add('hidden');
+      document.getElementById('loadingState').classList.remove('hidden');
+      document.getElementById('resultArea').classList.add('hidden');
+      errorMsg.classList.add('hidden');
+
+      let orderData = null;
+
+      // 1. Try Fetching from Google Sheets API directly
+      if(CONFIG_GAS_URL && CONFIG_GAS_URL !== "https://script.google.com/macros/s/AKfycbx7lumYuZPsh8NU49TuvpAT7rmvW1G5i3AtLhu7Qb2QipogydTXElr2M6CXKE0WEsch/exec") {
+        try {
+          const res = await fetch(CONFIG_GAS_URL + "?action=trackOrder&inv=" + input);
+          const data = await res.json();
+          if(data.found) orderData = data.order;
+        } catch(e) { console.log("Live fetch failed. Trying local."); }
+      }
+
+      // 2. Fallback to LocalStorage (if offline or not configured)
+      if(!orderData) {
+        let localOrders = JSON.parse(localStorage.getItem('smartx_orders')) || [];
+        orderData = localOrders.find(o => o.invoiceNo.toUpperCase() === input);
+      }
+
+      document.getElementById('loadingState').classList.add('hidden');
+
+      if(!orderData) {
+        document.getElementById('searchArea').classList.remove('hidden');
+        errorMsg.classList.remove('hidden');
+        return;
+      }
+
+      renderOrderDetails(orderData);
+      document.getElementById('resultArea').classList.remove('hidden');
+    }
+
+    function renderOrderDetails(o) {
+      document.getElementById('t-inv').innerText = o.invoiceNo;
+      document.getElementById('t-customer').innerText = o.customerName;
+      document.getElementById('t-date').innerText = new Date(o.date).toLocaleDateString('en-GB');
+      
+      document.getElementById('t-total').innerText = "Rs. " + Number(o.quotedPrice).toLocaleString();
+      document.getElementById('t-balance').innerText = "Rs. " + Number(o.balance).toLocaleString();
+
+      // Customer Note
+      const noteBox = document.getElementById('t-note-container');
+      if(o.customerMessage && o.customerMessage.trim() !== "") {
+        document.getElementById('t-note').innerText = o.customerMessage;
+        noteBox.classList.remove('hidden');
+      } else {
+        noteBox.classList.add('hidden');
+      }
+
+      // Items & Warranties
+      const itemsList = document.getElementById('t-items');
+      itemsList.innerHTML = '';
+      let itemsArr = o.items || [{ fault: o.fault, warranty: o.warranty }];
+      
+      itemsArr.forEach(it => {
+        let wText = "";
+        if(it.warranty === 'None') wText = "<span class='text-gray-400'>No Warranty</span>";
+        else if(o.status !== 'Delivered') wText = `<span class='text-amber-600'>${it.warranty} (Starts upon pickup)</span>`;
+        else {
+          let exp = new Date(o.deliveredDate);
+          if(it.warranty.includes('Days')) exp.setDate(exp.getDate() + parseInt(it.warranty));
+          else if(it.warranty.includes('Month')) exp.setMonth(exp.getMonth() + parseInt(it.warranty));
+          
+          if(new Date() > exp) wText = `<span class='text-red-500'>Expired (${exp.toLocaleDateString('en-GB')})</span>`;
+          else wText = `<span class='text-emerald-600 font-bold'>Active until ${exp.toLocaleDateString('en-GB')}</span>`;
+        }
+
+        itemsList.innerHTML += `
+          <div class="bg-white p-3 rounded-xl shadow-sm flex flex-col">
+            <span class="font-bold text-gray-800 text-sm mb-1">${it.fault}</span>
+            <span class="text-[10px] font-bold tracking-wide">${wText}</span>
+          </div>
+        `;
+      });
+
+      updateTracker(o.status);
+    }
+
+    function updateTracker(status) {
+      const p2 = document.getElementById('step-path-2');
+      const i2 = document.getElementById('icon-2'), t2 = document.getElementById('title-2'), d2 = document.getElementById('desc-2'), c2 = document.getElementById('content-2');
+      const i3 = document.getElementById('icon-3'), t3 = document.getElementById('title-3'), d3 = document.getElementById('desc-3');
+      
+      // Reset
+      p2.className = "status-step"; c2.className = "ml-4 mt-1 transition-all";
+      i2.className = "step-icon"; i2.innerHTML = "<i class='fas fa-tools'></i>";
+      t2.className = "font-black text-gray-400 text-sm"; d2.className = "text-xs text-gray-400 font-medium";
+      t2.innerText = "In Progress"; d2.innerText = "Currently diagnosing and repairing.";
+      
+      i3.className = "step-icon"; t3.className = "font-black text-gray-400 text-sm"; d3.className = "text-xs text-gray-400 font-medium";
+
+      if(status === 'Pending') {
+        i2.className = "step-icon step-active"; i2.innerHTML = "<i class='fas fa-cog fa-spin'></i>";
+        t2.className = "font-black text-gray-800 text-sm"; d2.className = "text-xs text-gray-500 font-medium";
+      } 
+      else if(status === 'Completed') {
+        p2.className = "status-step completed-path";
+        c2.className = "ml-4 mt-0 transition-all highlight-pickup"; // UPLIFT HIGHLIGHT
+        i2.className = "step-icon step-done shadow-[0_0_15px_rgba(16,185,129,0.5)] scale-110"; i2.innerHTML = "<i class='fas fa-check'></i>";
+        t2.className = "font-black text-emerald-600 text-base uppercase tracking-tight"; t2.innerText = "Ready for Pickup!";
+        d2.className = "text-xs text-emerald-700 font-bold"; d2.innerText = "Your device is fully repaired and ready.";
+      } 
+      else if(status === 'Delivered') {
+        p2.className = "status-step completed-path";
+        i2.className = "step-icon step-done"; i2.innerHTML = "<i class='fas fa-check'></i>";
+        t2.className = "font-black text-gray-800 text-sm"; t2.innerText = "Repaired"; d2.innerText = "Device repair finished.";
+        
+        i3.className = "step-icon step-done shadow-[0_0_15px_rgba(16,185,129,0.5)] scale-110";
+        t3.className = "font-black text-emerald-600 text-sm uppercase tracking-tight";
+        d3.className = "text-xs text-gray-500 font-medium";
+      }
+    }
+
+    function resetSearch() {
+      document.getElementById('resultArea').classList.add('hidden');
+      document.getElementById('invInput').value = '';
+      document.getElementById('searchArea').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

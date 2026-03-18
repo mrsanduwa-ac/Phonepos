@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice - SmartX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* A5 Size Print Setup */
+    @page { size: A5; margin: 8mm; }
+    body { background-color: #f3f4f6; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .invoice-box { width: 148mm; min-height: 200mm; margin: 20px auto; background: white; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+    
+    @media print {
+      body { background-color: white; }
+      .invoice-box { box-shadow: none; margin: 0; padding: 0; width: 100%; min-height: auto; }
+      .no-print { display: none !important; }
+    }
+    
+    .table-header { background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; }
+    .watermark-text { position: absolute; bottom: 5mm; left: 0; right: 0; text-align: center; font-size: 8px; color: #94a3b8; letter-spacing: 0.5px; }
+  </style>
+</head>
+<body class="text-gray-800">
+
+  <!-- Print Action Bar -->
+  <div class="text-center mt-6 no-print mb-6">
+    <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-lg transition-transform hover:-translate-y-1 mr-3">
+      <i class="fas fa-print mr-2"></i> Print Invoice
+    </button>
+    <button onclick="window.close()" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-transform hover:-translate-y-1">
+      Close
+    </button>
+  </div>
+
+  <!-- A5 Invoice Container -->
+  <div class="invoice-box rounded-lg">
+    
+    <!-- Top Header -->
+    <div class="flex justify-between items-start mb-6">
+      <div class="w-1/2">
+        <!-- 🛑 SHOP LOGO 🛑 -->
+        <img src="phonelogo.png" alt="Shop Logo" onerror="this.outerHTML='<h1 class=\'text-3xl font-black text-gray-800 tracking-wider\'>SMART<span class=\'text-indigo-600\'>X</span></h1>'" class="h-14 w-auto object-contain mb-2">
+        <p class="text-xs text-gray-500 font-medium">Premium Mobile Repair Center</p>
+        <p class="text-[10px] text-gray-400 mt-1"><i class="fas fa-map-marker-alt mr-1"></i> 123, Main Street, City<br><i class="fas fa-phone-alt mr-1"></i> +94 77 123 4567</p>
+      </div>
+      <div class="w-1/2 text-right">
+        <h2 class="text-3xl font-black text-gray-200 uppercase tracking-widest">Invoice</h2>
+        <div class="mt-2 inline-block text-left">
+          <p class="text-sm font-bold text-gray-800"><span class="text-gray-400 font-medium mr-2">Invoice No:</span> <span id="inv-no">INV-0000</span></p>
+          <p class="text-sm font-bold text-gray-800 mt-0.5"><span class="text-gray-400 font-medium mr-2">Date:</span> <span id="inv-date">YYYY/MM/DD</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customer Details Panel -->
+    <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100">
+      <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 border-b border-gray-200 pb-1">Billed To</h3>
+      <div class="flex justify-between items-center">
+        <div>
+          <p class="font-black text-sm text-gray-800" id="inv-name">Customer Name</p>
+          <p class="text-xs text-gray-600 mt-0.5 font-medium" id="inv-phone">07X XXX XXXX</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Items Table -->
+    <div class="min-h-[120px]">
+      <table class="w-full text-left mb-4 text-xs">
+        <thead class="table-header text-gray-500">
+          <tr>
+            <th class="p-2 font-bold uppercase tracking-wider rounded-tl-lg">Description / Fault</th>
+            <th class="p-2 font-bold uppercase tracking-wider text-center">Warranty</th>
+            <th class="p-2 font-bold uppercase tracking-wider text-right rounded-tr-lg">Amount (Rs)</th>
+          </tr>
+        </thead>
+        <tbody id="inv-items-body" class="divide-y divide-gray-100">
+          <!-- Items injected via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Customer Message Section (Optional) -->
+    <div id="inv-message-container" class="mb-4 hidden">
+      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Customer Note</p>
+      <p class="text-xs text-gray-600 italic bg-yellow-50 p-2 rounded-lg border border-yellow-100" id="inv-message"></p>
+    </div>
+
+    <!-- Totals Area -->
+    <div class="flex justify-end mb-10">
+      <div class="w-1/2 bg-gray-50 rounded-xl p-4 border border-gray-100">
+        <div class="flex justify-between py-1 text-xs">
+          <span class="font-bold text-gray-500">Sub Total:</span>
+          <span class="font-bold text-gray-800" id="inv-subtotal">Rs. 0.00</span>
+        </div>
+        <div class="flex justify-between py-1 text-xs">
+          <span class="font-bold text-gray-500">Advance Paid:</span>
+          <span class="font-black text-emerald-600" id="inv-advance">- Rs. 0.00</span>
+        </div>
+        <div class="flex justify-between py-2 mt-2 border-t-2 border-gray-200 text-sm font-black">
+          <span class="text-gray-800">Balance Due:</span>
+          <span class="text-red-600" id="inv-balance">Rs. 0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Signatures & Seal -->
+    <div class="flex justify-between items-end mt-16 px-4 relative">
+      <div class="w-1/3 text-center">
+        <div class="border-t border-gray-400 pt-2">
+          <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Customer Signature</p>
+        </div>
+      </div>
+      
+      <div class="w-1/3 text-center relative">
+        <!-- 🛑 SHOP RUBBER SEAL 🛑 -->
+        <img src="phoneseal.png" alt="Seal" onerror="this.style.display='none'" class="absolute -top-12 left-1/2 transform -translate-x-1/2 -rotate-12 w-20 h-20 opacity-70 pointer-events-none mix-blend-multiply">
+        
+        <div class="border-t border-gray-400 pt-2 relative z-10">
+          <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Authorized Signatory</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Terms -->
+    <div class="mt-8 pt-4 border-t border-gray-100 text-center">
+      <p class="text-[8px] text-gray-400 font-medium">Warranty covers only the repaired/replaced part. Physical damages & water damages are not covered under warranty. Please bring this invoice for any warranty claims.</p>
+      <p class="text-[10px] font-bold text-gray-800 mt-2">Thank you for your business!</p>
+    </div>
+
+    <!-- Watermark -->
+    <div class="watermark-text">
+      &copy; 2026 DesignVerse by Sandusha Avishkha. All rights reserved.
+    </div>
+
+  </div>
+
+  <script>
+    window.onload = function() {
+      const orderData = JSON.parse(localStorage.getItem('currentOrder'));
+      
+      if(orderData) {
+        document.getElementById('inv-no').innerText = orderData.invoiceNo || "INV-" + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('inv-date').innerText = new Date(orderData.date || Date.now()).toLocaleDateString('en-GB');
+        
+        document.getElementById('inv-name').innerText = orderData.customerName;
+        document.getElementById('inv-phone').innerText = orderData.phone;
+        
+        // Handle Multiple Items
+        const tbody = document.getElementById('inv-items-body');
+        tbody.innerHTML = '';
+        let itemsArr = orderData.items || [{ fault: orderData.fault, warranty: orderData.warranty, price: orderData.quotedPrice }];
+        
+        itemsArr.forEach(it => {
+          tbody.innerHTML += `
+            <tr>
+              <td class="p-3 font-semibold text-gray-800">${it.fault}</td>
+              <td class="p-3 text-center font-bold text-gray-500">${it.warranty}</td>
+              <td class="p-3 text-right font-black text-gray-800">${Number(it.price).toLocaleString()}</td>
+            </tr>
+          `;
+        });
+        
+        // Handle Note/Message
+        if(orderData.customerMessage && orderData.customerMessage.trim() !== "") {
+          document.getElementById('inv-message-container').classList.remove('hidden');
+          document.getElementById('inv-message').innerText = orderData.customerMessage;
+        }
+        
+        // Totals
+        document.getElementById('inv-subtotal').innerText = "Rs. " + Number(orderData.quotedPrice).toLocaleString();
+        document.getElementById('inv-advance').innerText = "- Rs. " + Number(orderData.advance).toLocaleString();
+        const balance = Number(orderData.quotedPrice) - Number(orderData.advance);
+        document.getElementById('inv-balance').innerText = "Rs. " + balance.toLocaleString();
+      } else {
+        alert("No order data found!");
+      }
+    };
+  </script>
+</body>
+</html>
