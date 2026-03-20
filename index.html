@@ -11,8 +11,8 @@
   <style>
     body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
     .nav-item { transition: all 0.3s ease; }
-    .nav-item:hover, .nav-item.active { background-color: #eff6ff; color: #2563eb; border-right: 4px solid #2563eb; transform: translateX(5px); }
-    .mobile-nav-item.active { color: #2563eb; border-top: 3px solid #2563eb; background-color: #f1f5f9;}
+    .nav-item:hover, .nav-item.active { background-color: #e0e7ff; color: #4f46e5; border-right: 4px solid #4f46e5; transform: translateX(5px); }
+    .mobile-nav-item.active { color: #4f46e5; border-top: 3px solid #4f46e5; background-color: #f1f5f9;}
     
     /* Advanced Animations */
     .fade-in { animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -21,26 +21,23 @@
     .modal-enter { animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
     @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.9) translateY(-30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     
+    .glass-effect { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+    
+    /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px;}
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     
+    /* Badges & Inputs */
     .status-badge { padding: 4px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
     .status-pending { background-color: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
     .status-completed { background-color: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
     .status-delivered { background-color: #d1fae5; color: #059669; border: 1px solid #a7f3d0; }
 
-    /* Login Dots Animation */
+    /* Login UI Animations */
     .dot-indicator { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
-    /* Glass Shatter Effect */
-    .crack-overlay { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 50;
-      background: radial-gradient(circle at center, transparent 0%, rgba(255,255,255,0.8) 100%), 
-                  linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.9) 49%, transparent 51%),
-                  linear-gradient(-45deg, transparent 48%, rgba(255,255,255,0.9) 49%, transparent 51%); }
-    .show-crack { animation: flashCrack 0.15s forwards; }
-    @keyframes flashCrack { 0% { opacity: 0; transform: scale(1); } 50% { opacity: 1; transform: scale(1.02); filter: brightness(1.5); } 100% { opacity: 0.8; transform: scale(1); } }
     .shatter-drop { animation: dropDown 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; }
     @keyframes dropDown { 0% { transform: scale(1) rotate(0deg); opacity: 1; } 20% { transform: scale(1.05) rotate(2deg); opacity: 1; filter: blur(2px); } 100% { transform: translateY(120vh) rotate(-20deg) scale(0.5); opacity: 0; filter: blur(10px); } }
 
@@ -50,41 +47,54 @@
 
   <!-- SYNC LOADING OVERLAY -->
   <div id="sync-overlay" class="fixed inset-0 bg-gray-900/90 z-[200] hidden flex-col justify-center items-center backdrop-blur-md transition-opacity">
-    <i class="fas fa-cloud-download-alt fa-bounce text-6xl text-blue-500 mb-6 drop-shadow-[0_0_15px_rgba(59,130,246,0.8)]"></i>
-    <h2 class="text-white text-2xl font-black tracking-widest uppercase text-center px-4">Syncing Cloud Data</h2>
-    <p class="text-blue-200 text-sm mt-2 font-bold bg-gray-800/50 px-4 py-2 rounded-lg text-center mx-4"><i class="fas fa-lock mr-2"></i>Please wait securely...</p>
+    <i class="fas fa-cloud-upload-alt fa-bounce text-6xl text-blue-500 mb-6 drop-shadow-[0_0_15px_rgba(59,130,246,0.8)]"></i>
+    <h2 class="text-white text-2xl font-black tracking-widest uppercase text-center px-4">Syncing Data Securely</h2>
+    <p class="text-blue-200 text-sm mt-2 font-bold bg-gray-800/50 px-4 py-2 rounded-lg text-center mx-4"><i class="fas fa-lock mr-2"></i>Connecting to Google Sheets. Please wait...</p>
   </div>
 
-  <!-- PREMIUM DARK LOGIN SCREEN -->
-  <div id="login-screen" class="absolute inset-0 z-[100] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900 via-slate-900 to-black flex flex-col justify-center items-center px-4 transition-all duration-700">
-    <div id="login-box" class="bg-slate-800/40 backdrop-blur-2xl border border-slate-600/50 p-8 md:p-10 rounded-3xl shadow-[0_30px_60px_rgba(0,0,0,0.6)] w-full max-w-sm text-center transform transition-all duration-500 hover:scale-[1.02] relative overflow-hidden">
-      <div id="crack-layer" class="crack-overlay"></div>
+  <!-- LIGHT NUMPAD LOGIN SCREEN (Based on User's Image) -->
+  <div id="login-screen" class="absolute inset-0 z-[100] bg-slate-50 flex flex-col justify-center items-center px-4 transition-all duration-700">
+    <div id="login-box" class="w-full max-w-xs text-center flex flex-col items-center transform transition-all duration-500 relative">
       
-      <div class="mb-6 flex justify-center">
-        <div class="bg-white/10 p-5 rounded-full border border-white/10 shadow-lg backdrop-blur-md">
-          <img src="phonelogo.png" alt="Shop Logo" onerror="this.outerHTML='<i class=\'fas fa-shield-alt text-blue-400 text-5xl\'></i>'" class="h-12 w-auto object-contain relative z-10">
-        </div>
+      <!-- Main Logo -->
+      <img src="mainlogo.png" alt="Logo" onerror="this.outerHTML='<h1 class=\'text-3xl font-black text-slate-800 tracking-widest mb-4\'>MR<span class=\'text-blue-600\'>S</span></h1>'" class="h-12 mb-8 object-contain">
+      
+      <h2 class="text-xl font-bold text-slate-800 mb-8 tracking-wide">Welcome Back</h2>
+      
+      <!-- Dots -->
+      <div class="flex gap-4 mb-10 h-4 items-center justify-center">
+        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
+        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
+        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
+        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
+        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
+        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
       </div>
-      
-      <h2 class="text-2xl font-black text-white tracking-wide mb-2 relative z-10">SmartX Admin</h2>
-      <p class="text-slate-400 text-xs mb-10 font-bold relative z-10 uppercase tracking-widest">Authorize Access</p>
-      
-      <!-- 6 Dots Login -->
-      <div class="relative w-full flex justify-center mb-8 z-10 h-12 items-center">
-        <div class="flex gap-4 md:gap-5 absolute pointer-events-none">
-          <div class="dot-indicator w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-slate-500"></div>
-          <div class="dot-indicator w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-slate-500"></div>
-          <div class="dot-indicator w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-slate-500"></div>
-          <div class="dot-indicator w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-slate-500"></div>
-          <div class="dot-indicator w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-slate-500"></div>
-          <div class="dot-indicator w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-slate-500"></div>
-        </div>
-        <!-- Hidden input -->
-        <input type="tel" id="passcode" class="absolute inset-0 w-full h-full opacity-0 z-20 cursor-text text-transparent outline-none" autocomplete="off" oninput="updateDots(this.value)">
+
+      <!-- Numpad -->
+      <div class="grid grid-cols-3 gap-x-6 gap-y-6 mb-6 w-full px-4">
+        <button onclick="pressPin('1')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">1</button>
+        <button onclick="pressPin('2')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">2</button>
+        <button onclick="pressPin('3')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">3</button>
+        
+        <button onclick="pressPin('4')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">4</button>
+        <button onclick="pressPin('5')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">5</button>
+        <button onclick="pressPin('6')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">6</button>
+        
+        <button onclick="pressPin('7')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">7</button>
+        <button onclick="pressPin('8')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">8</button>
+        <button onclick="pressPin('9')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">9</button>
+        
+        <div class="flex items-center justify-center"></div>
+        <button onclick="pressPin('0')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">0</button>
+        <button onclick="clearPin()" class="w-16 h-16 rounded-full text-slate-400 hover:text-slate-600 flex justify-center items-center text-xl active:scale-95 transition-transform mx-auto"><i class="fas fa-backspace"></i></button>
       </div>
+
+      <!-- Hidden Input for Logic -->
+      <input type="hidden" id="passcode" value="">
       
-      <p id="login-error" class="text-red-300 text-sm mt-4 font-bold hidden animate-bounce relative z-10 bg-red-500/10 py-2 rounded-lg border border-red-500/20"><i class="fas fa-exclamation-circle"></i> Access Denied</p>
-      <div id="login-loading" class="text-blue-300 text-sm mt-4 font-bold hidden relative z-10 bg-blue-500/10 py-2 rounded-lg border border-blue-500/20"><i class="fas fa-circle-notch fa-spin mr-2"></i> Authenticating...</div>
+      <p id="login-error" class="text-red-500 text-sm mt-4 font-bold hidden animate-bounce bg-red-50 py-2 px-4 rounded-lg"><i class="fas fa-exclamation-circle mr-1"></i> Access Denied</p>
+      <div id="login-loading" class="text-blue-500 text-sm mt-4 font-bold hidden bg-blue-50 py-2 px-4 rounded-lg"><i class="fas fa-circle-notch fa-spin mr-2"></i> Authenticating...</div>
     </div>
   </div>
 
@@ -92,16 +102,17 @@
   <div id="app-wrapper" class="hidden h-screen w-full flex flex-col md:flex-row">
     
     <!-- Sidebar -->
-    <aside class="w-64 bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)] hidden md:flex flex-col h-full z-20 shrink-0">
-      <div class="p-6 border-b flex items-center justify-center h-24">
-        <img src="phonelogo.png" alt="SmartX Logo" onerror="this.outerHTML='<h1 class=\'text-2xl font-black text-gray-800 tracking-wider\'>SMART<span class=\'text-blue-600\'>X</span></h1>'" class="max-h-12 w-auto object-contain hover:scale-105 transition-transform duration-300">
+    <aside class="w-64 bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)] hidden md:flex flex-col h-full z-20 shrink-0 border-r border-gray-100">
+      <div class="p-6 border-b border-gray-50 flex items-center justify-center h-24">
+        <img src="mainlogo.png" alt="Logo" onerror="this.outerHTML='<h1 class=\'text-2xl font-black text-gray-800 tracking-wider\'>SMART<span class=\'text-blue-600\'>X</span></h1>'" class="max-h-10 w-auto object-contain hover:scale-105 transition-transform duration-300">
       </div>
       <nav class="flex-1 mt-6">
-        <ul class="space-y-2 px-4 font-semibold text-sm">
-          <li><a onclick="switchTab('Dashboard')" id="nav-Dashboard" class="nav-item active flex items-center p-3 text-gray-600 rounded-xl cursor-pointer"><i class="fas fa-chart-pie w-6 text-lg"></i><span class="ml-2">Dashboard</span></a></li>
-          <li><a onclick="switchTab('NewOrder')" id="nav-NewOrder" class="nav-item flex items-center p-3 text-gray-600 rounded-xl cursor-pointer"><i class="fas fa-plus-circle w-6 text-lg"></i><span class="ml-2">New Order</span></a></li>
-          <li><a onclick="switchTab('Stock')" id="nav-Stock" class="nav-item flex items-center p-3 text-gray-600 rounded-xl cursor-pointer"><i class="fas fa-boxes w-6 text-lg"></i><span class="ml-2">Inventory</span></a></li>
-          <li><a onclick="switchTab('Tools')" id="nav-Tools" class="nav-item flex items-center p-3 text-gray-600 rounded-xl cursor-pointer"><i class="fas fa-wrench w-6 text-lg"></i><span class="ml-2">Tools & Expenses</span></a></li>
+        <ul class="space-y-2 px-4 font-semibold text-sm text-gray-500">
+          <li><a onclick="switchTab('Dashboard')" id="nav-Dashboard" class="nav-item active flex items-center p-3 rounded-xl cursor-pointer"><i class="fas fa-chart-pie w-6 text-lg"></i><span class="ml-2">Dashboard</span></a></li>
+          <li><a onclick="switchTab('NewOrder')" id="nav-NewOrder" class="nav-item flex items-center p-3 rounded-xl cursor-pointer"><i class="fas fa-plus-circle w-6 text-lg"></i><span class="ml-2">New Order</span></a></li>
+          <li><a onclick="switchTab('Stock')" id="nav-Stock" class="nav-item flex items-center p-3 rounded-xl cursor-pointer"><i class="fas fa-boxes w-6 text-lg"></i><span class="ml-2">Inventory</span></a></li>
+          <li><a onclick="switchTab('Tools')" id="nav-Tools" class="nav-item flex items-center p-3 rounded-xl cursor-pointer"><i class="fas fa-wrench w-6 text-lg"></i><span class="ml-2">Tools & Expenses</span></a></li>
+          <li><a onclick="switchTab('Sales')" id="nav-Sales" class="nav-item flex items-center p-3 rounded-xl cursor-pointer"><i class="fas fa-history w-6 text-lg"></i><span class="ml-2">Sales History</span></a></li>
         </ul>
       </nav>
       <div class="p-4 border-t bg-gray-50 flex items-center gap-3">
@@ -124,14 +135,18 @@
         </div>
 
         <div class="flex-1 md:w-1/3 flex justify-end items-center gap-3 md:gap-5">
+          <!-- Sync Indicator / Auto Trigger -->
           <div class="relative">
             <div id="sync-indicator" onclick="toggleSyncMenu()" class="flex items-center text-[10px] md:text-xs font-bold px-2 md:px-3 py-1.5 bg-white rounded-full shadow-sm border border-gray-200 cursor-pointer hover:bg-gray-50 transition whitespace-nowrap">
               <span class="h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-red-500 mr-1 md:mr-2 shadow-[0_0_5px_rgba(239,68,68,0.5)] animate-pulse" id="sync-dot"></span>
               <span id="sync-text" class="text-gray-600">Local Mode</span>
               <i class="fas fa-chevron-down ml-1 md:ml-2 text-[8px] md:text-[10px] text-gray-400"></i>
             </div>
-            <div id="sync-menu" class="hidden absolute right-0 mt-2 w-40 md:w-48 bg-white rounded-xl shadow-xl border border-gray-100 p-2 z-50 transform transition-all origin-top-right">
-              <button onclick="startSync()" class="w-full text-left px-4 py-3 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg flex items-center transition"><i class="fas fa-cloud-upload-alt mr-3 text-blue-500"></i> Force Sync</button>
+            <!-- Dropdown Menu -->
+            <div id="sync-menu" class="hidden absolute right-0 mt-2 w-48 md:w-56 bg-white rounded-xl shadow-xl border border-gray-100 p-2 z-50 transform transition-all origin-top-right">
+              <button onclick="startSync()" class="w-full text-left px-4 py-3 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg flex items-center transition mb-1"><i class="fas fa-cloud-upload-alt mr-3 text-blue-500"></i> Sync Data to Cloud</button>
+              <div class="border-t border-gray-100 my-1"></div>
+              <button onclick="hardResetData()" class="w-full text-left px-4 py-3 text-xs font-bold text-red-500 hover:bg-red-50 rounded-lg flex items-center transition"><i class="fas fa-exclamation-triangle mr-3 text-red-400"></i> Hard Reset (Fetch Cloud)</button>
             </div>
           </div>
         </div>
@@ -164,7 +179,6 @@
                 <div class="text-gray-500 text-[10px] md:text-xs font-bold mb-1 tracking-wider uppercase">Expected Balance</div>
                 <div class="text-xl md:text-3xl font-black text-gray-800" id="dash-expected">Rs. 0</div>
               </div>
-              <!-- RESTORED & FIXED STOCK CARD -->
               <div onclick="switchTab('Stock')" class="cursor-pointer bg-white p-4 md:p-5 rounded-2xl shadow-sm border-b-4 border-cyan-500 relative overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 group">
                 <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"><i class="fas fa-boxes text-5xl md:text-7xl text-cyan-500 transform -rotate-12"></i></div>
                 <div class="text-gray-500 text-[10px] md:text-xs font-bold mb-1 tracking-wider uppercase">Stock Value</div>
@@ -219,7 +233,7 @@
 
                 <div class="mb-2"><label class="block text-xs font-bold text-gray-600 uppercase tracking-wider">Repair Items / Faults <span class="text-red-500">*</span></label></div>
                 <div id="repairItemsWrapper" class="space-y-3 mb-4">
-                  <!-- Dynamic rows -->
+                  <!-- Dynamic rows go here -->
                 </div>
                 
                 <div class="mb-6 md:mb-8 border-b border-dashed pb-6">
@@ -269,7 +283,7 @@
             
             <div class="flex flex-col lg:flex-row gap-4 md:gap-6">
               
-              <!-- Form Section (Centered on Mobile) -->
+              <!-- Form Section -->
               <div class="bg-white rounded-2xl shadow-sm p-4 md:p-6 border border-gray-100 h-fit max-w-md mx-auto w-full lg:w-1/3 shrink-0">
                 <h2 class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 border-b pb-2">Add Stock Item</h2>
                 <form id="stockForm" class="space-y-4">
@@ -284,10 +298,10 @@
 
               <!-- Table Section -->
               <div class="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <!-- Stock View -->
                 <div id="view-stock">
-                  <div class="p-3 md:p-4 border-b flex justify-between items-center gap-2">
-                    <div class="relative w-full md:w-auto"><i class="fas fa-search absolute left-3 top-2.5 text-gray-400 text-[10px] md:text-sm"></i><input type="text" onkeyup="renderStockTable(this.value)" placeholder="Search Stock..." class="w-full md:w-64 pl-8 md:pl-9 pr-3 py-1.5 md:py-2 border-transparent bg-gray-50 shadow-inner rounded-lg text-xs md:text-sm focus:bg-white focus:ring-2 focus:ring-blue-300 outline-none"></div>
+                  <div class="p-3 md:p-4 border-b flex justify-between items-center gap-2 bg-gray-50">
+                    <h2 class="text-[10px] md:text-sm font-bold text-gray-600 uppercase tracking-wider">Available Stock</h2>
+                    <div class="relative w-full md:w-auto"><i class="fas fa-search absolute left-3 top-2.5 text-gray-400 text-[10px] md:text-sm"></i><input type="text" onkeyup="renderStockTable(this.value)" placeholder="Search Stock..." class="w-full md:w-64 pl-8 md:pl-9 pr-3 py-1.5 md:py-2 border-transparent bg-white shadow-sm rounded-lg text-xs md:text-sm focus:ring-2 focus:ring-blue-300 outline-none"></div>
                   </div>
                   <div class="overflow-x-auto h-[400px]">
                     <table class="w-full text-left border-collapse whitespace-nowrap">
@@ -303,7 +317,7 @@
           <!-- ================= SECTION: TOOLS & EXPENSES ================= -->
           <div id="section-Tools" class="view-section fade-in hidden">
             <div class="flex justify-between items-center mb-6">
-              <div><h1 class="text-xl md:text-2xl font-black text-gray-800 tracking-tight">Tools, Expenses & Sales</h1></div>
+              <div><h1 class="text-xl md:text-2xl font-black text-gray-800 tracking-tight">Tools & Expenses</h1></div>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
               <div class="bg-white rounded-2xl shadow-sm p-4 md:p-6 border border-gray-100 h-fit">
@@ -325,22 +339,26 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- SALES HISTORY TABLE -->
-            <div class="mt-6 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <!-- ================= SECTION: SALES HISTORY ================= -->
+          <div id="section-Sales" class="view-section fade-in hidden">
+            <div class="flex justify-between items-center mb-6">
+              <div><h1 class="text-xl md:text-2xl font-black text-gray-800 tracking-tight">Sales History</h1><p class="text-xs md:text-sm text-gray-500 font-medium">View stock items sold via repair orders.</p></div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="p-4 md:p-5 border-b bg-blue-50/50 flex items-center justify-between">
-                    <h2 class="text-[10px] md:text-sm font-bold text-gray-700 uppercase tracking-wider"><i class="fas fa-history text-blue-500 mr-2"></i>Sales History</h2>
-                    <p class="text-[9px] md:text-xs font-bold text-gray-500">Items sold via repair orders</p>
+                    <h2 class="text-[10px] md:text-sm font-bold text-gray-700 uppercase tracking-wider"><i class="fas fa-history text-blue-500 mr-2"></i>Sold Items Log</h2>
                 </div>
-                <div class="overflow-x-auto h-[300px]">
+                <div class="overflow-x-auto h-[500px]">
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead class="bg-white text-gray-400 sticky top-0 text-[9px] md:text-[10px] uppercase font-black border-b"><tr><th class="p-3 md:p-4">Date</th><th class="p-3 md:p-4">Item Name</th><th class="p-3 md:p-4">Invoice No</th><th class="p-3 md:p-4">Customer</th></tr></thead>
                         <tbody id="salesTableBody" class="text-xs md:text-sm font-medium text-gray-700 divide-y divide-gray-50"></tbody>
                     </table>
                 </div>
             </div>
-
           </div>
+
         </div>
         
         <!-- FOOTER WATERMARK -->
@@ -353,19 +371,26 @@
       </div>
     </main>
 
-    <!-- Bottom Navigation for Mobile -->
+    <!-- Bottom Navigation for Mobile (5 Options with Center Plus) -->
     <nav class="md:hidden fixed bottom-0 w-full bg-white flex justify-around shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-50 pb-safe">
       <a onclick="switchTab('Dashboard')" id="mob-Dashboard" class="mobile-nav-item active flex-1 py-3 text-center text-gray-400 cursor-pointer transition-colors"><i class="fas fa-chart-pie block text-xl mb-1"></i><span class="text-[9px] font-extrabold uppercase tracking-wide">Dash</span></a>
-      <a onclick="switchTab('NewOrder')" id="mob-NewOrder" class="mobile-nav-item flex-1 py-3 text-center text-gray-400 cursor-pointer transition-colors relative"><div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white h-12 w-12 rounded-full flex items-center justify-center shadow-lg border-4 border-gray-50"><i class="fas fa-plus text-xl"></i></div><span class="text-[9px] font-extrabold uppercase tracking-wide mt-6 block">Order</span></a>
       <a onclick="switchTab('Stock')" id="mob-Stock" class="mobile-nav-item flex-1 py-3 text-center text-gray-400 cursor-pointer transition-colors"><i class="fas fa-boxes block text-xl mb-1"></i><span class="text-[9px] font-extrabold uppercase tracking-wide">Stock</span></a>
+      
+      <!-- CENTERED NEW ORDER BUTTON -->
+      <a onclick="switchTab('NewOrder')" id="mob-NewOrder" class="mobile-nav-item flex-1 py-3 text-center text-gray-400 cursor-pointer transition-colors relative">
+        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white h-14 w-14 rounded-full flex items-center justify-center shadow-lg border-4 border-white transition-transform active:scale-95"><i class="fas fa-plus text-2xl"></i></div>
+        <span class="text-[9px] font-extrabold uppercase tracking-wide mt-7 block text-blue-600">Order</span>
+      </a>
+      
       <a onclick="switchTab('Tools')" id="mob-Tools" class="mobile-nav-item flex-1 py-3 text-center text-gray-400 cursor-pointer transition-colors"><i class="fas fa-wrench block text-xl mb-1"></i><span class="text-[9px] font-extrabold uppercase tracking-wide">Tools</span></a>
+      <a onclick="switchTab('Sales')" id="mob-Sales" class="mobile-nav-item flex-1 py-3 text-center text-gray-400 cursor-pointer transition-colors"><i class="fas fa-history block text-xl mb-1"></i><span class="text-[9px] font-extrabold uppercase tracking-wide">Sales</span></a>
     </nav>
 
   </div>
 
   <!-- ================= MODALS ================= -->
 
-  <!-- Pending Repairs Modal -->
+  <!-- Pending Repairs List Modal -->
   <div id="pendingListModal" class="fixed inset-0 bg-gray-900/40 flex justify-center items-end md:items-center z-50 hidden backdrop-blur-sm transition-opacity">
     <div class="bg-white w-full max-w-2xl rounded-t-3xl md:rounded-3xl shadow-2xl overflow-hidden modal-enter flex flex-col max-h-[85vh]">
       <div class="bg-amber-500 p-4 md:p-5 flex justify-between items-center text-white"><h2 class="text-base md:text-lg font-black tracking-wide"><i class="fas fa-clock mr-2"></i> Pending Repairs</h2><button onclick="document.getElementById('pendingListModal').classList.add('hidden')" class="text-xl md:text-2xl hover:rotate-90 transition-transform"><i class="fas fa-times"></i></button></div>
@@ -389,6 +414,7 @@
           <div class="flex justify-between items-center mb-3 md:mb-4">
             <div><p class="font-black text-gray-800 text-base md:text-lg" id="det-name">-</p><p class="text-[10px] md:text-xs font-bold text-gray-500 mt-1"><i class="fab fa-whatsapp text-green-500 mr-1"></i> <span id="det-phone">-</span></p></div>
           </div>
+          <!-- Item List inside details -->
           <div class="border-t border-dashed pt-3">
              <p class="text-[9px] md:text-[10px] uppercase text-gray-400 font-bold mb-2">Items & Faults Summary</p>
              <div id="det-items-list" class="space-y-2"></div>
@@ -420,7 +446,7 @@
     </div>
   </div>
 
-  <!-- Stock Select Modal -->
+  <!-- Stock Modal -->
   <div id="stockModal" class="fixed inset-0 bg-gray-900/60 flex justify-center items-end md:items-center z-50 hidden backdrop-blur-sm">
     <div class="bg-white w-full max-w-2xl rounded-t-3xl md:rounded-3xl p-4 md:p-8 modal-enter">
       <div class="flex justify-between items-center mb-4 md:mb-5"><h2 class="text-lg md:text-xl font-black text-gray-800"><i class="fas fa-boxes text-blue-500 mr-2"></i> Select Stock</h2><button onclick="closeStockModal()" class="text-xl md:text-2xl text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div>
@@ -430,14 +456,26 @@
     </div>
   </div>
 
+  <!-- ================= SCRIPTS ================= -->
   <script>
     // ============================================================================
     // 🛑🛑🛑 ඔබගේ ලින්ක් සහ දත්ත පහතින් මාරු කරන්න 🛑🛑🛑
+    // ============================================================================
+    
+    // 1. ගූගල් ඇප්ස්ක්‍රිප්ට් ලින්ක් එක (Sync වීම සඳහා)
     const CONFIG_GAS_URL = "https://script.google.com/macros/s/AKfycbx7lumYuZPsh8NU49TuvpAT7rmvW1G5i3AtLhu7Qb2QipogydTXElr2M6CXKE0WEsch/exec"; 
+    
+    // 2. ට්‍රැකින් ලින්ක් එක (WhatsApp මැසේජ් එක සඳහා)
     const CONFIG_TRACKING_URL = "https://mrsanduwa-ac.github.io/Phonepos/track.html"; 
+    
+    // 3. යටින් ඇති වෝටර්මාර්ක් එක එබුවම යන්න ඕන ලින්ක් එක
     const CONFIG_WATERMARK_LINK = "https://www.facebook.com/sanduwaofficial/"; 
+
+    // 4. පාස්කෝඩ් එක (අංක 6)
+    
     // ============================================================================
 
+    // Set Watermark link from config
     document.getElementById('watermark-link').href = CONFIG_WATERMARK_LINK;
 
     // System Variables
@@ -447,17 +485,44 @@
     let soldItems = JSON.parse(localStorage.getItem('smartx_sales')) || [];
     let orderItemCount = 0; 
 
-    // --- DOT LOGIN LOGIC ---
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours(); let minutes = now.getMinutes(); let seconds = now.getSeconds();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12; hours = hours ? hours : 12; 
+      minutes = minutes < 10 ? '0' + minutes : minutes; seconds = seconds < 10 ? '0' + seconds : seconds;
+      document.getElementById('live-time').innerText = `${hours}:${minutes}:${seconds} ${ampm}`;
+      document.getElementById('live-date').innerText = now.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    setInterval(updateClock, 1000);
+
+    // ---- LIGHT NUMPAD LOGIN LOGIC ----
+    let passcodeVal = "";
+    
+    function pressPin(num) {
+      if(passcodeVal.length < 6) {
+        passcodeVal += num;
+        updateDots(passcodeVal);
+      }
+    }
+    
+    function clearPin() {
+      if(passcodeVal.length > 0) {
+        passcodeVal = passcodeVal.slice(0, -1);
+        updateDots(passcodeVal);
+      }
+    }
+
     function updateDots(val) {
-      if(val.length > 6) { val = val.substring(0,6); document.getElementById('passcode').value = val; }
+      document.getElementById('passcode').value = val;
       const dots = document.querySelectorAll('.dot-indicator');
       dots.forEach((dot, index) => {
         if(index < val.length) { 
-            dot.classList.add('bg-blue-500', 'border-blue-500', 'scale-125', 'shadow-[0_0_15px_rgba(59,130,246,0.8)]'); 
-            dot.classList.remove('border-slate-500'); 
+            dot.classList.add('bg-slate-800', 'border-slate-800'); 
+            dot.classList.remove('border-slate-300'); 
         } else { 
-            dot.classList.remove('bg-blue-500', 'border-blue-500', 'scale-125', 'shadow-[0_0_15px_rgba(59,130,246,0.8)]'); 
-            dot.classList.add('border-slate-500'); 
+            dot.classList.remove('bg-slate-800', 'border-slate-800'); 
+            dot.classList.add('border-slate-300'); 
         }
       });
       if(val.length === 6) checkLogin();
@@ -471,8 +536,7 @@
       err.classList.add('hidden'); loader.classList.remove('hidden');
 
       if(!CONFIG_GAS_URL || CONFIG_GAS_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
-        Swal.fire('Error', 'Google App Script URL not found!', 'error');
-        resetLogin();
+        if(pin === CONFIG_PASSCODE) { loginSuccess(); } else { resetLogin(); }
         return;
       }
       try {
@@ -481,72 +545,50 @@
         if(data.success) { loginSuccess(); } else { resetLogin(); }
       } catch (error) {
         Swal.fire('Connection Error', 'Please check your internet connection.', 'error');
-        resetLogin();
+        if(pin === CONFIG_PASSCODE) loginSuccess(); // Fallback for offline usage
+        else resetLogin();
       }
     }
 
     function resetLogin() {
       document.getElementById('login-loading').classList.add('hidden');
       document.getElementById('login-error').classList.remove('hidden');
-      document.getElementById('passcode').value = '';
+      passcodeVal = '';
       updateDots('');
     }
 
     function loginSuccess() {
-      const crackLayer = document.getElementById('crack-layer'); const loginBox = document.getElementById('login-box');
-      crackLayer.classList.add('show-crack');
-      setTimeout(() => { loginBox.classList.add('shatter-drop'); }, 150);
-      setTimeout(() => { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('app-wrapper').classList.remove('hidden'); initApp(); }, 800);
-    }
-
-    // --- FETCH DATA (GET) ---
-    async function fetchCloudData() {
-      if(!CONFIG_GAS_URL || CONFIG_GAS_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") return;
-      const overlay = document.getElementById('sync-overlay'); const syncTitle = document.querySelector('#sync-overlay h2');
-      syncTitle.innerText = "Downloading Cloud Data"; overlay.classList.remove('hidden'); overlay.style.display = 'flex';
+      document.getElementById('login-box').style.opacity = '0';
+      document.getElementById('login-box').style.transform = 'scale(0.9)';
       
-      try {
-        const res = await fetch(CONFIG_GAS_URL + "?action=getData");
-        const data = await res.json();
-        if(data.success) {
-          orders = data.orders || []; inventory = data.inventory || []; toolsList = data.tools || []; soldItems = data.sales || [];
-          localStorage.setItem('smartx_orders', JSON.stringify(orders)); localStorage.setItem('smartx_inventory', JSON.stringify(inventory)); 
-          localStorage.setItem('smartx_tools', JSON.stringify(toolsList)); localStorage.setItem('smartx_sales', JSON.stringify(soldItems));
-        }
-      } catch(e) { Swal.fire('Notice', 'Running Offline Mode. Sync later.', 'info'); } 
-      finally { overlay.classList.add('hidden'); overlay.style.display = 'none'; syncTitle.innerText = "Syncing Cloud Data"; }
+      setTimeout(() => { 
+        document.getElementById('login-screen').classList.add('hidden'); 
+        document.getElementById('app-wrapper').classList.remove('hidden'); 
+        initApp(); 
+      }, 500);
     }
 
-    // --- CLOCK & INIT ---
-    function updateClock() {
-      const now = new Date(); let hours = now.getHours(); let minutes = now.getMinutes(); let seconds = now.getSeconds();
-      const ampm = hours >= 12 ? 'PM' : 'AM'; hours = hours % 12; hours = hours ? hours : 12; 
-      minutes = minutes < 10 ? '0' + minutes : minutes; seconds = seconds < 10 ? '0' + seconds : seconds;
-      document.getElementById('live-time').innerText = `${hours}:${minutes}:${seconds} ${ampm}`;
-      document.getElementById('live-date').innerText = now.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    }
-    setInterval(updateClock, 1000);
-
-    async function initApp() { 
-      updateClock(); 
-      await fetchCloudData(); // Sync From Cloud On Load
-      generateNextInvoiceNo(); updateDashboardStats(); renderDashboardTable(); 
-      renderStockTable(); renderSalesTable(); renderToolsTable(); addRepairItemRow(); 
-      updateSyncStatus(true);
+    function toggleSyncMenu() {
+      const menu = document.getElementById('sync-menu');
+      menu.classList.toggle('hidden');
     }
 
-    // --- BACKGROUND SYNC (POST) ---
+    // ---- AUTO SYNC (BACKGROUND) ----
     async function backgroundAutoSync() {
-      if(!CONFIG_GAS_URL || CONFIG_GAS_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") return updateSyncStatus(false);
+      if(!CONFIG_GAS_URL || CONFIG_GAS_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+        updateSyncStatus(false);
+        return;
+      }
       try {
         const payload = { action: 'syncData', orders: orders, inventory: inventory, tools: toolsList, sales: soldItems };
         const response = await fetch(CONFIG_GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
         const result = await response.json();
-        updateSyncStatus(result.success);
-      } catch(e) { updateSyncStatus(false); }
+        if(result.success) { updateSyncStatus(true); } else { updateSyncStatus(false); }
+      } catch(e) {
+        updateSyncStatus(false);
+      }
     }
 
-    function toggleSyncMenu() { document.getElementById('sync-menu').classList.toggle('hidden'); }
     function updateSyncStatus(isOnline) {
       const dot = document.getElementById('sync-dot'), txt = document.getElementById('sync-text');
       if(isOnline && CONFIG_GAS_URL !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
@@ -558,47 +600,259 @@
       }
     }
 
+    // ---- MANUAL SYNC FUNCTION ----
     async function startSync() {
       document.getElementById('sync-menu').classList.add('hidden');
-      if(!CONFIG_GAS_URL || CONFIG_GAS_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") return Swal.fire('Error', 'No App Script URL.', 'error');
+      if(!CONFIG_GAS_URL || CONFIG_GAS_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+        return Swal.fire('Error', 'Please configure the Google Apps Script URL in the HTML code to sync.', 'error');
+      }
       
-      const overlay = document.getElementById('sync-overlay'); overlay.classList.remove('hidden'); overlay.style.display = 'flex';
+      const overlay = document.getElementById('sync-overlay');
+      overlay.querySelector('p').innerHTML = "<i class='fas fa-upload mr-2'></i>Uploading local data to cloud...";
+      overlay.classList.remove('hidden'); overlay.style.display = 'flex';
+
       try {
         const payload = { action: 'syncData', orders: orders, inventory: inventory, tools: toolsList, sales: soldItems };
         const response = await fetch(CONFIG_GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
         const result = await response.json();
-        if(result.success) { updateSyncStatus(true); Swal.fire({toast:true, position:'top-end', icon:'success', title:'Sync Successful', showConfirmButton:false, timer:2000}); } 
-      } catch(e) { updateSyncStatus(false); Swal.fire('Sync Error', 'Could not sync.', 'error'); } 
+        
+        if(result.success) {
+          updateSyncStatus(true);
+          Swal.fire({toast:true, position:'top-end', icon:'success', title:'Cloud Sync Successful!', showConfirmButton:false, timer:3000});
+        } else { throw new Error('Sync failed on server'); }
+      } catch(e) {
+        updateSyncStatus(false);
+        Swal.fire('Sync Error', 'Could not sync with Google Sheets. Data is safe locally.', 'error');
+      } finally {
+        overlay.classList.add('hidden'); overlay.style.display = 'none';
+      }
+    }
+
+    // ---- FETCH CLOUD DATA (GET) & HARD RESET ----
+    async function hardResetData() {
+      document.getElementById('sync-menu').classList.add('hidden');
+      Swal.fire({
+        title: 'Hard Reset & Fetch Data?',
+        text: "This will wipe local storage and force fetch exactly what is on the Google Sheet. Use this to fix stock calculation issues.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e3342f',
+        confirmButtonText: 'Yes, Fetch Cloud Data!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetchCloudData(true);
+        }
+      });
+    }
+
+    async function fetchCloudData(forceReset = false) {
+      if(!CONFIG_GAS_URL || CONFIG_GAS_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") return;
+      const overlay = document.getElementById('sync-overlay'); 
+      overlay.querySelector('p').innerHTML = "<i class='fas fa-download mr-2'></i>Downloading live cloud data...";
+      overlay.classList.remove('hidden'); overlay.style.display = 'flex';
+      
+      try {
+        const res = await fetch(CONFIG_GAS_URL + "?action=getData");
+        const data = await res.json();
+        
+        if(data.success) {
+          if(forceReset) {
+            localStorage.clear();
+          }
+          orders = data.orders || []; inventory = data.inventory || []; toolsList = data.tools || []; soldItems = data.sales || [];
+          localStorage.setItem('smartx_orders', JSON.stringify(orders)); 
+          localStorage.setItem('smartx_inventory', JSON.stringify(inventory)); 
+          localStorage.setItem('smartx_tools', JSON.stringify(toolsList)); 
+          localStorage.setItem('smartx_sales', JSON.stringify(soldItems));
+          
+          updateDashboardStats(); renderDashboardTable(); renderStockTable(); renderToolsTable(); renderSalesTable();
+          if(forceReset) Swal.fire('Success', 'Local data synced perfectly with Google Sheets!', 'success');
+        } else {
+           if(forceReset) Swal.fire('Error', 'Google sheet returned no data. Have you deployed the App Script properly?', 'error');
+        }
+      } catch(e) { 
+        if(forceReset) Swal.fire('Fetch Error', 'Failed to connect to Google Sheets.', 'error');
+        console.log("Running offline."); 
+      } 
       finally { overlay.classList.add('hidden'); overlay.style.display = 'none'; }
     }
 
-    // --- NAVIGATION ---
+    function initApp() { 
+      updateClock(); 
+      generateNextInvoiceNo(); 
+      updateDashboardStats(); 
+      renderDashboardTable(); 
+      renderStockTable(); 
+      renderToolsTable();
+      renderSalesTable();
+      addRepairItemRow(); 
+      fetchCloudData(); // Try fetching initial sync
+    }
+
     function switchTab(tabName) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden', 'block')); document.getElementById('section-' + tabName).classList.remove('hidden');
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); const deskNav = document.getElementById('nav-' + tabName); if(deskNav) deskNav.classList.add('active');
       document.querySelectorAll('.mobile-nav-item').forEach(el => el.classList.remove('active')); const mobNav = document.getElementById('mob-' + tabName); if(mobNav) mobNav.classList.add('active');
-      const titleMap = { 'Dashboard': 'Dashboard', 'NewOrder': 'New Repair Order', 'Stock': 'Inventory', 'Tools': 'Tools, Expenses & Sales' }; document.getElementById('page-title').innerText = titleMap[tabName] || tabName;
+      const titleMap = { 'Dashboard': 'Dashboard', 'NewOrder': 'New Repair Order', 'Stock': 'Inventory', 'Tools': 'Tools & Expenses', 'Sales': 'Sales History' }; document.getElementById('page-title').innerText = titleMap[tabName] || tabName;
+      
+      if(tabName === 'Dashboard') { updateDashboardStats(); renderDashboardTable(); } 
+      if(tabName === 'Stock') renderStockTable(); 
+      if(tabName === 'Tools') renderToolsTable();
+      if(tabName === 'Sales') renderSalesTable();
     }
 
-    // --- DASHBOARD & SUGGESTIONS ---
-    function updateDashboardStats() {
-      let pending = 0, expectedBal = 0, expenses = 0, weekProfit = 0, stockVal = 0; 
-      let oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      
-      orders.forEach(o => { 
-        expenses += Number(o.cost) || 0; 
-        if(o.status !== 'Delivered') { pending++; expectedBal += Number(o.balance) || 0; } 
-        if(new Date(o.date) > oneWeekAgo) weekProfit += Number(o.profit) || 0; 
-      });
-      
-      toolsList.forEach(t => expenses += Number(t.price) || 0);
-      inventory.forEach(i => stockVal += (Number(i.price) * Number(i.qty)) || 0);
+    function suggestCustomer(query, isPhone=false) {
+      const sBox = document.getElementById('customerSuggestions'); if(query.length < 2) { sBox.classList.add('hidden'); return; }
+      const uniqueCust = []; const map = new Map();
+      for (const item of orders) { if(!map.has(item.phone)){ map.set(item.phone, true); uniqueCust.push({ name: item.customerName, phone: item.phone.replace('+94','') }); } }
+      const qLow = query.toLowerCase(); const matches = uniqueCust.filter(c => isPhone ? c.phone.includes(qLow) : c.name.toLowerCase().includes(qLow));
+      if(matches.length > 0) {
+        sBox.innerHTML = matches.map(m => `<div onclick="fillCustomer('${m.name}', '${m.phone}')" class="p-3 md:p-4 border-b hover:bg-blue-50 cursor-pointer flex justify-between items-center transition-colors"><span class="font-black text-gray-700 text-xs md:text-sm"><i class="fas fa-user-circle text-gray-400 mr-2"></i>${m.name}</span><span class="text-[10px] md:text-xs text-blue-600 font-bold bg-blue-50 px-2 py-1 rounded">${m.phone}</span></div>`).join('');
+        sBox.classList.remove('hidden');
+      } else { sBox.classList.add('hidden'); }
+    }
+    function fillCustomer(name, phone) { document.getElementById('cName').value = name; document.getElementById('cPhone').value = phone; document.getElementById('customerSuggestions').classList.add('hidden'); }
+    document.addEventListener('click', function(e) { if(!e.target.closest('#cName') && !e.target.closest('#cPhone')) { const x=document.getElementById('customerSuggestions'); if(x) x.classList.add('hidden'); }});
 
-      document.getElementById('dash-pending').innerText = pending; 
-      document.getElementById('dash-expected').innerText = "Rs. " + expectedBal.toLocaleString(); 
-      document.getElementById('dash-expenses').innerText = "Rs. " + expenses.toLocaleString(); 
-      document.getElementById('dash-week-profit').innerText = "Rs. " + weekProfit.toLocaleString();
-      document.getElementById('dash-stock-value').innerText = "Rs. " + stockVal.toLocaleString();
+    // ---- NEW ORDER MULTIPLE ITEMS LOGIC ----
+    function addRepairItemRow() {
+      orderItemCount++;
+      const wrapper = document.getElementById('repairItemsWrapper');
+      const rowHtml = `
+        <div id="itemRow-${orderItemCount}" class="repair-item-row bg-white border border-gray-200 rounded-xl p-3 md:p-4 shadow-sm relative group transition-all hover:border-blue-300">
+          <button type="button" onclick="removeRepairItemRow(${orderItemCount})" class="absolute -right-2 -top-2 bg-red-500 text-white rounded-full w-5 h-5 md:w-6 md:h-6 flex items-center justify-center shadow-md hover:bg-red-600 text-[10px] md:text-xs hidden group-hover:flex"><i class="fas fa-times"></i></button>
+          
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 items-end">
+            <div class="col-span-1 md:col-span-5">
+              <label class="block text-[9px] md:text-[10px] font-bold text-gray-500 uppercase mb-1">Item / Fault Description</label>
+              <input type="text" class="item-fault w-full rounded-lg bg-gray-50 border-transparent p-2 md:p-2.5 text-xs md:text-sm font-semibold focus:bg-white focus:ring-2 focus:ring-blue-200" placeholder="e.g. Battery Replacement" required>
+            </div>
+            
+            <div class="col-span-1 md:col-span-2">
+              <label class="block text-[9px] md:text-[10px] font-bold text-gray-500 uppercase mb-1">Cost (Rs)</label>
+              <div class="flex gap-1">
+                <input type="number" oninput="calculateTotals()" class="item-cost flex-1 rounded-lg bg-red-50 text-red-700 border-transparent p-2 md:p-2.5 text-xs md:text-sm font-bold focus:bg-white focus:ring-2 focus:ring-red-200" placeholder="0" required>
+                <button type="button" onclick="openStockModal(${orderItemCount})" class="bg-gray-800 text-white px-2 rounded-lg hover:bg-black transition" title="Use Stock"><i class="fas fa-box text-xs md:text-sm"></i></button>
+                <input type="hidden" class="item-stock-used" value="">
+              </div>
+            </div>
+            
+            <div class="col-span-1 md:col-span-2">
+              <label class="block text-[9px] md:text-[10px] font-bold text-gray-500 uppercase mb-1">Price (Rs)</label>
+              <input type="number" oninput="calculateTotals()" class="item-quote w-full rounded-lg bg-emerald-50 text-emerald-700 border-transparent p-2 md:p-2.5 text-xs md:text-sm font-bold focus:bg-white focus:ring-2 focus:ring-emerald-200" placeholder="0" required>
+            </div>
+            
+            <div class="col-span-1 md:col-span-3">
+              <label class="block text-[9px] md:text-[10px] font-bold text-gray-500 uppercase mb-1">Warranty</label>
+              <select class="item-warranty w-full rounded-lg bg-gray-50 border-transparent p-2 md:p-2.5 text-xs md:text-sm font-bold text-gray-700 focus:bg-white focus:ring-2 focus:ring-blue-200">
+                <option value="None">None</option><option value="7 Days">7 Days</option><option value="1 Month">1 Month</option><option value="3 Months">3 Months</option><option value="6 Months">6 Months</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      `;
+      wrapper.insertAdjacentHTML('beforeend', rowHtml);
+    }
+
+    function removeRepairItemRow(id) {
+      const row = document.getElementById(`itemRow-${id}`);
+      if(row) { row.remove(); calculateTotals(); }
+    }
+
+    function calculateTotals() {
+      let totalCost = 0; let totalQuote = 0;
+      document.querySelectorAll('.repair-item-row').forEach(row => {
+        totalCost += Number(row.querySelector('.item-cost').value) || 0;
+        totalQuote += Number(row.querySelector('.item-quote').value) || 0;
+      });
+      document.getElementById('displayTotalCost').innerText = "Rs. " + totalCost.toLocaleString();
+      document.getElementById('displayTotalQuote').innerText = "Rs. " + totalQuote.toLocaleString();
+      calculateBalance(totalQuote);
+    }
+
+    function calculateBalance(quote = null) { 
+      if(quote === null) {
+        quote = 0;
+        document.querySelectorAll('.repair-item-row').forEach(r => { quote += Number(r.querySelector('.item-quote').value) || 0; });
+      }
+      const advance = Number(document.getElementById('cAdvance').value) || 0; 
+      document.getElementById('cBalanceText').innerHTML = `Rs. ${(quote - advance).toLocaleString()}`; 
+    }
+
+    function generateNextInvoiceNo() { let lastNo = 34; if (orders.length > 0) { lastNo = parseInt(orders[orders.length - 1].invoiceNo.replace("INVSA", "")); } const nextNo = "INVSA" + ("000" + (lastNo + 1)).slice(-4); document.getElementById('display-invoice-no').innerText = nextNo; return nextNo; }
+    
+    function resetOrderForm() {
+      document.getElementById('orderForm').reset();
+      document.getElementById('repairItemsWrapper').innerHTML = '';
+      orderItemCount = 0; addRepairItemRow(); calculateTotals();
+    }
+
+    function saveOrder(print) {
+      const name = document.getElementById('cName').value, phone = document.getElementById('cPhone').value; 
+      const advance = Number(document.getElementById('cAdvance').value) || 0;
+      const msg = document.getElementById('cMessage').value;
+      
+      const rows = document.querySelectorAll('.repair-item-row');
+      if(!name || !phone || rows.length === 0) return Swal.fire('Error!', 'Customer Details & at least one item are required.', 'error');
+
+      let items = []; let totalCost = 0; let totalQuote = 0; let allValid = true;
+      
+      rows.forEach(row => {
+        const fault = row.querySelector('.item-fault').value;
+        const cost = Number(row.querySelector('.item-cost').value);
+        const quote = Number(row.querySelector('.item-quote').value);
+        const warranty = row.querySelector('.item-warranty').value;
+        const stockUsed = row.querySelector('.item-stock-used').value;
+        
+        if(!fault || !cost || !quote) allValid = false;
+        
+        items.push({ fault, cost, price: quote, warranty, stockUsed });
+        totalCost += cost; totalQuote += quote;
+      });
+
+      if(!allValid) return Swal.fire('Error!', 'Please fill all item fields properly.', 'error');
+
+      const newOrder = { 
+        invoiceNo: generateNextInvoiceNo(), date: new Date().toISOString(), deliveredDate: null, 
+        customerName: name, phone: "+94" + phone.replace(/^0+/, ''), 
+        items: items, 
+        cost: totalCost, quotedPrice: totalQuote, advance, balance: totalQuote - advance, profit: totalQuote - totalCost, 
+        customerMessage: msg, status: 'Pending',
+        fault: items.map(i=>i.fault).join(' + '), warranty: items[0].warranty 
+      };
+
+      orders.push(newOrder); localStorage.setItem('smartx_orders', JSON.stringify(orders));
+
+      // Stock Deduction & Live Out of Stock Ordering
+      items.forEach(it => {
+        if(it.stockUsed) {
+           const idx = inventory.findIndex(i => i.name === it.stockUsed); 
+           if (idx > -1 && inventory[idx].qty > 0) { 
+               inventory[idx].qty -= 1; 
+               soldItems.push({ id: Date.now()+Math.random(), date: new Date().toISOString(), itemName: it.stockUsed, price: it.price, invoiceNo: newOrder.invoiceNo, customerName: name });
+           }
+        }
+      });
+      localStorage.setItem('smartx_inventory', JSON.stringify(inventory));
+      localStorage.setItem('smartx_sales', JSON.stringify(soldItems));
+      
+      renderStockTable(); 
+      renderSalesTable();
+      backgroundAutoSync(); // Trigger sync
+
+      Swal.fire({ toast: true, position: "top-end", showConfirmButton: false, timer: 2000, icon: "success", title: "Order Created" }).then(() => {
+        resetOrderForm(); generateNextInvoiceNo();
+        if(print) { localStorage.setItem('currentOrder', JSON.stringify(newOrder)); window.open('bil.html', '_blank'); } else switchTab('Dashboard');
+      });
+    }
+
+    function updateDashboardStats() {
+      let pending = 0, expectedBal = 0, expenses = 0, stockVal = 0, weekProfit = 0; let oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      orders.forEach(o => { expenses += Number(o.cost) || 0; if(o.status !== 'Delivered') { pending++; expectedBal += Number(o.balance) || 0; } if(new Date(o.date) > oneWeekAgo) weekProfit += Number(o.profit) || 0; });
+      toolsList.forEach(t => expenses += Number(t.price) || 0); 
+      inventory.forEach(i => stockVal += (Number(i.price) * Number(i.qty)) || 0);
+      
+      document.getElementById('dash-pending').innerText = pending; document.getElementById('dash-expected').innerText = "Rs. " + expectedBal.toLocaleString(); document.getElementById('dash-expenses').innerText = "Rs. " + expenses.toLocaleString(); document.getElementById('dash-week-profit').innerText = "Rs. " + weekProfit.toLocaleString(); document.getElementById('dash-stock-value').innerText = "Rs. " + stockVal.toLocaleString();
     }
 
     function renderDashboardTable() {
@@ -610,99 +864,10 @@
       });
     }
 
-    function suggestCustomer(query, isPhone=false) {
-      const sBox = document.getElementById('customerSuggestions'); if(query.length < 2) { sBox.classList.add('hidden'); return; }
-      const uniqueCust = []; const map = new Map();
-      for (const item of orders) { if(!map.has(item.phone)){ map.set(item.phone, true); uniqueCust.push({ name: item.customerName, phone: item.phone.replace('+94','') }); } }
-      const matches = uniqueCust.filter(c => isPhone ? c.phone.includes(query) : c.name.toLowerCase().includes(query.toLowerCase()));
-      if(matches.length > 0) {
-        sBox.innerHTML = matches.map(m => `<div onclick="fillCustomer('${m.name}', '${m.phone}')" class="p-3 border-b hover:bg-blue-50 cursor-pointer flex justify-between items-center"><span class="font-black text-gray-700 text-xs md:text-sm"><i class="fas fa-user-circle text-gray-400 mr-2"></i>${m.name}</span><span class="text-[10px] md:text-xs text-blue-600 font-bold bg-blue-50 px-2 py-1 rounded">${m.phone}</span></div>`).join('');
-        sBox.classList.remove('hidden');
-      } else { sBox.classList.add('hidden'); }
-    }
-    function fillCustomer(name, phone) { document.getElementById('cName').value = name; document.getElementById('cPhone').value = phone; document.getElementById('customerSuggestions').classList.add('hidden'); }
-    document.addEventListener('click', function(e) { if(!e.target.closest('#cName') && !e.target.closest('#cPhone')) { const x=document.getElementById('customerSuggestions'); if(x) x.classList.add('hidden'); }});
-
-    // --- NEW ORDER FORM ---
-    function addRepairItemRow() {
-      orderItemCount++; const wrapper = document.getElementById('repairItemsWrapper');
-      wrapper.insertAdjacentHTML('beforeend', `
-        <div id="itemRow-${orderItemCount}" class="repair-item-row bg-white border border-gray-200 rounded-xl p-3 md:p-4 shadow-sm relative group transition-all hover:border-blue-300">
-          <button type="button" onclick="removeRepairItemRow(${orderItemCount})" class="absolute -right-2 -top-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md hover:bg-red-600 text-[10px] hidden group-hover:flex"><i class="fas fa-times"></i></button>
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 items-end">
-            <div class="col-span-1 md:col-span-5"><label class="block text-[9px] font-bold text-gray-500 uppercase mb-1">Item / Fault</label><input type="text" class="item-fault w-full rounded-lg bg-gray-50 border-transparent p-2 text-sm font-semibold focus:bg-white focus:ring-2 focus:ring-blue-200" required></div>
-            <div class="col-span-1 md:col-span-2"><label class="block text-[9px] font-bold text-gray-500 uppercase mb-1">Cost</label><div class="flex gap-1"><input type="number" oninput="calculateTotals()" class="item-cost flex-1 rounded-lg bg-red-50 text-red-700 border-transparent p-2 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-red-200" required><button type="button" onclick="openStockModal(${orderItemCount})" class="bg-gray-800 text-white px-2 rounded-lg"><i class="fas fa-box"></i></button><input type="hidden" class="item-stock-used"></div></div>
-            <div class="col-span-1 md:col-span-2"><label class="block text-[9px] font-bold text-gray-500 uppercase mb-1">Price</label><input type="number" oninput="calculateTotals()" class="item-quote w-full rounded-lg bg-emerald-50 text-emerald-700 border-transparent p-2 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-emerald-200" required></div>
-            <div class="col-span-1 md:col-span-3"><label class="block text-[9px] font-bold text-gray-500 uppercase mb-1">Warranty</label><select class="item-warranty w-full rounded-lg bg-gray-50 border-transparent p-2 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-blue-200"><option value="None">None</option><option value="7 Days">7 Days</option><option value="1 Month">1 Month</option><option value="3 Months">3 Months</option><option value="6 Months">6 Months</option></select></div>
-          </div>
-        </div>
-      `);
-    }
-
-    function removeRepairItemRow(id) { const r = document.getElementById(`itemRow-${id}`); if(r){r.remove(); calculateTotals();} }
-    function calculateTotals() {
-      let cost=0, quote=0;
-      document.querySelectorAll('.repair-item-row').forEach(row => { cost += Number(row.querySelector('.item-cost').value)||0; quote += Number(row.querySelector('.item-quote').value)||0; });
-      document.getElementById('displayTotalCost').innerText = "Rs. " + cost.toLocaleString(); document.getElementById('displayTotalQuote').innerText = "Rs. " + quote.toLocaleString(); calculateBalance(quote);
-    }
-    function calculateBalance(quote = null) { 
-      if(quote === null) { quote = 0; document.querySelectorAll('.repair-item-row').forEach(r => quote += Number(r.querySelector('.item-quote').value)||0); }
-      const advance = Number(document.getElementById('cAdvance').value)||0; document.getElementById('cBalanceText').innerHTML = `Rs. ${(quote - advance).toLocaleString()}`; 
-    }
-    function generateNextInvoiceNo() { let lastNo = 34; if (orders.length > 0) { lastNo = parseInt(orders[orders.length - 1].invoiceNo.replace("INVSA", "")); } const n = "INVSA" + ("000" + (lastNo + 1)).slice(-4); document.getElementById('display-invoice-no').innerText = n; return n; }
-    function resetOrderForm() { document.getElementById('orderForm').reset(); document.getElementById('repairItemsWrapper').innerHTML = ''; orderItemCount = 0; addRepairItemRow(); calculateTotals(); }
-
-    function saveOrder(print) {
-      const name = document.getElementById('cName').value, phone = document.getElementById('cPhone').value; 
-      const advance = Number(document.getElementById('cAdvance').value) || 0; const msg = document.getElementById('cMessage').value;
-      const rows = document.querySelectorAll('.repair-item-row');
-      if(!name || !phone || rows.length === 0) return Swal.fire('Error!', 'Customer Details & items are required.', 'error');
-
-      let items = [], totalCost = 0, totalQuote = 0, allValid = true;
-      const invNo = generateNextInvoiceNo();
-
-      rows.forEach(row => {
-        const fault = row.querySelector('.item-fault').value, cost = Number(row.querySelector('.item-cost').value), quote = Number(row.querySelector('.item-quote').value), warranty = row.querySelector('.item-warranty').value, stockUsed = row.querySelector('.item-stock-used').value;
-        if(!fault || !cost || !quote) allValid = false;
-        items.push({ fault, cost, price: quote, warranty, stockUsed });
-        totalCost += cost; totalQuote += quote;
-      });
-
-      if(!allValid) return Swal.fire('Error!', 'Fill all item fields properly.', 'error');
-
-      const newOrder = { 
-        invoiceNo: invNo, date: new Date().toISOString(), deliveredDate: null, customerName: name, phone: "+94" + phone.replace(/^0+/, ''), 
-        items, cost: totalCost, quotedPrice: totalQuote, advance, balance: totalQuote - advance, profit: totalQuote - totalCost, customerMessage: msg, status: 'Pending', fault: items.map(i=>i.fault).join(' + '), warranty: items[0].warranty 
-      };
-
-      orders.push(newOrder); localStorage.setItem('smartx_orders', JSON.stringify(orders));
-
-      // Stock Deduction & Sales Logging
-      items.forEach(it => {
-        if(it.stockUsed) {
-           const idx = inventory.findIndex(i => i.name === it.stockUsed); 
-           if (idx > -1 && inventory[idx].qty > 0) { 
-               inventory[idx].qty -= 1; 
-               soldItems.push({ id: Date.now()+Math.random(), date: new Date().toISOString(), itemName: it.stockUsed, price: it.price, invoiceNo: invNo, customerName: name });
-           }
-        }
-      });
-      localStorage.setItem('smartx_inventory', JSON.stringify(inventory));
-      localStorage.setItem('smartx_sales', JSON.stringify(soldItems));
-      
-      renderStockTable(); renderSalesTable(); backgroundAutoSync();
-
-      Swal.fire({ toast: true, position: "top-end", showConfirmButton: false, timer: 2000, icon: "success", title: "Order Saved" }).then(() => {
-        resetOrderForm(); generateNextInvoiceNo();
-        if(print) { localStorage.setItem('currentOrder', JSON.stringify(newOrder)); window.open('bil.html', '_blank'); } else switchTab('Dashboard');
-      });
-    }
-
-    // --- MODALS & ORDER DETAILS ---
     function openPendingListModal() {
       const tbody = document.getElementById('pendingListBody'); tbody.innerHTML = ''; const pendingOrders = orders.filter(o => o.status === 'Pending');
-      if(pendingOrders.length === 0) { tbody.innerHTML = `<tr><td class="p-6 md:p-8 text-center text-gray-500 font-bold"><i class="fas fa-check-circle text-emerald-500 text-2xl mb-2"></i> All Clear!</td></tr>`; } else {
-        pendingOrders.forEach(o => { tbody.innerHTML += `<tr class="hover:bg-amber-50 cursor-pointer group" onclick="document.getElementById('pendingListModal').classList.add('hidden'); viewOrder('${o.invoiceNo}')"><td class="p-3 md:p-4 md:p-5"><div class="font-black text-gray-800 text-xs md:text-sm truncate max-w-[150px]">${o.fault}</div><div class="text-[9px] md:text-xs text-gray-500 font-bold mt-1">${o.customerName} &bull; ${o.invoiceNo}</div></td><td class="p-3 md:p-4 text-right text-blue-400 group-hover:text-blue-600"><i class="fas fa-arrow-right bg-white p-1.5 rounded-full shadow-sm"></i></td></tr>`; });
+      if(pendingOrders.length === 0) { tbody.innerHTML = `<tr><td class="p-6 md:p-8 text-center text-gray-500 font-bold"><i class="fas fa-check-circle text-emerald-500 text-2xl md:text-3xl mb-2 md:mb-3 block"></i> All Caught Up! No pending repairs.</td></tr>`; } else {
+        pendingOrders.forEach(o => { tbody.innerHTML += `<tr class="hover:bg-amber-50 cursor-pointer transition-colors group" onclick="document.getElementById('pendingListModal').classList.add('hidden'); viewOrder('${o.invoiceNo}')"><td class="p-3 md:p-4 md:p-5"><div class="font-black text-gray-800 text-xs md:text-sm md:text-base truncate max-w-[150px] md:max-w-[200px]">${o.fault}</div><div class="text-[9px] md:text-[10px] md:text-xs text-gray-500 font-bold mt-1"><i class="fas fa-user text-gray-400 mr-1"></i> ${o.customerName} &bull; ${o.invoiceNo}</div></td><td class="p-3 md:p-4 md:p-5 text-right text-blue-400 group-hover:text-blue-600 transition-colors"><i class="fas fa-arrow-right bg-white p-1.5 md:p-2 rounded-full shadow-sm"></i></td></tr>`; });
       }
       document.getElementById('pendingListModal').classList.remove('hidden');
     }
@@ -713,52 +878,84 @@
       
       const itemsList = document.getElementById('det-items-list'); itemsList.innerHTML = '';
       let itemsArr = o.items || [{fault: o.fault, price: o.quotedPrice, warranty: o.warranty}]; 
-      itemsArr.forEach(it => { itemsList.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100"><div class="text-xs md:text-sm font-bold text-gray-700">${it.fault} <span class="text-[9px] bg-blue-100 text-blue-700 px-1 rounded ml-1">${it.warranty}</span></div><div class="text-xs md:text-sm font-black text-gray-800">Rs. ${it.price}</div></div>`; });
+      itemsArr.forEach(it => {
+        itemsList.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100"><div class="text-xs md:text-sm font-bold text-gray-700">${it.fault} <span class="text-[9px] md:text-[10px] bg-blue-100 text-blue-700 px-1 py-0.5 rounded ml-1 md:ml-2">${it.warranty}</span></div><div class="text-xs md:text-sm font-black text-gray-800">Rs. ${it.price}</div></div>`;
+      });
       
       document.getElementById('det-total').innerText = "Rs. " + Number(o.quotedPrice).toLocaleString(); document.getElementById('det-balance').innerText = "Rs. " + Number(o.balance).toLocaleString(); document.getElementById('edit-status').value = o.status; document.getElementById('edit-payment').value = '';
       
       const wb = document.getElementById('war-status-box'), ws = document.getElementById('det-war-status'); wb.className = "bg-white p-2 md:p-3 rounded-2xl shadow-sm border text-center col-span-2 transition-colors";
       let priWar = itemsArr[0].warranty;
-      if(priWar === 'None') { ws.innerText = "No Warranty"; ws.className = "font-black text-xs md:text-sm text-gray-400"; } else if (!o.deliveredDate) { ws.innerText = "Starts upon delivery"; ws.className = "font-black text-xs md:text-sm text-amber-500"; } else {
+      if(priWar === 'None') { ws.innerText = "No Warranty Provided"; ws.className = "font-black text-xs md:text-sm text-gray-400"; } else if (!o.deliveredDate) { ws.innerText = "Starts upon delivery"; ws.className = "font-black text-xs md:text-sm text-amber-500"; } else {
         let expiry = new Date(o.deliveredDate); if(priWar.includes('Days')) expiry.setDate(expiry.getDate() + parseInt(priWar)); else if(priWar.includes('Month')) expiry.setMonth(expiry.getMonth() + parseInt(priWar));
-        if(new Date() > expiry) { ws.innerText = "Expired on " + expiry.toLocaleDateString('en-GB'); ws.className = "font-black text-xs text-red-600"; wb.classList.add('border-red-200', 'bg-red-50'); } else { ws.innerText = "Active until " + expiry.toLocaleDateString('en-GB'); ws.className = "font-black text-xs text-emerald-600"; wb.classList.add('border-emerald-200', 'bg-emerald-50'); }
+        if(new Date() > expiry) { ws.innerText = "Expired on " + expiry.toLocaleDateString('en-GB'); ws.className = "font-black text-xs md:text-sm text-red-600"; wb.classList.add('border-red-200', 'bg-red-50'); } else { ws.innerText = "Active until " + expiry.toLocaleDateString('en-GB'); ws.className = "font-black text-xs md:text-sm text-emerald-600"; wb.classList.add('border-emerald-200', 'bg-emerald-50'); }
       }
       document.getElementById('orderDetailsModal').classList.remove('hidden');
     }
+
     function closeDetailsModal() { document.getElementById('orderDetailsModal').classList.add('hidden'); }
+    
     function updateOrder() {
-      const inv = document.getElementById('edit-invoice-id').value, newStatus = document.getElementById('edit-status').value, addedPayment = Number(document.getElementById('edit-payment').value) || 0; let o = orders.find(x => x.invoiceNo === inv); if(!o) return;
-      if(newStatus === 'Delivered' && o.status !== 'Delivered') { o.deliveredDate = new Date().toISOString(); Swal.fire({icon: 'success', title: 'Delivered!', timer:2000, showConfirmButton:false}); } else if (newStatus !== 'Delivered') o.deliveredDate = null;
-      o.status = newStatus; o.advance += addedPayment; o.balance = o.quotedPrice - o.advance; if(o.balance < 0) o.balance = 0; localStorage.setItem('smartx_orders', JSON.stringify(orders)); closeDetailsModal(); renderDashboardTable(); updateDashboardStats(); backgroundAutoSync();
+      const inv = document.getElementById('edit-invoice-id').value, newStatus = document.getElementById('edit-status').value; const addedPayment = Number(document.getElementById('edit-payment').value) || 0; let o = orders.find(x => x.invoiceNo === inv); if(!o) return;
+      if(newStatus === 'Delivered' && o.status !== 'Delivered') { o.deliveredDate = new Date().toISOString(); Swal.fire({icon: 'success', title: 'Device Delivered!', text:'Warranty period has started.', timer:2000, showConfirmButton:false}); } else if (newStatus !== 'Delivered') o.deliveredDate = null;
+      o.status = newStatus; o.advance += addedPayment; o.balance = o.quotedPrice - o.advance; if(o.balance < 0) o.balance = 0; localStorage.setItem('smartx_orders', JSON.stringify(orders)); closeDetailsModal(); renderDashboardTable(); updateDashboardStats();
+      backgroundAutoSync(); // Trigger sync
     }
-    function sendWhatsApp() { const o = orders.find(x => x.invoiceNo === document.getElementById('edit-invoice-id').value); if(!o) return; let msg = `Hello ${o.customerName},\n\nUpdate regarding your repair at *SmartX*:\n\n*Details:* ${o.fault}\n*Status:* ${o.status}\n*Total Bill:* Rs.${o.quotedPrice}\n*Balance Due:* Rs.${o.balance}\n\nTrack online:\n${CONFIG_TRACKING_URL}?inv=${o.invoiceNo}\n\nThank you!`; window.open(`https://wa.me/${o.phone.replace('+','')}?text=${encodeURIComponent(msg)}`, '_blank'); }
+    
+    function sendWhatsApp() { const o = orders.find(x => x.invoiceNo === document.getElementById('edit-invoice-id').value); if(!o) return; let msg = `Hello ${o.customerName},\n\nUpdate regarding your repair at *SmartX*:\n\n*Device Details:* ${o.fault}\n*Status:* ${o.status}\n*Total Bill:* Rs.${o.quotedPrice}\n*Balance Due:* Rs.${o.balance}\n\nTrack online:\n${CONFIG_TRACKING_URL}?inv=${o.invoiceNo}\n\nThank you!`; window.open(`https://wa.me/${o.phone.replace('+','')}?text=${encodeURIComponent(msg)}`, '_blank'); }
     function printFromModal() { const o = orders.find(x => x.invoiceNo === document.getElementById('edit-invoice-id').value); if(o) { localStorage.setItem('currentOrder', JSON.stringify(o)); window.open('bil.html', '_blank'); } }
 
-    // --- TOOLS ---
-    function addTool() { const n = document.getElementById('tName').value, b = document.getElementById('tBrand').value, p = Number(document.getElementById('tPrice').value); if(!n || !p) return; toolsList.push({ id: Date.now(), date: new Date().toISOString(), name:n, brand:b, price:p }); localStorage.setItem('smartx_tools', JSON.stringify(toolsList)); document.getElementById('toolForm').reset(); renderToolsTable(); updateDashboardStats(); backgroundAutoSync(); }
-    function renderToolsTable() { const tbody = document.getElementById('toolsTableBody'); tbody.innerHTML = ''; [...toolsList].reverse().forEach(t => { tbody.innerHTML += `<tr class="hover:bg-gray-50"><td class="p-3 text-gray-500 text-[10px] md:text-xs">${new Date(t.date).toLocaleDateString('en-GB')}</td><td class="p-3 font-bold">${t.name}</td><td class="p-3 text-gray-500">${t.brand||'-'}</td><td class="p-3 text-right font-black text-red-500">Rs. ${Number(t.price).toLocaleString()}</td><td class="p-3 text-center"><button onclick="deleteTool(${t.id})" class="text-red-300 hover:text-red-500"><i class="fas fa-trash"></i></button></td></tr>`; }); }
+    function addTool() { const name = document.getElementById('tName').value, brand = document.getElementById('tBrand').value, price = Number(document.getElementById('tPrice').value); if(!name || !price) return Swal.fire('Error', 'Name and Cost are required', 'error'); toolsList.push({ id: Date.now(), date: new Date().toISOString(), name, brand, price }); localStorage.setItem('smartx_tools', JSON.stringify(toolsList)); document.getElementById('toolForm').reset(); renderToolsTable(); updateDashboardStats(); Swal.fire({toast:true, position:'top-end', icon:'success', title:'Expense Recorded', showConfirmButton:false, timer:1500}); backgroundAutoSync(); }
+    function renderToolsTable() { const tbody = document.getElementById('toolsTableBody'); tbody.innerHTML = ''; [...toolsList].reverse().forEach(t => { tbody.innerHTML += `<tr class="hover:bg-gray-50 transition-colors"><td class="p-3 text-gray-500 text-[10px] md:text-xs">${new Date(t.date).toLocaleDateString('en-GB')}</td><td class="p-3 font-bold">${t.name}</td><td class="p-3 text-gray-500 font-medium">${t.brand||'-'}</td><td class="p-3 text-right font-black text-red-500">Rs. ${Number(t.price).toLocaleString()}</td><td class="p-3 text-center"><button onclick="deleteTool(${t.id})" class="text-red-300 hover:text-red-500 bg-red-50 p-1.5 md:p-2 rounded-lg"><i class="fas fa-trash"></i></button></td></tr>`; }); }
     function deleteTool(id) { toolsList = toolsList.filter(t => t.id !== id); localStorage.setItem('smartx_tools', JSON.stringify(toolsList)); renderToolsTable(); updateDashboardStats(); backgroundAutoSync(); }
 
-    // --- STOCK & SALES ---
-    function addStockItem() { const n = document.getElementById('sName').value, p = Number(document.getElementById('sPrice').value), q = Number(document.getElementById('sQty').value); if(!n || !p || !q) return; let e = inventory.find(i => i.name.toLowerCase() === n.toLowerCase()); if(e) { e.qty += q; e.price = p; } else inventory.push({ id: Date.now(), name:n, price:p, qty:q }); localStorage.setItem('smartx_inventory', JSON.stringify(inventory)); document.getElementById('stockForm').reset(); renderStockTable(); updateDashboardStats(); backgroundAutoSync(); }
+    function openStockModal(rowId) { document.getElementById('activeItemRowId').value = rowId; document.getElementById('stockModal').classList.remove('hidden'); renderModalStock(); }
+    function closeStockModal() { document.getElementById('stockModal').classList.add('hidden'); }
+    function renderModalStock(val="") { 
+      const tbody = document.getElementById('modalStockBody'); tbody.innerHTML = ''; 
+      // Sort out of stock to bottom
+      let filtered = inventory.filter(i => i.name.toLowerCase().includes(val.toLowerCase())).sort((a,b) => {
+          if (a.qty > 0 && b.qty === 0) return -1;
+          if (a.qty === 0 && b.qty > 0) return 1;
+          return 0; 
+      });
+      
+      filtered.forEach(i => { 
+        let btn = i.qty > 0 ? `<button onclick="selectStock('${i.name}', ${i.price})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold shadow-sm transition-transform hover:-translate-y-0.5">Use</button>` : `<span class="text-[9px] md:text-[10px] text-red-600 font-black bg-red-100 px-2 py-1 rounded">OUT OF STOCK</span>`; 
+        let rowClass = i.qty === 0 ? "opacity-60 bg-red-50/30" : "hover:bg-gray-50";
+        tbody.innerHTML += `<tr class="border-b border-gray-100 ${rowClass}"><td class="py-2 md:py-3 px-2 text-xs md:text-sm font-bold text-gray-700">${i.name}</td><td class="py-2 md:py-3 px-2 text-right text-emerald-600 font-black text-xs md:text-sm">Rs. ${Number(i.price).toLocaleString()}</td><td class="py-2 md:py-3 px-2 text-center">${btn}</td></tr>`; 
+      }); 
+    }
+    function selectStock(name, price) { 
+      const rowId = document.getElementById('activeItemRowId').value;
+      const row = document.getElementById(`itemRow-${rowId}`);
+      if(row) {
+         row.querySelector('.item-cost').value = price; 
+         row.querySelector('.item-fault').value = name; 
+         row.querySelector('.item-stock-used').value = name; 
+         calculateTotals();
+      }
+      closeStockModal(); 
+    }
+    
+    function addStockItem() { const name = document.getElementById('sName').value, price = Number(document.getElementById('sPrice').value), qty = Number(document.getElementById('sQty').value); if(!name || !price || !qty) return Swal.fire('Error', 'Fill all fields', 'error'); let exist = inventory.find(i => i.name.toLowerCase() === name.toLowerCase()); if(exist) { exist.qty += qty; exist.price = price; } else inventory.push({ id: Date.now(), name, price, qty }); localStorage.setItem('smartx_inventory', JSON.stringify(inventory)); document.getElementById('stockForm').reset(); renderStockTable(); updateDashboardStats(); backgroundAutoSync(); }
+    
     function renderStockTable(val="") { 
       const tbody = document.getElementById('stockTableBody'); tbody.innerHTML = ''; 
-      let filtered = inventory.filter(i => i.name.toLowerCase().includes(val.toLowerCase())).sort((a,b) => { if (a.qty > 0 && b.qty === 0) return -1; if (a.qty === 0 && b.qty > 0) return 1; return 0; });
+      // Sort out of stock to bottom
+      let filtered = inventory.filter(i => i.name.toLowerCase().includes(val.toLowerCase())).sort((a,b) => {
+          if (a.qty > 0 && b.qty === 0) return -1;
+          if (a.qty === 0 && b.qty > 0) return 1;
+          return 0; 
+      });
+      
       filtered.forEach(i => { 
-        let rowClass = i.qty === 0 ? "bg-red-50/50 opacity-60" : "hover:bg-gray-50";
-        let qtyBadge = i.qty === 0 ? `<span class="text-[9px] md:text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-black">OUT OF STOCK</span>` : `<span class="font-black ${i.qty<=2?'text-red-500 bg-red-50 px-2 py-1 rounded-lg':''}">${i.qty}</span>`;
+        let rowClass = i.qty === 0 ? "bg-red-50/50 opacity-60" : "hover:bg-gray-50 transition-colors";
+        let qtyBadge = i.qty === 0 ? `<span class="text-[9px] md:text-[10px] bg-red-100 text-red-600 px-1.5 md:px-2 py-0.5 md:py-1 rounded font-black">OUT OF STOCK</span>` : `<span class="font-black ${i.qty<=2?'text-red-500 bg-red-50 px-2 py-1 rounded-lg':''}">${i.qty}</span>`;
         tbody.innerHTML += `<tr class="${rowClass}"><td class="p-3 text-xs md:text-sm font-bold text-gray-800">${i.name}</td><td class="p-3 text-right text-xs md:text-sm font-black text-emerald-600">Rs. ${Number(i.price).toLocaleString()}</td><td class="p-3 text-center">${qtyBadge}</td><td class="p-3 text-center"><button onclick="promptDeleteStock(${i.id})" class="text-red-400 hover:text-red-600"><i class="fas fa-trash"></i></button></td></tr>`; 
       }); 
     }
     
-    function renderSalesTable() {
-      const tbody = document.getElementById('salesTableBody'); tbody.innerHTML = '';
-      [...soldItems].reverse().forEach(s => {
-        tbody.innerHTML += `<tr><td class="p-3 text-[10px] md:text-xs text-gray-500">${new Date(s.date).toLocaleDateString('en-GB')}</td><td class="p-3 text-xs md:text-sm font-bold text-gray-800">${s.itemName}</td><td class="p-3 text-xs md:text-sm font-bold text-blue-600">${s.invoiceNo}</td><td class="p-3 text-xs md:text-sm font-medium text-gray-700">${s.customerName}</td></tr>`;
-      });
-    }
-
-    // Passcode Security for Deleting Stock
     async function promptDeleteStock(id) {
        const { value: pin } = await Swal.fire({ title: 'Enter Passcode', input: 'password', inputPlaceholder: 'System PIN required to delete', showCancelButton: true, confirmButtonColor: '#2563eb' });
        if (!pin) return;
@@ -776,19 +973,15 @@
            Swal.fire('Error', 'Verification failed. Check internet.', 'error');
        }
     }
+    
     function deleteStock(id) { inventory = inventory.filter(i => i.id !== id); localStorage.setItem('smartx_inventory', JSON.stringify(inventory)); renderStockTable(); updateDashboardStats(); backgroundAutoSync(); }
 
-    function openStockModal(rowId) { document.getElementById('activeItemRowId').value = rowId; document.getElementById('stockModal').classList.remove('hidden'); renderModalStock(); }
-    function closeStockModal() { document.getElementById('stockModal').classList.add('hidden'); }
-    function renderModalStock(val="") { 
-      const tbody = document.getElementById('modalStockBody'); tbody.innerHTML = ''; 
-      let filtered = inventory.filter(i => i.name.toLowerCase().includes(val.toLowerCase())).sort((a,b) => { if (a.qty > 0 && b.qty === 0) return -1; if (a.qty === 0 && b.qty > 0) return 1; return 0; });
-      filtered.forEach(i => { 
-        let btn = i.qty > 0 ? `<button onclick="selectStock('${i.name}', ${i.price})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">Use</button>` : `<span class="text-[9px] text-red-600 font-black bg-red-100 px-2 py-1 rounded">OUT OF STOCK</span>`; 
-        tbody.innerHTML += `<tr class="border-b ${i.qty===0?'opacity-60 bg-red-50/30':'hover:bg-gray-50'}"><td class="py-2 px-2 text-xs md:text-sm font-bold">${i.name}</td><td class="py-2 px-2 text-right text-emerald-600 font-black">Rs. ${Number(i.price).toLocaleString()}</td><td class="py-2 px-2 text-center">${btn}</td></tr>`; 
-      }); 
+    function renderSalesTable() {
+      const tbody = document.getElementById('salesTableBody'); tbody.innerHTML = '';
+      [...soldItems].reverse().forEach(s => {
+        tbody.innerHTML += `<tr><td class="p-3 text-[10px] md:text-xs text-gray-500">${new Date(s.date).toLocaleDateString('en-GB')}</td><td class="p-3 text-xs md:text-sm font-bold text-gray-800">${s.itemName}</td><td class="p-3 text-xs md:text-sm font-bold text-blue-600">${s.invoiceNo}</td><td class="p-3 text-xs md:text-sm font-medium text-gray-700">${s.customerName}</td></tr>`;
+      });
     }
-    function selectStock(name, price) { const row = document.getElementById(`itemRow-${document.getElementById('activeItemRowId').value}`); if(row) { row.querySelector('.item-cost').value = price; row.querySelector('.item-fault').value = name; row.querySelector('.item-stock-used').value = name; calculateTotals(); } closeStockModal(); }
   </script>
 </body>
 </html>
