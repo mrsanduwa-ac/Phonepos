@@ -1,1084 +1,828 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SmartX POS - Repair Management</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
-  <style>
-    body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
-    .nav-item { transition: all 0.3s ease; }
-    .nav-item:hover, .nav-item.active { background-color: #e0e7ff; color: #4f46e5; border-right: 4px solid #4f46e5; transform: translateX(5px); }
-    .mobile-nav-item.active { color: #4f46e5; border-top: 3px solid #4f46e5; background-color: #f1f5f9;}
-    
-    /* Advanced Animations */
-    .fade-in { animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    
-    .modal-enter { animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-    @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.9) translateY(-30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-    
-    .glass-effect { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
-    
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px;}
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-    
-    /* Badges & Inputs */
-    .status-badge { padding: 4px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-    .status-pending { background-color: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
-    .status-completed { background-color: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
-    .status-delivered { background-color: #d1fae5; color: #059669; border: 1px solid #a7f3d0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SmartX POS - Secure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidden}
+.sidebar{background:linear-gradient(160deg,#0f172a 0%,#1e1b4b 100%)}
+.nav-item{position:relative;transition:all .2s;border-radius:12px;margin:2px 0}
+.nav-item.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 4px 15px rgba(99,102,241,.4)}
+.nav-item:not(.active):hover{background:rgba(255,255,255,.07)}
+.stat-card{position:relative;overflow:hidden;border-radius:20px;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1)}
+.stat-card:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,.18)!important}
+.stat-card:active{transform:scale(.97)}
+.shine{position:absolute;top:-60%;right:-40%;width:100px;height:220%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.15) 50%,transparent 60%);transform:skewX(-20deg);transition:right .7s ease}
+.stat-card:hover .shine{right:120%}
+.cicon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.2);backdrop-filter:blur(8px)}
+.view-section{display:none;animation:slideUp .3s cubic-bezier(.4,0,.2,1)}
+.view-section.active{display:block}
+@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.order-row{transition:all .18s;cursor:pointer;border-bottom:1px solid rgba(0,0,0,.04)}
+.order-row:hover{background:linear-gradient(90deg,#f0f4ff,#f8f6ff)}
+.pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.2px}
+.pill-p{background:#fef3c7;color:#b45309}
+.pill-c{background:#dbeafe;color:#1d4ed8}
+.pill-d{background:#d1fae5;color:#065f46}
+.wpill{background:#d1fae5;color:#047857;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;display:inline-flex;align-items:center;gap:2px}
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.65);backdrop-filter:blur(6px);z-index:800;display:flex;align-items:center;justify-content:center;padding:12px;animation:fIn .2s}
+@keyframes fIn{from{opacity:0}to{opacity:1}}
+.mbox{background:#fff;border-radius:22px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;animation:mIn .3s cubic-bezier(.4,0,.2,1)}
+@keyframes mIn{from{opacity:0;transform:scale(.94) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.inp{width:100%;padding:9px 13px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:11px;font-size:13px;font-family:inherit;outline:none;transition:all .2s;color:#1e293b}
+.inp:focus{background:#fff;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.lbl{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:block}
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(10px);padding:9px 20px;border-radius:13px;font-size:12px;font-weight:700;z-index:9999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none;font-family:'Plus Jakarta Sans',sans-serif}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(min-width:768px){.toast{bottom:20px}}
+.btn{padding:10px 18px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;border:none;display:inline-flex;align-items:center;gap:6px;justify-content:center}
+.btn:active{transform:scale(.97)}
+.bp{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.3)}
+.bp:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(99,102,241,.4)}
+.bs{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,.25)}
+.bw{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;box-shadow:0 4px 12px rgba(37,211,102,.25)}
+.br{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+.bg2{background:#f1f5f9;color:#475569}
+.bg2:hover{background:#e2e8f0}
+.irow{background:#f8fafc;border:1.5px solid #e8ecf4;border-radius:14px;padding:12px;margin-bottom:8px;animation:slideUp .2s}
+.content-area{padding-bottom:88px}
+@media(min-width:768px){.content-area{padding-bottom:28px}}
+.mob-btn{transition:all .2s}
+.mob-btn.am{color:#6366f1!important}
+.mob-btn.am::after{content:'';position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);width:16px;height:2.5px;background:#6366f1;border-radius:2px}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
 
-    /* Login UI Animations */
-    .dot-indicator { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
-    .shatter-drop { animation: dropDown 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; }
-    @keyframes dropDown { 0% { transform: scale(1) rotate(0deg); opacity: 1; } 20% { transform: scale(1.05) rotate(2deg); opacity: 1; filter: blur(2px); } 100% { transform: translateY(120vh) rotate(-20deg) scale(0.5); opacity: 0; filter: blur(10px); } }
-
-  </style>
+/* Lock Screen PIN UI */
+.pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #6366f1; transition: all 0.2s; }
+.pin-dot.filled { background-color: #6366f1; box-shadow: 0 0 10px rgba(99,102,241,0.5); }
+.numpad-btn { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: white; background: rgba(255,255,255,0.1); transition: all 0.1s; cursor: pointer; }
+.numpad-btn:active { background: rgba(255,255,255,0.3); transform: scale(0.9); }
+.shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes shake { 10%,90%{transform:translate3d(-2px,0,0)} 20%,80%{transform:translate3d(4px,0,0)} 30%,50%,70%{transform:translate3d(-8px,0,0)} 40%,60%{transform:translate3d(8px,0,0)} }
+</style>
 </head>
-<body class="font-sans text-gray-800 overflow-hidden h-screen bg-gray-100 relative selection:bg-blue-200 selection:text-blue-900">
+<body class="flex h-screen text-gray-800 relative">
 
-  <!-- SYNC LOADING OVERLAY -->
-  <div id="sync-overlay" class="fixed inset-0 bg-gray-900/90 z-[200] hidden flex-col justify-center items-center backdrop-blur-md transition-opacity">
-    <i class="fas fa-cloud-upload-alt fa-bounce text-6xl text-indigo-500 mb-6 drop-shadow-[0_0_15px_rgba(99,102,241,0.8)]"></i>
-    <h2 class="text-white text-2xl font-black tracking-widest uppercase text-center px-4">Syncing Data Securely</h2>
-    <p class="text-indigo-200 text-sm mt-2 font-bold bg-gray-800/50 px-4 py-2 rounded-lg text-center mx-4"><i class="fas fa-lock mr-2"></i>Connecting to Google Sheets. Please wait...</p>
+<!-- 🛑 CONFIGURATION 🛑 -->
+<script>
+  // ඔයාගේ Apps Script අලුත් ලින්ක් එක මෙතනට දාන්න
+  const CONFIG_GAS_URL = "https://script.google.com/macros/s/AKfycbwYGxX7rzl3hQH79Az5H98JTvPuyu_eBQX1KcXr54JhFQ8ku-xC8h89gotw3tF_-mTNhg/exec";
+  // ඔයාගේ Track එකේ ලින්ක් එක මෙතනට දාන්න
+  const CONFIG_TRACK_URL = "https://designverse.lk/track"; 
+</script>
+
+<!-- LOCK SCREEN -->
+<div id="lock-screen" class="fixed inset-0 z-[99999] bg-slate-900 flex flex-col items-center justify-center hidden">
+  <div class="text-center mb-8">
+    <i class="fas fa-lock text-4xl text-indigo-400 mb-4"></i>
+    <h2 class="text-white text-xl font-bold tracking-widest">ENTER PIN</h2>
+    <p class="text-slate-400 text-xs mt-1">SmartX Secure System</p>
+    <p class="text-slate-500 text-[10px] mt-2 italic">(You can use your keyboard)</p>
   </div>
+  <div class="flex gap-4 mb-10" id="pin-dots">
+    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+  </div>
+  <div class="grid grid-cols-3 gap-6 max-w-[280px]">
+    <div class="numpad-btn" onclick="pressPin('1')">1</div><div class="numpad-btn" onclick="pressPin('2')">2</div><div class="numpad-btn" onclick="pressPin('3')">3</div>
+    <div class="numpad-btn" onclick="pressPin('4')">4</div><div class="numpad-btn" onclick="pressPin('5')">5</div><div class="numpad-btn" onclick="pressPin('6')">6</div>
+    <div class="numpad-btn" onclick="pressPin('7')">7</div><div class="numpad-btn" onclick="pressPin('8')">8</div><div class="numpad-btn" onclick="pressPin('9')">9</div>
+    <div class="numpad-btn text-emerald-400 text-lg" style="background:transparent" onclick="verifyPin()"><i class="fas fa-check"></i></div>
+    <div class="numpad-btn" onclick="pressPin('0')">0</div>
+    <div class="numpad-btn text-slate-400" style="background:transparent" onclick="clearPin()"><i class="fas fa-backspace"></i></div>
+  </div>
+  <div id="auth-loader" class="text-indigo-400 mt-6 hidden"><i class="fas fa-circle-notch fa-spin text-2xl"></i></div>
+</div>
 
-  <!-- LIGHT NUMPAD LOGIN SCREEN (Based on User's Image) -->
-  <div id="login-screen" class="absolute inset-0 z-[100] bg-slate-50 flex flex-col justify-center items-center px-4 transition-all duration-700">
-    <div id="login-box" class="w-full max-w-xs text-center flex flex-col items-center transform transition-all duration-500 relative">
-      
-      <!-- Main Logo -->
-      <img src="mainlogo.png" alt="Logo" onerror="this.outerHTML='<h1 class=\'text-3xl font-black text-slate-800 tracking-widest mb-4\'>MR<span class=\'text-blue-600\'>S</span></h1>'" class="h-12 mb-8 object-contain">
-      
-      <h2 class="text-xl font-bold text-slate-800 mb-8 tracking-wide">Welcome Back</h2>
-      
-      <!-- Dots -->
-      <div class="flex gap-4 mb-10 h-4 items-center justify-center">
-        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
-        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
-        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
-        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
-        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
-        <div class="dot-indicator w-3 h-3 rounded-full border-2 border-slate-300"></div>
-      </div>
-
-      <!-- Numpad -->
-      <div class="grid grid-cols-3 gap-x-6 gap-y-6 mb-6 w-full px-4">
-        <button onclick="pressPin('1')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">1</button>
-        <button onclick="pressPin('2')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">2</button>
-        <button onclick="pressPin('3')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">3</button>
-        
-        <button onclick="pressPin('4')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">4</button>
-        <button onclick="pressPin('5')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">5</button>
-        <button onclick="pressPin('6')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">6</button>
-        
-        <button onclick="pressPin('7')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">7</button>
-        <button onclick="pressPin('8')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">8</button>
-        <button onclick="pressPin('9')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">9</button>
-        
-        <div class="flex items-center justify-center"></div>
-        <button onclick="pressPin('0')" class="w-16 h-16 rounded-full border border-slate-200 bg-white text-2xl font-bold text-slate-700 hover:bg-slate-100 flex justify-center items-center shadow-sm active:scale-95 transition-transform mx-auto">0</button>
-        <button onclick="clearPin()" class="w-16 h-16 rounded-full text-slate-400 hover:text-slate-600 flex justify-center items-center text-xl active:scale-95 transition-transform mx-auto"><i class="fas fa-backspace"></i></button>
-      </div>
-
-      <!-- Hidden Input for Logic -->
-      <input type="hidden" id="passcode" value="">
-      
-      <p id="login-error" class="text-red-500 text-sm mt-4 font-bold hidden animate-bounce bg-red-50 py-2 px-4 rounded-lg"><i class="fas fa-exclamation-circle mr-1"></i> Access Denied</p>
-      <div id="login-loading" class="text-indigo-500 text-sm mt-4 font-bold hidden bg-indigo-50 py-2 px-4 rounded-lg"><i class="fas fa-circle-notch fa-spin mr-2"></i> Authenticating...</div>
+<!-- DELETE Auth SCREEN (Mini) -->
+<div id="del-screen" class="modal-bg hidden !z-[9999]">
+  <div class="bg-slate-900 rounded-3xl p-6 text-center max-w-[320px] w-full border border-slate-700 shadow-2xl">
+    <h3 class="text-white font-bold mb-4 text-sm text-red-400"><i class="fas fa-shield-alt mr-2"></i>Auth Required to Delete</h3>
+    <div class="flex justify-center gap-3 mb-6" id="del-dots">
+      <div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div>
+      <div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div>
+    </div>
+    <div class="grid grid-cols-3 gap-3">
+      <div class="numpad-btn !w-14 !h-14 !text-lg" onclick="pressDelPin('1')">1</div><div class="numpad-btn !w-14 !h-14 !text-lg" onclick="pressDelPin('2')">2</div><div class="numpad-btn !w-14 !h-14 !text-lg" onclick="pressDelPin('3')">3</div>
+      <div class="numpad-btn !w-14 !h-14 !text-lg" onclick="pressDelPin('4')">4</div><div class="numpad-btn !w-14 !h-14 !text-lg" onclick="pressDelPin('5')">5</div><div class="numpad-btn !w-14 !h-14 !text-lg" onclick="pressDelPin('6')">6</div>
+      <div class="numpad-btn !w-14 !h-14 !text-lg" onclick="pressDelPin('7')">7</div><div class="numpad-btn !w-14 !h-14 !text-lg" onclick="pressDelPin('8')">8</div><div class="numpad-btn !w-14 !h-14 !text-lg" onclick="pressDelPin('9')">9</div>
+      <div class="numpad-btn !w-14 !h-14 !text-lg bg-red-500/20 text-red-400" onclick="cancelDel()"><i class="fas fa-times"></i></div>
+      <div class="numpad-btn !w-14 !h-14 !text-lg" onclick="pressDelPin('0')">0</div>
+      <div class="numpad-btn !w-14 !h-14 !text-lg text-slate-400 bg-transparent" onclick="clearDelPin()"><i class="fas fa-backspace"></i></div>
     </div>
   </div>
+</div>
 
-  <!-- MAIN APP WRAPPER -->
-  <div id="app-wrapper" class="hidden h-screen w-full flex flex-col md:flex-row">
-    
-    <!-- Sidebar -->
-    <aside class="w-64 bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)] hidden md:flex flex-col h-full z-20 shrink-0 border-r border-gray-100">
-      <div class="p-6 border-b border-gray-50 flex items-center justify-center h-24">
-        <img src="mainlogo.png" alt="Logo" onerror="this.outerHTML='<h1 class=\'text-2xl font-black text-gray-800 tracking-wider\'>SMART<span class=\'text-indigo-600\'>X</span></h1>'" class="max-h-10 w-auto object-contain hover:scale-105 transition-transform duration-300">
-      </div>
-      <nav class="flex-1 mt-6">
-        <ul class="space-y-2 px-4 font-semibold text-sm text-gray-500">
-          <li><a onclick="switchTab('Dashboard')" id="nav-Dashboard" class="nav-item active flex items-center p-3 rounded-xl cursor-pointer"><i class="fas fa-chart-pie w-6 text-lg"></i><span class="ml-2">Dashboard</span></a></li>
-          <li><a onclick="switchTab('NewOrder')" id="nav-NewOrder" class="nav-item flex items-center p-3 rounded-xl cursor-pointer"><i class="fas fa-plus-circle w-6 text-lg"></i><span class="ml-2">New Order</span></a></li>
-          <li><a onclick="switchTab('Stock')" id="nav-Stock" class="nav-item flex items-center p-3 rounded-xl cursor-pointer"><i class="fas fa-boxes w-6 text-lg"></i><span class="ml-2">Inventory</span></a></li>
-          <li><a onclick="switchTab('Tools')" id="nav-Tools" class="nav-item flex items-center p-3 rounded-xl cursor-pointer"><i class="fas fa-wrench w-6 text-lg"></i><span class="ml-2">Tools & Expenses</span></a></li>
-          <li><a onclick="switchTab('Sales')" id="nav-Sales" class="nav-item flex items-center p-3 rounded-xl cursor-pointer"><i class="fas fa-history w-6 text-lg"></i><span class="ml-2">Sales History</span></a></li>
-        </ul>
-      </nav>
-      <div class="p-4 border-t bg-gray-50 flex items-center gap-3">
-        <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold"><i class="fas fa-user-tie"></i></div>
-        <div><p class="text-xs font-bold text-gray-800">Admin User</p><p class="text-[10px] text-green-500 font-bold"><i class="fas fa-circle text-[8px] mr-1"></i>Online</p></div>
-      </div>
-    </aside>
+<!-- Datalist for Customer Auto-suggest -->
+<datalist id="customersList"></datalist>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-gray-50/50 pb-16 md:pb-0">
-      
-      <header class="bg-white/90 backdrop-blur-md shadow-sm h-20 flex items-center justify-between px-4 md:px-8 z-10 shrink-0 border-b border-gray-100">
-        <div class="flex-1 md:w-1/3">
-          <h2 id="page-title" class="text-lg md:text-2xl font-extrabold text-gray-800 tracking-tight truncate">Dashboard</h2>
-        </div>
-        
-        <div class="flex-1 md:w-1/3 flex flex-col items-center justify-center">
-          <div id="live-time" class="text-lg md:text-2xl font-black text-indigo-600 tracking-widest drop-shadow-sm whitespace-nowrap">00:00:00</div>
-          <div id="live-date" class="text-[9px] md:text-xs font-bold text-gray-500 uppercase tracking-wider hidden sm:block mt-0.5">Loading date...</div>
-        </div>
-
-        <div class="flex-1 md:w-1/3 flex justify-end items-center gap-3 md:gap-5">
-          <!-- Sync Indicator / Auto Trigger -->
-          <div class="relative">
-            <div id="sync-indicator" onclick="toggleSyncMenu()" class="flex items-center text-[10px] md:text-xs font-bold px-2 md:px-3 py-1.5 bg-white rounded-full shadow-sm border border-gray-200 cursor-pointer hover:bg-gray-50 transition whitespace-nowrap">
-              <span class="h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-red-500 mr-1 md:mr-2 shadow-[0_0_5px_rgba(239,68,68,0.5)] animate-pulse" id="sync-dot"></span>
-              <span id="sync-text" class="text-gray-600">Local Mode</span>
-              <i class="fas fa-chevron-down ml-1 md:ml-2 text-[8px] md:text-[10px] text-gray-400"></i>
-            </div>
-            <!-- Dropdown Menu -->
-            <div id="sync-menu" class="hidden absolute right-0 mt-2 w-48 md:w-56 bg-white rounded-xl shadow-xl border border-gray-100 p-2 z-50 transform transition-all origin-top-right">
-              <button onclick="startSync()" class="w-full text-left px-4 py-3 text-sm font-bold text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg flex items-center transition mb-1"><i class="fas fa-cloud-upload-alt mr-3 text-indigo-500"></i> Sync Data to Cloud</button>
-              <div class="border-t border-gray-100 my-1"></div>
-              <button onclick="hardResetData()" class="w-full text-left px-4 py-3 text-xs font-bold text-red-500 hover:bg-red-50 rounded-lg flex items-center transition"><i class="fas fa-exclamation-triangle mr-3 text-red-400"></i> Hard Reset (Fetch Cloud)</button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div class="flex-1 overflow-y-auto p-4 md:p-8 relative flex flex-col">
-        <div class="flex-1">
-          <!-- ================= SECTION: DASHBOARD ================= -->
-          <div id="section-Dashboard" class="view-section fade-in block">
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mb-8">
-              <div onclick="openPendingListModal()" class="cursor-pointer bg-white p-4 md:p-5 rounded-2xl shadow-sm border-b-4 border-amber-500 relative overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 group">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"><i class="fas fa-clock text-5xl md:text-7xl text-amber-500 transform -rotate-12"></i></div>
-                <div class="text-gray-500 text-[10px] md:text-xs font-bold mb-1 tracking-wider uppercase">Pending Repairs</div>
-                <div class="text-2xl md:text-4xl font-black text-gray-800" id="dash-pending">0</div>
-                <p class="text-[9px] md:text-[10px] text-amber-600 mt-2 font-bold uppercase tracking-wider group-hover:underline">View List <i class="fas fa-arrow-right ml-1"></i></p>
-              </div>
-              <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border-b-4 border-emerald-500 relative overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 group">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"><i class="fas fa-chart-line text-5xl md:text-7xl text-emerald-500 transform -rotate-12"></i></div>
-                <div class="text-gray-500 text-[10px] md:text-xs font-bold mb-1 tracking-wider uppercase">Weekly Profit</div>
-                <div class="text-xl md:text-3xl font-black text-emerald-600" id="dash-week-profit">Rs. 0</div>
-              </div>
-              <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border-b-4 border-red-500 relative overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 group">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"><i class="fas fa-tools text-5xl md:text-7xl text-red-500 transform -rotate-12"></i></div>
-                <div class="text-gray-500 text-[10px] md:text-xs font-bold mb-1 tracking-wider uppercase">Total Expenses</div>
-                <div class="text-xl md:text-3xl font-black text-gray-800" id="dash-expenses">Rs. 0</div>
-                <p class="text-[9px] md:text-[10px] text-gray-400 mt-1 font-semibold">Repairs + Tools</p>
-              </div>
-              <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border-b-4 border-indigo-500 relative overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 group">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"><i class="fas fa-wallet text-5xl md:text-7xl text-indigo-500 transform -rotate-12"></i></div>
-                <div class="text-gray-500 text-[10px] md:text-xs font-bold mb-1 tracking-wider uppercase">Expected Balance</div>
-                <div class="text-xl md:text-3xl font-black text-gray-800" id="dash-expected">Rs. 0</div>
-              </div>
-              <div onclick="switchTab('Stock')" class="cursor-pointer bg-white p-4 md:p-5 rounded-2xl shadow-sm border-b-4 border-cyan-500 relative overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 group">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"><i class="fas fa-boxes text-5xl md:text-7xl text-cyan-500 transform -rotate-12"></i></div>
-                <div class="text-gray-500 text-[10px] md:text-xs font-bold mb-1 tracking-wider uppercase">Stock Value</div>
-                <div class="text-xl md:text-3xl font-black text-gray-800" id="dash-stock-value">Rs. 0</div>
-                <p class="text-[9px] md:text-[10px] text-cyan-600 mt-2 font-bold uppercase tracking-wider group-hover:underline">View Stock <i class="fas fa-arrow-right ml-1"></i></p>
-              </div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-              <div class="p-4 md:p-5 border-b border-gray-100 bg-white flex flex-col md:flex-row justify-between items-center gap-4">
-                <h2 class="text-lg font-bold text-gray-800 flex items-center w-full md:w-auto"><div class="h-8 w-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center mr-3"><i class="fas fa-list-ul"></i></div> All Repair Orders</h2>
-                <div class="relative w-full md:w-1/3">
-                  <i class="fas fa-search absolute left-4 top-3 text-gray-400"></i>
-                  <!-- Updated search to reset pagination limit -->
-                  <input type="text" id="dashSearch" onkeyup="renderDashboardTable(true)" placeholder="Search Invoice or Name..." class="w-full pl-11 pr-4 py-2 bg-gray-50 border-transparent rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 transition-all font-medium shadow-inner">
-                </div>
-              </div>
-              <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse whitespace-nowrap">
-                  <thead class="bg-gray-50/80 text-gray-500 text-[10px] md:text-[11px] uppercase font-extrabold sticky top-0">
-                    <tr><th class="p-3 md:p-4 tracking-wider">Date</th><th class="p-3 md:p-4 tracking-wider">Invoice</th><th class="p-3 md:p-4 tracking-wider">Customer</th><th class="p-3 md:p-4 tracking-wider">Items / Fault</th><th class="p-3 md:p-4 text-right tracking-wider">Balance</th><th class="p-3 md:p-4 text-center tracking-wider">Status</th></tr>
-                  </thead>
-                  <tbody id="dashboardTableBody" class="text-xs md:text-sm divide-y divide-gray-100"></tbody>
-                </table>
-              </div>
-              
-              <!-- LOAD MORE BUTTON -->
-              <div id="loadMoreContainer" class="p-4 text-center hidden bg-gray-50/50">
-                <button onclick="loadMoreOrders()" class="bg-white hover:bg-gray-50 border border-gray-200 text-indigo-600 font-bold py-2 px-6 rounded-full text-xs shadow-sm transition-all hover:shadow-md">
-                  <i class="fas fa-chevron-down mr-1"></i> Load More (10)
-                </button>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- ================= SECTION: NEW ORDER ================= -->
-          <div id="section-NewOrder" class="view-section fade-in hidden">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-              <div><h1 class="text-xl md:text-2xl font-black text-gray-800 tracking-tight">Create Order</h1><p class="text-xs md:text-sm text-gray-500 font-medium">Add multiple items to a single bill.</p></div>
-              <div class="bg-indigo-50 border border-indigo-100 text-indigo-800 px-3 py-1.5 md:px-4 md:py-2 rounded-xl font-bold text-xs md:text-sm shadow-sm flex items-center"><i class="fas fa-receipt mr-2 opacity-50"></i> <span id="display-invoice-no">INVSA0035</span></div>
-            </div>
-            
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 md:p-8 relative">
-              <form id="orderForm" class="relative">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
-                  <div class="relative">
-                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1 md:mb-2">Customer Name <span class="text-red-500">*</span></label>
-                    <div class="relative"><i class="fas fa-user absolute left-4 top-3.5 text-gray-400"></i><input type="text" id="cName" oninput="suggestCustomer(this.value)" class="w-full pl-11 pr-4 py-2.5 md:py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-semibold text-gray-800 shadow-inner" placeholder="Enter Name" autocomplete="off" required></div>
-                    <div id="customerSuggestions" class="absolute z-30 w-full bg-white border border-gray-100 rounded-xl shadow-xl mt-2 hidden max-h-48 overflow-y-auto overflow-hidden"></div>
-                  </div>
-                  <div>
-                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1 md:mb-2">WhatsApp Number <span class="text-red-500">*</span></label>
-                    <div class="flex shadow-inner rounded-xl bg-gray-50 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-200 transition-all">
-                      <span class="inline-flex items-center px-3 md:px-4 rounded-l-xl text-gray-500 font-black border-r border-gray-200"><i class="fab fa-whatsapp text-green-500 mr-2 text-lg"></i>+94</span>
-                      <input type="tel" id="cPhone" oninput="suggestCustomer(this.value, true)" class="flex-1 rounded-r-xl bg-transparent border-transparent py-2.5 md:py-3 px-3 focus:outline-none font-semibold text-gray-800" placeholder="7X XXX XXXX" autocomplete="off" required>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mb-2"><label class="block text-xs font-bold text-gray-600 uppercase tracking-wider">Repair Items / Faults <span class="text-red-500">*</span></label></div>
-                <div id="repairItemsWrapper" class="space-y-3 mb-4">
-                  <!-- Dynamic rows go here -->
-                </div>
-                
-                <div class="mb-6 md:mb-8 border-b border-dashed pb-6">
-                  <button type="button" onclick="addRepairItemRow()" class="text-indigo-600 bg-indigo-50 hover:bg-indigo-100 font-bold px-4 py-2 rounded-lg text-sm transition-colors border border-indigo-100 border-dashed w-full md:w-auto"><i class="fas fa-plus mr-1"></i> Add Another Item</button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 bg-gray-50 p-4 md:p-5 rounded-2xl border border-gray-100 mb-6">
-                  <div class="space-y-4">
-                    <div>
-                      <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Customer Note / Message</label>
-                      <textarea id="cMessage" class="w-full rounded-xl bg-white border-transparent p-3 focus:ring-2 focus:ring-indigo-200 font-medium text-gray-700 shadow-sm text-sm" rows="3" placeholder="Optional message for the bill..."></textarea>
-                    </div>
-                  </div>
-
-                  <div class="space-y-3 md:space-y-4">
-                    <div class="flex justify-between items-center bg-red-50 p-3 rounded-xl border border-red-100">
-                      <span class="text-[10px] md:text-xs font-bold text-red-600 uppercase tracking-wider">Total Est. Cost</span>
-                      <span class="font-black text-red-600" id="displayTotalCost">Rs. 0</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-emerald-50 p-3 rounded-xl border border-emerald-100">
-                      <span class="text-[10px] md:text-xs font-bold text-emerald-600 uppercase tracking-wider">Total Quoted Price</span>
-                      <span class="font-black text-emerald-600 text-lg md:text-xl" id="displayTotalQuote">Rs. 0</span>
-                    </div>
-                    <div>
-                      <label class="block text-[10px] md:text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Advance Payment Received (Rs.)</label>
-                      <input type="number" id="cAdvance" value="0" oninput="calculateBalance()" class="w-full rounded-xl bg-white border-transparent py-2.5 md:py-3 px-4 focus:ring-2 focus:ring-indigo-200 font-bold text-gray-800 shadow-sm">
-                      <div class="flex justify-between items-center mt-2 px-1">
-                        <span class="text-[10px] md:text-xs text-red-500 font-black"><i class="fas fa-exclamation-circle mr-1"></i> Balance Due:</span>
-                        <span class="text-red-600 font-black text-base md:text-lg" id="cBalanceText">Rs. 0</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="flex flex-wrap justify-end gap-2 md:gap-3 pt-2">
-                  <button type="button" onclick="resetOrderForm()" class="px-4 md:px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl text-xs md:text-sm transition-colors">Clear</button>
-                  <button type="button" onclick="saveOrder(false)" class="flex-1 md:flex-none px-4 md:px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl shadow-md shadow-blue-500/30 text-xs md:text-sm transition-all hover:-translate-y-0.5"><i class="fas fa-save mr-1 md:mr-2"></i> Save Only</button>
-                  <button type="button" onclick="saveOrder(true)" class="flex-1 md:flex-none px-4 md:px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 text-xs md:text-sm transition-all hover:-translate-y-0.5"><i class="fas fa-print mr-1 md:mr-2"></i> Save & Print</button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <!-- ================= SECTION: STOCK ================= -->
-          <div id="section-Stock" class="view-section fade-in hidden">
-            <div class="flex justify-between items-center mb-6"><h1 class="text-xl md:text-2xl font-black text-gray-800 tracking-tight">Inventory</h1></div>
-            
-            <div class="flex flex-col lg:flex-row gap-4 md:gap-6">
-              
-              <!-- Form Section -->
-              <div class="bg-white rounded-2xl shadow-sm p-4 md:p-6 border border-gray-100 h-fit max-w-md mx-auto w-full lg:w-1/3 shrink-0">
-                <h2 class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 border-b pb-2">Add Stock Item</h2>
-                <form id="stockForm" class="space-y-4">
-                  <div><label class="block text-[10px] md:text-xs font-bold text-gray-700 mb-1">Item Name</label><input type="text" id="sName" class="w-full rounded-xl border-transparent bg-gray-50 p-2.5 md:p-3 focus:bg-white focus:ring-2 focus:ring-indigo-300 shadow-inner font-semibold" required></div>
-                  <div class="flex gap-3">
-                    <div class="flex-1"><label class="block text-[10px] md:text-xs font-bold text-gray-700 mb-1">Cost (Rs)</label><input type="number" id="sPrice" class="w-full rounded-xl border-transparent bg-gray-50 p-2.5 md:p-3 focus:bg-white focus:ring-2 focus:ring-indigo-300 shadow-inner font-bold" required></div>
-                    <div class="w-1/3"><label class="block text-[10px] md:text-xs font-bold text-gray-700 mb-1">Qty</label><input type="number" id="sQty" class="w-full rounded-xl border-transparent bg-gray-50 p-2.5 md:p-3 focus:bg-white focus:ring-2 focus:ring-indigo-300 shadow-inner font-bold text-center" required></div>
-                  </div>
-                  <button type="button" onclick="addStockItem()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 md:py-3.5 rounded-xl shadow-md transition-all hover:-translate-y-0.5 text-sm md:text-base"><i class="fas fa-plus mr-2"></i> Add Item</button>
-                </form>
-              </div>
-
-              <!-- Table Section -->
-              <div class="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div id="view-stock">
-                  <div class="p-3 md:p-4 border-b flex justify-between items-center gap-2 bg-gray-50">
-                    <h2 class="text-[10px] md:text-sm font-bold text-gray-600 uppercase tracking-wider">Available Stock</h2>
-                    <div class="relative w-full md:w-auto"><i class="fas fa-search absolute left-3 top-2.5 text-gray-400 text-[10px] md:text-sm"></i><input type="text" onkeyup="renderStockTable(this.value)" placeholder="Search Stock..." class="w-full md:w-64 pl-8 md:pl-9 pr-3 py-1.5 md:py-2 border-transparent bg-white shadow-sm rounded-lg text-xs md:text-sm focus:ring-2 focus:ring-indigo-300 outline-none"></div>
-                  </div>
-                  <div class="overflow-x-auto h-[400px]">
-                    <table class="w-full text-left border-collapse whitespace-nowrap">
-                      <thead class="bg-white text-gray-400 sticky top-0 text-[9px] md:text-[10px] uppercase font-black border-b"><tr><th class="p-3 md:p-4">Item Name</th><th class="p-3 md:p-4 text-right">Price</th><th class="p-3 md:p-4 text-center">Qty</th><th class="p-3 md:p-4 text-center">Action</th></tr></thead>
-                      <tbody id="stockTableBody" class="text-xs md:text-sm font-medium text-gray-700 divide-y divide-gray-50"></tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ================= SECTION: TOOLS & EXPENSES ================= -->
-          <div id="section-Tools" class="view-section fade-in hidden">
-            <div class="flex justify-between items-center mb-6">
-              <div><h1 class="text-xl md:text-2xl font-black text-gray-800 tracking-tight">Tools & Expenses</h1></div>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-              <div class="bg-white rounded-2xl shadow-sm p-4 md:p-6 border border-gray-100 h-fit">
-                <h2 class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 border-b pb-2">Record Expense/Tool</h2>
-                <form id="toolForm" class="space-y-4">
-                  <div><label class="block text-[10px] md:text-xs font-bold text-gray-700 mb-1">Tool Name / Description</label><input type="text" id="tName" class="w-full rounded-xl border-transparent bg-gray-50 p-2.5 md:p-3 focus:bg-white focus:ring-2 focus:ring-indigo-300 shadow-inner font-semibold" placeholder="e.g. Screwdriver Set" required></div>
-                  <div><label class="block text-[10px] md:text-xs font-bold text-gray-700 mb-1">Brand (Optional)</label><input type="text" id="tBrand" class="w-full rounded-xl border-transparent bg-gray-50 p-2.5 md:p-3 focus:bg-white focus:ring-2 focus:ring-indigo-300 shadow-inner font-semibold" placeholder="e.g. Mechanic"></div>
-                  <div><label class="block text-[10px] md:text-xs font-bold text-gray-700 mb-1">Cost (Rs.)</label><input type="number" id="tPrice" class="w-full rounded-xl border-transparent bg-gray-50 p-2.5 md:p-3 focus:bg-white focus:ring-2 focus:ring-red-300 shadow-inner font-bold text-red-600" placeholder="0.00" required></div>
-                  <button type="button" onclick="addTool()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 md:py-3.5 rounded-xl shadow-md transition-all hover:-translate-y-0.5 text-sm md:text-base"><i class="fas fa-save mr-2"></i> Record Expense</button>
-                </form>
-              </div>
-              <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-4 md:p-5 border-b bg-gray-50 flex justify-between items-center"><h2 class="text-[10px] md:text-sm font-bold text-gray-600 uppercase tracking-wider">Expense Records</h2></div>
-                <div class="overflow-x-auto h-[400px]">
-                  <table class="w-full text-left border-collapse whitespace-nowrap">
-                    <thead class="bg-white text-gray-400 sticky top-0 text-[9px] md:text-[10px] uppercase font-black border-b"><tr><th class="p-3 md:p-4">Date</th><th class="p-3 md:p-4">Item / Description</th><th class="p-3 md:p-4">Brand</th><th class="p-3 md:p-4 text-right">Cost (Rs)</th><th class="p-3 md:p-4 text-center">Action</th></tr></thead>
-                    <tbody id="toolsTableBody" class="text-xs md:text-sm font-medium text-gray-700 divide-y divide-gray-50"></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ================= SECTION: SALES HISTORY ================= -->
-          <div id="section-Sales" class="view-section fade-in hidden">
-            <div class="flex justify-between items-center mb-6">
-              <div><h1 class="text-xl md:text-2xl font-black text-gray-800 tracking-tight">Sales History</h1><p class="text-xs md:text-sm text-gray-500 font-medium">View stock items sold via repair orders.</p></div>
-            </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-4 md:p-5 border-b bg-indigo-50/50 flex items-center justify-between">
-                    <h2 class="text-[10px] md:text-sm font-bold text-gray-700 uppercase tracking-wider"><i class="fas fa-history text-indigo-500 mr-2"></i>Sold Items Log</h2>
-                </div>
-                <div class="overflow-x-auto h-[500px]">
-                    <table class="w-full text-left border-collapse whitespace-nowrap">
-                        <thead class="bg-white text-gray-400 sticky top-0 text-[9px] md:text-[10px] uppercase font-black border-b"><tr><th class="p-3 md:p-4">Date</th><th class="p-3 md:p-4">Item Name</th><th class="p-3 md:p-4">Invoice No</th><th class="p-3 md:p-4">Customer</th></tr></thead>
-                        <tbody id="salesTableBody" class="text-xs md:text-sm font-medium text-gray-700 divide-y divide-gray-50"></tbody>
-                    </table>
-                </div>
-            </div>
-          </div>
-
-        </div>
-        
-        <!-- FOOTER WATERMARK -->
-        <div class="text-center py-6 mt-4 w-full shrink-0">
-          <a id="watermark-link" href="#" target="_blank" class="text-[10px] md:text-xs font-bold text-gray-400 hover:text-indigo-600 transition-colors cursor-pointer block tracking-wide">
-            &copy; 2026 DesignVerse by Sandusha Avishkha. All rights reserved. Crafted with passion in Minuwangoda, Sri Lanka.
-          </a>
-        </div>
-
-      </div>
-    </main>
-
-    <!-- Bottom Navigation for Mobile (5 Options with Center Plus) -->
-    <nav class="md:hidden fixed bottom-0 w-full bg-white flex justify-around shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-50 pb-safe">
-      <a onclick="switchTab('Dashboard')" id="mob-Dashboard" class="mobile-nav-item active flex-1 py-3 text-center text-gray-400 cursor-pointer transition-colors"><i class="fas fa-chart-pie block text-xl mb-1"></i><span class="text-[9px] font-extrabold uppercase tracking-wide">Dash</span></a>
-      <a onclick="switchTab('Stock')" id="mob-Stock" class="mobile-nav-item flex-1 py-3 text-center text-gray-400 cursor-pointer transition-colors"><i class="fas fa-boxes block text-xl mb-1"></i><span class="text-[9px] font-extrabold uppercase tracking-wide">Stock</span></a>
-      
-      <!-- CENTERED NEW ORDER BUTTON -->
-      <a onclick="switchTab('NewOrder')" id="mob-NewOrder" class="mobile-nav-item flex-1 py-3 text-center text-gray-400 cursor-pointer transition-colors relative">
-        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white h-14 w-14 rounded-full flex items-center justify-center shadow-lg border-4 border-white transition-transform active:scale-95"><i class="fas fa-plus text-2xl"></i></div>
-        <span class="text-[9px] font-extrabold uppercase tracking-wide mt-7 block text-indigo-600">Order</span>
-      </a>
-      
-      <a onclick="switchTab('Tools')" id="mob-Tools" class="mobile-nav-item flex-1 py-3 text-center text-gray-400 cursor-pointer transition-colors"><i class="fas fa-wrench block text-xl mb-1"></i><span class="text-[9px] font-extrabold uppercase tracking-wide">Tools</span></a>
-      <a onclick="switchTab('Sales')" id="mob-Sales" class="mobile-nav-item flex-1 py-3 text-center text-gray-400 cursor-pointer transition-colors"><i class="fas fa-history block text-xl mb-1"></i><span class="text-[9px] font-extrabold uppercase tracking-wide">Sales</span></a>
+<!-- SIDEBAR -->
+<aside class="sidebar w-60 hidden md:flex flex-col justify-between h-screen shrink-0 z-20">
+  <div>
+    <div class="h-18 flex items-center px-5 gap-3 border-b border-white/10 py-5">
+      <!-- 🛑 Shop Logo 🛑 -->
+      <img src="phoneshoplogo.png" alt="SmartX" onerror="this.outerHTML='<div class=\'w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white font-black text-lg\'>S</div>'" class="w-10 h-auto object-contain">
+    </div>
+    <nav class="mt-4 flex flex-col px-3 gap-0.5" id="dnav">
+      <button onclick="switchTab('dashboard')" data-t="dashboard" class="nav-item active w-full text-left flex items-center px-3.5 py-2.5 text-white gap-2.5 text-[13px] font-semibold"><i class="fas fa-chart-pie text-indigo-200 w-4 text-center text-sm"></i>Dashboard</button>
+      <button onclick="switchTab('new-order')" data-t="new-order" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-plus-circle w-4 text-center text-sm"></i>New Order</button>
+      <button onclick="switchTab('inventory')" data-t="inventory" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-boxes w-4 text-center text-sm"></i>Inventory</button>
+      <button onclick="switchTab('expenses')" data-t="expenses" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-wrench w-4 text-center text-sm"></i>Tools & Expenses</button>
+      <button onclick="switchTab('sales')" data-t="sales" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-history w-4 text-center text-sm"></i>Sales History</button>
     </nav>
-
   </div>
-
-  <!-- ================= MODALS ================= -->
-
-  <!-- Pending Repairs List Modal -->
-  <div id="pendingListModal" class="fixed inset-0 bg-gray-900/40 flex justify-center items-end md:items-center z-50 hidden backdrop-blur-sm transition-opacity">
-    <div class="bg-white w-full max-w-2xl rounded-t-3xl md:rounded-3xl shadow-2xl overflow-hidden modal-enter flex flex-col max-h-[85vh]">
-      <div class="bg-amber-500 p-4 md:p-5 flex justify-between items-center text-white"><h2 class="text-base md:text-lg font-black tracking-wide"><i class="fas fa-clock mr-2"></i> Pending Repairs</h2><button onclick="document.getElementById('pendingListModal').classList.add('hidden')" class="text-xl md:text-2xl hover:rotate-90 transition-transform"><i class="fas fa-times"></i></button></div>
-      <div class="overflow-y-auto flex-1 p-0 bg-gray-50"><table class="w-full text-left border-collapse text-xs md:text-sm"><tbody id="pendingListBody" class="divide-y divide-gray-100"></tbody></table></div>
+  
+  <div class="mt-auto">
+    <!-- Watermark -->
+    <div class="text-center pb-4 text-[10px] text-indigo-200/40 font-semibold px-4">
+      <a href="https://designverse.lk/track" target="_blank" class="hover:text-indigo-300 transition-colors">© 2026 DesignVerse by Sandusha Avishkha <br> SmartX POS</a>
+    </div>
+    <div class="p-4 border-t border-white/10 flex items-center gap-2.5 bg-black/20">
+      <div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white font-bold text-sm"><i class="fas fa-user-shield"></i></div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-bold text-white">Admin</p>
+        <div class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div><p class="text-[10px] text-emerald-400 font-semibold">Secure Mode</p></div>
+      </div>
     </div>
   </div>
+</aside>
 
-  <!-- Order Details Modal -->
-  <div id="orderDetailsModal" class="fixed inset-0 bg-gray-900/50 flex justify-center items-end md:items-center z-50 hidden backdrop-blur-sm">
-    <div class="bg-white w-full max-w-3xl rounded-t-3xl md:rounded-3xl shadow-2xl overflow-hidden modal-enter flex flex-col max-h-[90vh]">
-      <div class="bg-gray-900 p-4 md:p-5 flex justify-between items-center text-white shrink-0"><h2 class="text-base md:text-lg font-black tracking-wide" id="modal-inv-title">Invoice Details</h2><button onclick="closeDetailsModal()" class="text-xl md:text-2xl hover:text-red-400 hover:rotate-90 transition-all"><i class="fas fa-times"></i></button></div>
-      <div class="p-4 md:p-6 overflow-y-auto flex-1 bg-gray-50">
-        <input type="hidden" id="edit-invoice-id">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-4 md:mb-5">
-          <div class="bg-white p-2 md:p-3 rounded-2xl shadow-sm border border-gray-100 text-center"><p class="text-[9px] md:text-[10px] uppercase text-gray-400 font-bold mb-1">Received</p><p class="font-bold text-xs md:text-sm text-gray-800" id="det-date">-</p></div>
-          <div class="bg-white p-2 md:p-3 rounded-2xl shadow-sm border border-gray-100 text-center"><p class="text-[9px] md:text-[10px] uppercase text-gray-400 font-bold mb-1">Delivered</p><p class="font-bold text-xs md:text-sm text-gray-800" id="det-del-date">-</p></div>
-          <div class="bg-white p-2 md:p-3 rounded-2xl shadow-sm border border-gray-100 text-center col-span-2" id="war-status-box"><p class="text-[9px] md:text-[10px] uppercase text-gray-400 font-bold mb-1">Primary Warranty</p><p class="font-bold text-xs md:text-sm" id="det-war-status">-</p></div>
+<!-- MAIN -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden">
+  <header class="h-16 bg-white/90 backdrop-blur-sm border-b border-gray-100 flex items-center justify-between px-4 md:px-7 shrink-0 shadow-sm z-10">
+    <div class="flex items-center gap-2.5">
+      <!-- 🛑 Shop Logo Mobile 🛑 -->
+      <img src="phoneshoplogo.png" alt="SmartX" onerror="this.outerHTML='<h1 class=\'text-lg md:hidden font-black text-gray-800 tracking-wide\'>SMART<span class=\'text-indigo-600\'>X</span></h1>'" class="h-7 w-auto object-contain md:hidden">
+      <h2 class="text-lg font-black text-gray-800 hidden md:block" id="ptitle">Dashboard</h2>
+    </div>
+    <div class="flex items-center gap-3">
+      <!-- Sync Status -->
+      <button onclick="manualSync()" class="bg-gray-50 border border-gray-200 rounded-full px-3 py-1.5 flex items-center gap-1.5 hover:bg-gray-100 transition-colors">
+        <i id="sync-icon" class="fas fa-cloud-check text-emerald-500 text-xs"></i>
+        <span class="text-[10px] font-bold text-gray-500 hidden md:inline">Cloud Sync</span>
+      </button>
+      <div class="w-px h-5 bg-gray-200 hidden md:block"></div>
+      <div class="hidden md:block text-right">
+        <p class="text-base font-black text-indigo-600 leading-none" id="clk">00:00:00</p>
+        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5" id="ddisp"></p>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex-1 overflow-y-auto content-area">
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="view-section active p-4 md:p-7">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
+        <div onclick="filterStatus('Pending')" class="stat-card col-span-2 md:col-span-1" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-amber-100 uppercase tracking-wider">Pending Repair</p><div class="cicon"><i class="fas fa-tools text-white text-sm"></i></div></div>
+          <h3 class="text-3xl font-black text-white" id="dp">0</h3><p class="text-amber-200 text-[10px] font-semibold mt-1">Tap to view →</p></div><div class="shine"></div>
         </div>
-        <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 mb-4 md:mb-5 relative overflow-hidden">
-          <div class="absolute right-0 top-0 h-full w-1.5 md:w-2 bg-indigo-500"></div>
-          <div class="flex justify-between items-center mb-3 md:mb-4">
-            <div><p class="font-black text-gray-800 text-base md:text-lg" id="det-name">-</p><p class="text-[10px] md:text-xs font-bold text-gray-500 mt-1"><i class="fab fa-whatsapp text-green-500 mr-1"></i> <span id="det-phone">-</span></p></div>
+        <div class="stat-card" style="background:linear-gradient(135deg,#10b981,#059669)">
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-emerald-100 uppercase tracking-wider">Weekly Profit</p><div class="cicon"><i class="fas fa-chart-line text-white text-sm"></i></div></div>
+          <h3 class="text-lg font-black text-white leading-tight" id="dw">Rs. 0</h3></div><div class="shine"></div>
+        </div>
+        <div class="stat-card" style="background:linear-gradient(135deg,#ef4444,#dc2626)">
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-red-100 uppercase tracking-wider">Total Expenses</p><div class="cicon"><i class="fas fa-receipt text-white text-sm"></i></div></div>
+          <h3 class="text-lg font-black text-white leading-tight" id="de">Rs. 0</h3></div><div class="shine"></div>
+        </div>
+        <div class="stat-card col-span-2 md:col-span-1" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">Expected Balance</p><div class="cicon"><i class="fas fa-wallet text-white text-sm"></i></div></div>
+          <h3 class="text-lg font-black text-white leading-tight" id="db">Rs. 0</h3></div><div class="shine"></div>
+        </div>
+        <div onclick="switchTab('inventory')" class="stat-card" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-sky-100 uppercase tracking-wider">Stock Value</p><div class="cicon"><i class="fas fa-box-open text-white text-sm"></i></div></div>
+          <h3 class="text-lg font-black text-white leading-tight" id="ds">Rs. 0</h3></div><div class="shine"></div>
+        </div>
+      </div>
+
+      <!-- Orders Card -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-4 md:p-5 border-b border-gray-100 flex flex-col md:flex-row gap-2.5 items-start md:items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-xl bg-indigo-100 flex items-center justify-center"><i class="fas fa-clipboard-list text-indigo-600 text-xs"></i></div>
+            <h3 class="font-black text-gray-800 text-sm uppercase tracking-wider">Repair Orders</h3>
+            <span id="obadge" class="bg-indigo-100 text-indigo-700 text-[10px] font-black px-2 py-0.5 rounded-full">0</span>
           </div>
-          <!-- Item List inside details -->
-          <div class="border-t border-dashed pt-3">
-             <p class="text-[9px] md:text-[10px] uppercase text-gray-400 font-bold mb-2">Items & Faults Summary</p>
-             <div id="det-items-list" class="space-y-2"></div>
+          <div class="flex gap-2 w-full md:w-auto">
+            <div class="relative flex-1 md:w-60">
+              <input id="dsrch" type="text" placeholder="Search invoice, customer..." oninput="renderOrders()" class="inp text-xs py-2 pl-8">
+              <i class="fas fa-search absolute left-2.5 top-2.5 text-gray-400 text-[10px]"></i>
+            </div>
+            <button onclick="switchTab('new-order')" class="btn bp text-xs py-2 px-3 whitespace-nowrap"><i class="fas fa-plus text-[10px]"></i>New</button>
           </div>
         </div>
-        <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 border-l-4 border-l-emerald-500">
-          <div class="flex justify-between mb-4 md:mb-5 border-b border-gray-100 pb-2 md:pb-3 text-xs md:text-sm">
-            <div><p class="text-gray-400 text-[9px] md:text-[10px] uppercase font-bold mb-1">Total Bill</p><p class="font-black text-gray-800 text-base md:text-lg" id="det-total">-</p></div>
-            <div class="text-right"><p class="text-red-400 text-[9px] md:text-[10px] uppercase font-bold mb-1">Balance Due</p><p class="font-black text-red-600 text-lg md:text-2xl" id="det-balance">-</p></div>
-          </div>
-          <div class="flex flex-col gap-3 md:gap-4">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left min-w-[620px]">
+            <thead><tr class="bg-gray-50/80 border-b border-gray-100">
+              <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">Invoice</th>
+              <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">Customer</th>
+              <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">Model / Issue</th>
+              <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">Balance</th>
+              <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">Status</th>
+              <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider text-right">Action</th>
+            </tr></thead>
+            <tbody id="otbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW ORDER -->
+    <div id="new-order" class="view-section p-4 md:p-7">
+      <div class="max-w-2xl mx-auto">
+        <div class="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl p-4 mb-4 flex items-center justify-between shadow-lg">
+          <div><p class="text-[10px] text-indigo-200 font-bold uppercase tracking-wider">New Invoice</p><h3 class="text-xl font-black text-white tracking-wider" id="pinv">INVSA-XXXXX</h3></div>
+        </div>
+        <!-- Customer -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-3.5">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
-              <label class="block text-[10px] md:text-xs font-bold text-gray-600 uppercase mb-1 md:mb-2">Update Status</label>
-              <select id="edit-status" class="w-full rounded-xl border border-gray-200 p-2 md:p-3 text-xs md:text-sm font-bold bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none">
-                <option value="Pending">Pending (Repairing)</option><option value="Completed">Completed (Ready)</option><option value="Delivered">Delivered (Handed Over)</option>
-              </select>
+              <label class="lbl">Customer Name *</label>
+              <input type="text" id="fc" list="customersList" oninput="autoFillCust(this.value)" class="inp" placeholder="Type name...">
             </div>
-            <div class="flex flex-col md:flex-row gap-2 md:gap-3 items-end">
-              <div class="flex-1 w-full"><label class="block text-[10px] md:text-xs font-bold text-gray-600 uppercase mb-1 md:mb-2">Collect Payment</label><input type="number" id="edit-payment" placeholder="Amount (Rs)" class="w-full rounded-xl border border-gray-200 p-2 md:p-3 text-xs md:text-sm font-bold focus:ring-2 focus:ring-emerald-300 outline-none"></div>
-              <button onclick="updateOrder()" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 md:px-6 py-2.5 md:py-3 rounded-xl shadow-md transition-transform hover:-translate-y-0.5 text-xs md:text-sm"><i class="fas fa-check-circle mr-1 md:mr-2"></i> Update</button>
+            <div><label class="lbl">WhatsApp *</label>
+              <div class="flex"><span class="flex items-center px-2.5 bg-emerald-50 border-y border-l border-gray-200 rounded-l-xl text-xs font-bold text-gray-500 whitespace-nowrap"><i class="fab fa-whatsapp text-emerald-500 mr-1"></i>+94</span><input type="tel" id="fp" class="inp rounded-l-none flex-1" style="border-left:none"></div>
             </div>
+            <div><label class="lbl">Device Model *</label><input type="text" id="fm" placeholder="e.g. iPhone 13" class="inp"></div>
+          </div>
+        </div>
+        <!-- Items -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-3.5">
+          <div class="flex items-center justify-between mb-3.5">
+            <h3 class="text-xs font-black text-gray-800 uppercase tracking-wider">Repair Items & Faults</h3>
+            <button onclick="addRow()" class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg">Add Item</button>
+          </div>
+          <div id="icontainer"></div>
+        </div>
+        <!-- Totals -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-4">
+          <div class="bg-white rounded-2xl p-4 border border-gray-100"><label class="lbl">Customer Note</label><textarea id="fn" class="inp h-24 resize-none"></textarea></div>
+          <div class="bg-white rounded-2xl p-4 border border-gray-100">
+            <div class="flex justify-between mb-2"><span class="text-xs font-bold text-red-500 uppercase">Est. Cost</span><span class="font-black text-red-600" id="tc">Rs. 0</span></div>
+            <div class="flex justify-between mb-3"><span class="text-xs font-bold text-emerald-600 uppercase">Quoted Price</span><span class="font-black text-emerald-700 text-lg" id="tp">Rs. 0</span></div>
+            <label class="lbl">Advance (Rs)</label><input type="number" id="fa" placeholder="0" oninput="calcT()" class="inp mt-1 mb-2.5">
+            <div class="flex justify-between border-t border-gray-100 pt-2.5"><span class="text-xs font-bold">Balance Due</span><span class="font-black text-gray-800" id="tb">Rs. 0</span></div>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2.5">
+          <button onclick="clearForm()" class="btn bg2 w-auto">Clear</button>
+          <button onclick="saveOrd(false)" class="btn bs w-auto">Save Only</button>
+          <button onclick="saveOrd(true)" class="btn bp w-auto">Save & Print</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div id="inventory" class="view-section p-4 md:p-7">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="w-full md:w-64 bg-white rounded-2xl border border-gray-100 shadow-sm p-4 h-fit">
+          <h3 class="text-xs font-black mb-3">Add Stock</h3>
+          <div class="space-y-3">
+            <div><label class="lbl">Item Name *</label><input type="text" id="in" class="inp"></div>
+            <div class="grid grid-cols-2 gap-2">
+              <div><label class="lbl">Cost (Rs) *</label><input type="number" id="ic" class="inp"></div>
+              <div><label class="lbl">Qty *</label><input type="number" id="iq" class="inp"></div>
+            </div>
+            <button onclick="addInv()" class="btn bp w-full">Add to Stock</button>
+          </div>
+        </div>
+        <div class="flex-1 bg-white rounded-2xl p-4 border border-gray-100">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-xs font-black">Stock List</h3>
+            <input type="text" id="isrch" placeholder="Search..." oninput="renderInv()" class="inp w-36 text-xs py-1.5">
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs">
+              <thead><tr class="border-b"><th class="py-2 text-left">Item</th><th class="py-2 text-left">Cost</th><th class="py-2 text-left">Qty</th><th class="py-2 text-right">Act</th></tr></thead>
+              <tbody id="itbody"></tbody>
+            </table>
           </div>
         </div>
       </div>
-      <div class="bg-white p-3 md:p-4 border-t flex justify-end gap-2 md:gap-3 shrink-0">
-        <button onclick="sendWhatsApp()" class="flex-1 md:flex-none bg-[#25D366] hover:bg-[#1ebd5a] text-white font-bold px-4 md:px-6 py-2.5 md:py-3.5 rounded-xl text-xs md:text-sm shadow-md transition-transform hover:-translate-y-0.5"><i class="fab fa-whatsapp mr-1 md:mr-2 text-base md:text-lg"></i> Notify Client</button>
-        <button onclick="printFromModal()" class="flex-1 md:flex-none bg-gray-800 hover:bg-black text-white font-bold px-4 md:px-6 py-2.5 md:py-3.5 rounded-xl text-xs md:text-sm shadow-md transition-transform hover:-translate-y-0.5"><i class="fas fa-print mr-1 md:mr-2"></i> Print Bill</button>
+    </div>
+
+    <!-- EXPENSES -->
+    <div id="expenses" class="view-section p-4 md:p-7">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="w-full md:w-64 bg-white rounded-2xl p-4 border border-gray-100 h-fit">
+          <h3 class="text-xs font-black mb-3">Add Expense</h3>
+          <div class="space-y-3">
+            <div><label class="lbl">Description *</label><input type="text" id="ed" class="inp"></div>
+            <div><label class="lbl">Brand</label><input type="text" id="eb" class="inp"></div>
+            <div><label class="lbl">Cost (Rs) *</label><input type="number" id="ec" class="inp"></div>
+            <button onclick="addExp()" class="btn br w-full">Record</button>
+          </div>
+        </div>
+        <div class="flex-1 bg-white rounded-2xl p-4 border border-gray-100">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-xs font-black">Expense Records</h3>
+            <span class="text-xs font-black text-red-600 bg-red-50 px-2 py-1 rounded-xl" id="etotal">Rs. 0</span>
+          </div>
+          <table class="w-full text-xs">
+            <thead><tr class="border-b"><th class="py-2 text-left">Date</th><th class="py-2 text-left">Desc</th><th class="py-2 text-left">Cost</th><th class="py-2 text-right">Act</th></tr></thead>
+            <tbody id="etbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SALES -->
+    <div id="sales" class="view-section p-4 md:p-7">
+      <div class="bg-white rounded-2xl p-4 border border-gray-100">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xs font-black">All Orders</h3>
+          <input type="text" id="ss" placeholder="Search invoices..." oninput="renderSales()" class="inp w-48 text-xs py-2">
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs">
+            <thead><tr class="bg-gray-50 border-b">
+              <th class="py-2 px-2 text-left">Date</th><th class="py-2 px-2 text-left">Invoice</th><th class="py-2 px-2 text-left">Customer</th>
+              <th class="py-2 px-2 text-left">Total</th><th class="py-2 px-2 text-left">Bal</th><th class="py-2 px-2 text-left">Status</th><th class="py-2 px-2 text-right">Act</th>
+            </tr></thead>
+            <tbody id="stbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
+</main>
 
-  <!-- Stock Modal -->
-  <div id="stockModal" class="fixed inset-0 bg-gray-900/60 flex justify-center items-end md:items-center z-50 hidden backdrop-blur-sm">
-    <div class="bg-white w-full max-w-2xl rounded-t-3xl md:rounded-3xl p-4 md:p-8 modal-enter">
-      <div class="flex justify-between items-center mb-4 md:mb-5"><h2 class="text-lg md:text-xl font-black text-gray-800"><i class="fas fa-boxes text-indigo-500 mr-2"></i> Select Stock</h2><button onclick="closeStockModal()" class="text-xl md:text-2xl text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div>
-      <input type="hidden" id="activeItemRowId" value="">
-      <input type="text" onkeyup="renderModalStock(this.value)" placeholder="Search stock items..." class="w-full bg-gray-50 border-transparent p-3 md:p-4 rounded-xl mb-4 md:mb-5 text-xs md:text-sm font-semibold focus:bg-white focus:ring-2 focus:ring-indigo-300 outline-none shadow-inner">
-      <div class="max-h-64 overflow-y-auto pr-2 custom-scrollbar"><table class="w-full"><tbody id="modalStockBody" class="divide-y divide-gray-100"></tbody></table></div>
+<!-- MOBILE NAV -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-white shadow-2xl flex items-end px-1 pb-2 pt-2 z-50 rounded-t-3xl border-t">
+  <button onclick="switchTab('dashboard')" data-t="dashboard" class="mob-btn am flex-1 flex flex-col items-center gap-0.5 text-gray-400 text-[9px] font-bold"><i class="fas fa-chart-pie text-lg"></i>Dash</button>
+  <button onclick="switchTab('inventory')" data-t="inventory" class="mob-btn flex-1 flex flex-col items-center gap-0.5 text-gray-400 text-[9px] font-bold"><i class="fas fa-boxes text-lg"></i>Stock</button>
+  <div class="flex-1 flex justify-center relative -top-3.5">
+    <button onclick="switchTab('new-order')" data-t="new-order" class="bg-indigo-600 w-13 h-13 rounded-full flex items-center justify-center text-white text-xl shadow-lg border-4 border-white" style="width:52px;height:52px"><i class="fas fa-plus"></i></button>
+  </div>
+  <button onclick="switchTab('expenses')" data-t="expenses" class="mob-btn flex-1 flex flex-col items-center gap-0.5 text-gray-400 text-[9px] font-bold"><i class="fas fa-wrench text-lg"></i>Tools</button>
+  <button onclick="switchTab('sales')" data-t="sales" class="mob-btn flex-1 flex flex-col items-center gap-0.5 text-gray-400 text-[9px] font-bold"><i class="fas fa-history text-lg"></i>Sales</button>
+</nav>
+
+<!-- ORDER DETAIL MODAL -->
+<div id="omodal" class="modal-bg hidden">
+  <div class="mbox p-5">
+    <div class="flex items-start justify-between mb-4">
+      <div><h3 class="text-base font-black text-indigo-600 tracking-wider" id="om-inv">INV</h3></div>
+      <button onclick="closeOM()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500"><i class="fas fa-times text-xs"></i></button>
+    </div>
+    
+    <div class="grid grid-cols-3 gap-2 mb-4 p-2 bg-gray-50 rounded-xl">
+      <button onclick="setSt('Pending')" id="sb-Pending" class="py-2 rounded-xl font-black text-xs text-gray-400 border-2 border-transparent"><span class="block w-2 h-2 rounded-full bg-amber-400 mx-auto mb-1"></span>Pending</button>
+      <button onclick="setSt('Completed')" id="sb-Completed" class="py-2 rounded-xl font-black text-xs text-gray-400 border-2 border-transparent"><span class="block w-2 h-2 rounded-full bg-blue-400 mx-auto mb-1"></span>Completed</button>
+      <button onclick="setSt('Delivered')" id="sb-Delivered" class="py-2 rounded-xl font-black text-xs text-gray-400 border-2 border-transparent"><span class="block w-2 h-2 rounded-full bg-emerald-400 mx-auto mb-1"></span>Delivered</button>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 mb-2">
+      <div><label class="lbl">Customer</label><input type="text" id="om-n" class="inp py-1.5"></div>
+      <div><label class="lbl">Phone</label><input type="text" id="om-ph" class="inp py-1.5"></div>
+    </div>
+    
+    <!-- Dynamic Items Area -->
+    <div class="mb-3 bg-white border border-gray-100 rounded-xl p-3">
+      <div class="flex justify-between items-center mb-2">
+        <label class="lbl !mb-0 text-indigo-500">Repair Items / Faults</label>
+        <button onclick="addModalItem()" class="text-[9px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-bold">+ Add Item</button>
+      </div>
+      <div id="om-items" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-2 mb-3">
+      <div><label class="lbl">Total</label><input type="number" id="om-pr" oninput="rcM()" class="inp py-1.5 font-bold" readonly></div>
+      <div><label class="lbl">Advance</label><input type="number" id="om-ad" oninput="rcM()" class="inp py-1.5 font-bold text-emerald-600"></div>
+      <div><label class="lbl">Balance</label><input type="text" id="om-bl" readonly class="inp py-1.5 font-bold text-red-600"></div>
+    </div>
+    
+    <div class="flex gap-2 flex-wrap mt-5">
+      <button onclick="sendWA()" class="btn bw flex-1 text-xs"><i class="fab fa-whatsapp text-sm"></i> WhatsApp</button>
+      <button onclick="prtOrdModal()" class="btn bs flex-1 text-xs"><i class="fas fa-print text-sm"></i> Print</button>
+      <button onclick="saveOM()" class="btn bp flex-1 text-xs"><i class="fas fa-save text-sm"></i> Save</button>
     </div>
   </div>
+</div>
 
-  <!-- ================= SCRIPTS ================= -->
-  <script>
-    // ============================================================================
-    // 🛑🛑🛑 CONFIGURATION 🛑🛑🛑
-    // ============================================================================
-    
-    const CONFIG_GAS_URL = "https://script.google.com/macros/s/AKfycbx7lumYuZPsh8NU49TuvpAT7rmvW1G5i3AtLhu7Qb2QipogydTXElr2M6CXKE0WEsch/exec"; 
-    const CONFIG_TRACKING_URL = "https://mrsanduwa-ac.github.io/Phonepos/track.html"; 
-    const CONFIG_WATERMARK_LINK = "https://www.facebook.com/sanduwaofficial/"; 
+<div class="toast" id="tst"></div>
 
-    // ============================================================================
+<!-- STOCK SELECTOR (For Add Order) -->
+<div id="stkmodal" class="modal-bg hidden !z-[900]">
+  <div class="mbox p-5 max-w-[400px]">
+    <div class="flex items-center justify-between mb-3"><h3 class="font-black text-gray-800">Pick Stock</h3><button onclick="closeSM()" class="w-8 h-8 rounded-full bg-gray-100"><i class="fas fa-times"></i></button></div>
+    <input type="text" id="ss2" placeholder="Search..." oninput="renderSL()" class="inp mb-3">
+    <div id="slist" class="space-y-1 max-h-48 overflow-y-auto"></div>
+  </div>
+</div>
 
-    // Set Watermark link from config
-    document.getElementById('watermark-link').href = CONFIG_WATERMARK_LINK;
+<script>
+// Local Storage Utils
+function gd(k,d){try{return JSON.parse(localStorage.getItem('sx_'+k))||d}catch(e){return d}}
+function sd(k,v){localStorage.setItem('sx_'+k,JSON.stringify(v))}
 
-    // System Variables
-    let inventory = JSON.parse(localStorage.getItem('smartx_inventory')) || [];
-    let orders = JSON.parse(localStorage.getItem('smartx_orders')) || [];
-    let toolsList = JSON.parse(localStorage.getItem('smartx_tools')) || [];
-    let soldItems = JSON.parse(localStorage.getItem('smartx_sales')) || [];
-    let orderItemCount = 0; 
-    let currentOrderLimit = 20; // Pagination limit
+let orders = gd('orders',[]);
+let inv = gd('inv',[]);
+let exps = gd('exps',[]);
 
-    function updateClock() {
-      const now = new Date();
-      let hours = now.getHours(); let minutes = now.getMinutes(); let seconds = now.getSeconds();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12; hours = hours ? hours : 12; 
-      minutes = minutes < 10 ? '0' + minutes : minutes; seconds = seconds < 10 ? '0' + seconds : seconds;
-      document.getElementById('live-time').innerText = `${hours}:${minutes}:${seconds} ${ampm}`;
-      document.getElementById('live-date').innerText = now.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    }
-    setInterval(updateClock, 1000);
+// Tracking Deleted items for Cloud Sync
+let delOrds = gd('del_ords', []);
+let delInvs = gd('del_invs', []);
+let delExps = gd('del_exps', []);
 
-    // ---- LIGHT NUMPAD LOGIN LOGIC ----
-    // Login logic start madalu
-    let passcodeVal = "";
-    
-    document.addEventListener('keydown', function(e) {
-      const loginScreen = document.getElementById('login-screen');
-      if (loginScreen && !loginScreen.classList.contains('hidden')) {
-        if (e.key >= '0' && e.key <= '9') pressPin(e.key);
-        if (e.key === 'Backspace') clearPin();
-        if (e.key === 'Enter') checkLogin();
-      }
+function sa(){
+  sd('orders',orders); sd('inv',inv); sd('exps',exps);
+  sd('del_ords', delOrds); sd('del_invs', delInvs); sd('del_exps', delExps);
+  updateCustomersList();
+}
+
+// 🛑 CUSTOMER AUTOCOMPLETE LOGIC
+function updateCustomersList() {
+  const clist = document.getElementById('customersList');
+  const uniqueCusts = [...new Map(orders.map(item => [item.customerName, item])).values()];
+  clist.innerHTML = uniqueCusts.map(c => `<option value="${c.customerName}">`).join('');
+}
+function autoFillCust(val) {
+  const match = orders.find(o => o.customerName.toLowerCase() === val.toLowerCase());
+  if(match && match.phone) {
+    let p = match.phone;
+    if(p.startsWith('0')) p = p.substring(1);
+    else if(p.startsWith('94')) p = p.substring(2);
+    document.getElementById('fp').value = p;
+  }
+}
+
+// ---- CLOUD SYNC LOGIC ----
+let isSyncing = false;
+async function syncData(showToast=false) {
+  if(isSyncing || !sessionStorage.getItem('validPin')) return;
+  isSyncing = true;
+  const sIcon = document.getElementById('sync-icon');
+  sIcon.className = "fas fa-sync fa-spin text-indigo-500 text-xs";
+  
+  try {
+    // 1. Data එක Google Sheets වලට යවනවා (POST) - Error එන එක නවත්තන්න no-cors පාවිච්චි කරනවා
+    const payload = { action: 'syncData', orders, inventory: inv, tools: exps, deletedOrders: delOrds, deletedInv: delInvs, deletedExps: delExps };
+    await fetch(CONFIG_GAS_URL, { 
+      method: 'POST', 
+      body: JSON.stringify(payload),
+      mode: 'no-cors' 
     });
-
-    function pressPin(num) {
-      if(passcodeVal.length < 6) {
-        passcodeVal += num;
-        updateDots(passcodeVal);
-      }
-    }
     
-    function clearPin() {
-      if(passcodeVal.length > 0) {
-        passcodeVal = passcodeVal.slice(0, -1);
-        updateDots(passcodeVal);
-      }
-    }
-
-    function updateDots(val) {
-      document.getElementById('passcode').value = val;
-      const dots = document.querySelectorAll('.dot-indicator');
-      dots.forEach((dot, index) => {
-        if(index < val.length) { 
-            dot.classList.add('bg-slate-800', 'border-slate-800'); 
-            dot.classList.remove('border-slate-300'); 
-        } else { 
-            dot.classList.remove('bg-slate-800', 'border-slate-800'); 
-            dot.classList.add('border-slate-300'); 
-        }
-      });
-      if(val.length === 6) checkLogin();
-    }
-
-    async function checkLogin() {
-      const pin = document.getElementById('passcode').value;
-      const err = document.getElementById('login-error');
-      const loader = document.getElementById('login-loading');
-      
-      if(pin.length < 4) return;
-      
-      err.classList.add('hidden'); loader.classList.remove('hidden');
-
-      if(!CONFIG_GAS_URL || CONFIG_GAS_URL === "") {
-        Swal.fire('Error', 'Google Apps Script URL is missing!', 'error');
-        resetLogin();
-        return;
-      }
-      
-      try {
-        const res = await fetch(CONFIG_GAS_URL + "?action=verifyPin&pin=" + pin);
-        const data = await res.json();
-        
-        if(data.success) { 
-            loginSuccess(); 
-        } else { 
-            resetLogin(); 
-        }
-      } catch (error) {
-        Swal.fire('Connection Error', 'Cannot verify PIN. Please check your internet connection.', 'error');
-        resetLogin();
-      }
-    }
-
-    function resetLogin() {
-      document.getElementById('login-loading').classList.add('hidden');
-      document.getElementById('login-error').classList.remove('hidden');
-      passcodeVal = '';
-      updateDots('');
-    }
-
-    function loginSuccess() {
-      document.getElementById('login-box').style.opacity = '0';
-      document.getElementById('login-box').style.transform = 'scale(0.9)';
-      
-      setTimeout(() => { 
-        document.getElementById('login-screen').classList.add('hidden'); 
-        document.getElementById('app-wrapper').classList.remove('hidden'); 
-        initApp(); 
-      }, 500);
-    }
-
-    function toggleSyncMenu() {
-      const menu = document.getElementById('sync-menu');
-      menu.classList.toggle('hidden');
-    }
-
-    // ---- AUTO SYNC (BACKGROUND) ----
-    async function backgroundAutoSync() {
-      if(!CONFIG_GAS_URL || CONFIG_GAS_URL === "") {
-        updateSyncStatus(false);
-        return;
-      }
-      try {
-        const payload = { action: 'syncData', orders: orders, inventory: inventory, tools: toolsList, sales: soldItems };
-        const response = await fetch(CONFIG_GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
-        const result = await response.json();
-        if(result.success) { updateSyncStatus(true); } else { updateSyncStatus(false); }
-      } catch(e) {
-        updateSyncStatus(false);
-      }
-    }
-
-    function updateSyncStatus(isOnline) {
-      const dot = document.getElementById('sync-dot'), txt = document.getElementById('sync-text');
-      if(isOnline && CONFIG_GAS_URL !== "") {
-        dot.className = "h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-emerald-500 mr-1 md:mr-2 shadow-[0_0_5px_rgba(16,185,129,0.5)] animate-pulse";
-        txt.innerText = "Synced"; txt.className = "text-emerald-700 font-bold";
-      } else {
-        dot.className = "h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-red-500 mr-1 md:mr-2 shadow-[0_0_5px_rgba(239,68,68,0.5)]";
-        txt.innerText = "Local Mode"; txt.className = "text-red-600 font-bold";
-      }
-    }
-
-    // ---- MANUAL SYNC FUNCTION ----
-    async function startSync() {
-      document.getElementById('sync-menu').classList.add('hidden');
-      if(!CONFIG_GAS_URL || CONFIG_GAS_URL === "") {
-        return Swal.fire('Error', 'Please configure the Google Apps Script URL in the HTML code to sync.', 'error');
-      }
-      
-      const overlay = document.getElementById('sync-overlay');
-      overlay.querySelector('p').innerHTML = "<i class='fas fa-upload mr-2'></i>Uploading local data to cloud...";
-      overlay.classList.remove('hidden'); overlay.style.display = 'flex';
-
-      try {
-        const payload = { action: 'syncData', orders: orders, inventory: inventory, tools: toolsList, sales: soldItems };
-        const response = await fetch(CONFIG_GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
-        const result = await response.json();
-        
-        if(result.success) {
-          updateSyncStatus(true);
-          Swal.fire({toast:true, position:'top-end', icon:'success', title:'Cloud Sync Successful!', showConfirmButton:false, timer:3000});
-        } else { throw new Error('Sync failed on server'); }
-      } catch(e) {
-        updateSyncStatus(false);
-        Swal.fire('Sync Error', 'Could not sync with Google Sheets. Data is safe locally.', 'error');
-      } finally {
-        overlay.classList.add('hidden'); overlay.style.display = 'none';
-      }
-    }
-
-    // ---- FETCH CLOUD DATA (GET) & HARD RESET ----
-    async function hardResetData() {
-      document.getElementById('sync-menu').classList.add('hidden');
-      Swal.fire({
-        title: 'Hard Reset & Fetch Data?',
-        text: "This will wipe local storage and force fetch exactly what is on the Google Sheet. Use this to fix stock calculation issues.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#e3342f',
-        confirmButtonText: 'Yes, Fetch Cloud Data!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          fetchCloudData(true);
-        }
-      });
-    }
-
-    async function fetchCloudData(forceReset = false) {
-      if(!CONFIG_GAS_URL || CONFIG_GAS_URL === "") return;
-      const overlay = document.getElementById('sync-overlay'); 
-      overlay.querySelector('p').innerHTML = "<i class='fas fa-download mr-2'></i>Downloading live cloud data...";
-      overlay.classList.remove('hidden'); overlay.style.display = 'flex';
-      
-      try {
-        const res = await fetch(CONFIG_GAS_URL + "?action=getData");
-        const data = await res.json();
-        
-        if(data.success) {
-          if(forceReset) {
-            localStorage.clear();
-          }
-          orders = data.orders || []; inventory = data.inventory || []; toolsList = data.tools || []; soldItems = data.sales || [];
-          localStorage.setItem('smartx_orders', JSON.stringify(orders)); 
-          localStorage.setItem('smartx_inventory', JSON.stringify(inventory)); 
-          localStorage.setItem('smartx_tools', JSON.stringify(toolsList)); 
-          localStorage.setItem('smartx_sales', JSON.stringify(soldItems));
-          
-          updateDashboardStats(); renderDashboardTable(true); renderStockTable(); renderToolsTable(); renderSalesTable();
-          if(forceReset) Swal.fire('Success', 'Local data synced perfectly with Google Sheets!', 'success');
-        } else {
-           if(forceReset) Swal.fire('Error', 'Google sheet returned no data.', 'error');
-        }
-      } catch(e) { 
-        if(forceReset) Swal.fire('Fetch Error', 'Failed to connect to Google Sheets.', 'error');
-        console.log("Running offline."); 
-      } 
-      finally { overlay.classList.add('hidden'); overlay.style.display = 'none'; }
-    }
-
-    function initApp() { 
-      updateClock(); 
-      generateNextInvoiceNo(); 
-      updateDashboardStats(); 
-      renderDashboardTable(); 
-      renderStockTable(); 
-      renderToolsTable();
-      renderSalesTable();
-      addRepairItemRow(); 
-      fetchCloudData(); // Try fetching initial sync
-    }
-
-    function switchTab(tabName) {
-      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden', 'block')); document.getElementById('section-' + tabName).classList.remove('hidden');
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); const deskNav = document.getElementById('nav-' + tabName); if(deskNav) deskNav.classList.add('active');
-      document.querySelectorAll('.mobile-nav-item').forEach(el => el.classList.remove('active')); const mobNav = document.getElementById('mob-' + tabName); if(mobNav) mobNav.classList.add('active');
-      const titleMap = { 'Dashboard': 'Dashboard', 'NewOrder': 'New Repair Order', 'Stock': 'Inventory', 'Tools': 'Tools & Expenses', 'Sales': 'Sales History' }; document.getElementById('page-title').innerText = titleMap[tabName] || tabName;
-      
-      if(tabName === 'Dashboard') { updateDashboardStats(); renderDashboardTable(); } 
-      if(tabName === 'Stock') renderStockTable(); 
-      if(tabName === 'Tools') renderToolsTable();
-      if(tabName === 'Sales') renderSalesTable();
-    }
-
-    function suggestCustomer(query, isPhone=false) {
-      const sBox = document.getElementById('customerSuggestions'); if(query.length < 2) { sBox.classList.add('hidden'); return; }
-      const uniqueCust = []; const map = new Map();
-      for (const item of orders) { if(!map.has(item.phone)){ map.set(item.phone, true); uniqueCust.push({ name: item.customerName, phone: item.phone.replace('+94','') }); } }
-      const qLow = query.toLowerCase(); const matches = uniqueCust.filter(c => isPhone ? c.phone.includes(qLow) : c.name.toLowerCase().includes(qLow));
-      if(matches.length > 0) {
-        sBox.innerHTML = matches.map(m => `<div onclick="fillCustomer('${m.name}', '${m.phone}')" class="p-3 md:p-4 border-b hover:bg-indigo-50 cursor-pointer flex justify-between items-center transition-colors"><span class="font-black text-gray-700 text-xs md:text-sm"><i class="fas fa-user-circle text-gray-400 mr-2"></i>${m.name}</span><span class="text-[10px] md:text-xs text-indigo-600 font-bold bg-indigo-50 px-2 py-1 rounded">${m.phone}</span></div>`).join('');
-        sBox.classList.remove('hidden');
-      } else { sBox.classList.add('hidden'); }
-    }
-    function fillCustomer(name, phone) { document.getElementById('cName').value = name; document.getElementById('cPhone').value = phone; document.getElementById('customerSuggestions').classList.add('hidden'); }
-    document.addEventListener('click', function(e) { if(!e.target.closest('#cName') && !e.target.closest('#cPhone')) { const x=document.getElementById('customerSuggestions'); if(x) x.classList.add('hidden'); }});
-
-    // ---- NEW ORDER MULTIPLE ITEMS LOGIC ----
-    function addRepairItemRow() {
-      orderItemCount++;
-      const wrapper = document.getElementById('repairItemsWrapper');
-      const rowHtml = `
-        <div id="itemRow-${orderItemCount}" class="repair-item-row bg-white border border-gray-200 rounded-xl p-3 md:p-4 shadow-sm relative group transition-all hover:border-indigo-300">
-          <button type="button" onclick="removeRepairItemRow(${orderItemCount})" class="absolute -right-2 -top-2 bg-red-500 text-white rounded-full w-5 h-5 md:w-6 md:h-6 flex items-center justify-center shadow-md hover:bg-red-600 text-[10px] md:text-xs hidden group-hover:flex"><i class="fas fa-times"></i></button>
-          
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 items-end">
-            <div class="col-span-1 md:col-span-5">
-              <label class="block text-[9px] md:text-[10px] font-bold text-gray-500 uppercase mb-1">Item / Fault Description</label>
-              <input type="text" class="item-fault w-full rounded-lg bg-gray-50 border-transparent p-2 md:p-2.5 text-xs md:text-sm font-semibold focus:bg-white focus:ring-2 focus:ring-indigo-200" placeholder="e.g. Battery Replacement" required>
-            </div>
-            
-            <div class="col-span-1 md:col-span-2">
-              <label class="block text-[9px] md:text-[10px] font-bold text-gray-500 uppercase mb-1">Cost (Rs)</label>
-              <div class="flex gap-1">
-                <input type="number" oninput="calculateTotals()" class="item-cost flex-1 rounded-lg bg-red-50 text-red-700 border-transparent p-2 md:p-2.5 text-xs md:text-sm font-bold focus:bg-white focus:ring-2 focus:ring-red-200" placeholder="0" required>
-                <button type="button" onclick="openStockModal(${orderItemCount})" class="bg-gray-800 text-white px-2 rounded-lg hover:bg-black transition" title="Use Stock"><i class="fas fa-box text-xs md:text-sm"></i></button>
-                <input type="hidden" class="item-stock-used" value="">
-              </div>
-            </div>
-            
-            <div class="col-span-1 md:col-span-2">
-              <label class="block text-[9px] md:text-[10px] font-bold text-gray-500 uppercase mb-1">Price (Rs)</label>
-              <input type="number" oninput="calculateTotals()" class="item-quote w-full rounded-lg bg-emerald-50 text-emerald-700 border-transparent p-2 md:p-2.5 text-xs md:text-sm font-bold focus:bg-white focus:ring-2 focus:ring-emerald-200" placeholder="0" required>
-            </div>
-            
-            <div class="col-span-1 md:col-span-3">
-              <label class="block text-[9px] md:text-[10px] font-bold text-gray-500 uppercase mb-1">Warranty</label>
-              <select class="item-warranty w-full rounded-lg bg-gray-50 border-transparent p-2 md:p-2.5 text-xs md:text-sm font-bold text-gray-700 focus:bg-white focus:ring-2 focus:ring-indigo-200">
-                <option value="None">None</option><option value="7 Days">7 Days</option><option value="1 Month">1 Month</option><option value="3 Months">3 Months</option><option value="6 Months">6 Months</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      `;
-      wrapper.insertAdjacentHTML('beforeend', rowHtml);
-    }
-
-    function removeRepairItemRow(id) {
-      const row = document.getElementById(`itemRow-${id}`);
-      if(row) { row.remove(); calculateTotals(); }
-    }
-
-    function calculateTotals() {
-      let totalCost = 0; let totalQuote = 0;
-      document.querySelectorAll('.repair-item-row').forEach(row => {
-        totalCost += Number(row.querySelector('.item-cost').value) || 0;
-        totalQuote += Number(row.querySelector('.item-quote').value) || 0;
-      });
-      document.getElementById('displayTotalCost').innerText = "Rs. " + totalCost.toLocaleString();
-      document.getElementById('displayTotalQuote').innerText = "Rs. " + totalQuote.toLocaleString();
-      calculateBalance(totalQuote);
-    }
-
-    function calculateBalance(quote = null) { 
-      if(quote === null) {
-        quote = 0;
-        document.querySelectorAll('.repair-item-row').forEach(r => { quote += Number(r.querySelector('.item-quote').value) || 0; });
-      }
-      const advance = Number(document.getElementById('cAdvance').value) || 0; 
-      document.getElementById('cBalanceText').innerHTML = `Rs. ${(quote - advance).toLocaleString()}`; 
-    }
-
-    function generateNextInvoiceNo() { let lastNo = 34; if (orders.length > 0) { lastNo = parseInt(orders[orders.length - 1].invoiceNo.replace("INVSA", "")); } const nextNo = "INVSA" + ("000" + (lastNo + 1)).slice(-4); document.getElementById('display-invoice-no').innerText = nextNo; return nextNo; }
+    // ඩිලීට් කරපු දේවල් Sheet එකට ගියාට පස්සේ මෙහෙන් අයින් කරනවා
+    delOrds = []; delInvs = []; delExps = [];
     
-    function resetOrderForm() {
-      document.getElementById('orderForm').reset();
-      document.getElementById('repairItemsWrapper').innerHTML = '';
-      orderItemCount = 0; addRepairItemRow(); calculateTotals();
-    }
-
-    function saveOrder(print) {
-      const name = document.getElementById('cName').value, phone = document.getElementById('cPhone').value; 
-      const advance = Number(document.getElementById('cAdvance').value) || 0;
-      const msg = document.getElementById('cMessage').value;
-      
-      const rows = document.querySelectorAll('.repair-item-row');
-      if(!name || !phone || rows.length === 0) return Swal.fire('Error!', 'Customer Details & at least one item are required.', 'error');
-
-      let items = []; let totalCost = 0; let totalQuote = 0; let allValid = true;
-      
-      rows.forEach(row => {
-        const fault = row.querySelector('.item-fault').value;
-        const cost = Number(row.querySelector('.item-cost').value);
-        const quote = Number(row.querySelector('.item-quote').value);
-        const warranty = row.querySelector('.item-warranty').value;
-        const stockUsed = row.querySelector('.item-stock-used').value;
-        
-        if(!fault || !cost || !quote) allValid = false;
-        
-        items.push({ fault, cost, price: quote, warranty, stockUsed });
-        totalCost += cost; totalQuote += quote;
-      });
-
-      if(!allValid) return Swal.fire('Error!', 'Please fill all item fields properly.', 'error');
-
-      const newOrder = { 
-        invoiceNo: generateNextInvoiceNo(), date: new Date().toISOString(), deliveredDate: null, 
-        customerName: name, phone: "+94" + phone.replace(/^0+/, ''), 
-        items: items, 
-        cost: totalCost, quotedPrice: totalQuote, advance, balance: totalQuote - advance, profit: totalQuote - totalCost, 
-        customerMessage: msg, status: 'Pending',
-        fault: items.map(i=>i.fault).join(' + '), warranty: items[0].warranty 
-      };
-
-      orders.push(newOrder); localStorage.setItem('smartx_orders', JSON.stringify(orders));
-
-      // Stock Deduction & Live Out of Stock Ordering
-      items.forEach(it => {
-        if(it.stockUsed) {
-           const idx = inventory.findIndex(i => i.name === it.stockUsed); 
-           if (idx > -1 && inventory[idx].qty > 0) { 
-               inventory[idx].qty -= 1; 
-               soldItems.push({ id: Date.now()+Math.random(), date: new Date().toISOString(), itemName: it.stockUsed, price: it.price, invoiceNo: newOrder.invoiceNo, customerName: name });
-           }
-        }
-      });
-      localStorage.setItem('smartx_inventory', JSON.stringify(inventory));
-      localStorage.setItem('smartx_sales', JSON.stringify(soldItems));
-      
-      renderStockTable(); 
-      renderSalesTable();
-      backgroundAutoSync(); // Trigger sync
-
-      Swal.fire({ toast: true, position: "top-end", showConfirmButton: false, timer: 2000, icon: "success", title: "Order Created" }).then(() => {
-        resetOrderForm(); generateNextInvoiceNo();
-        if(print) { localStorage.setItem('currentOrder', JSON.stringify(newOrder)); window.open('bil.html', '_blank'); } else switchTab('Dashboard');
-      });
-    }
-
-    function updateDashboardStats() {
-      let pending = 0, expectedBal = 0, expenses = 0, stockVal = 0, weekProfit = 0; let oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      orders.forEach(o => { expenses += Number(o.cost) || 0; if(o.status !== 'Delivered') { pending++; expectedBal += Number(o.balance) || 0; } if(new Date(o.date) > oneWeekAgo) weekProfit += Number(o.profit) || 0; });
-      toolsList.forEach(t => expenses += Number(t.price) || 0); 
-      inventory.forEach(i => stockVal += (Number(i.price) * Number(i.qty)) || 0);
-      
-      document.getElementById('dash-pending').innerText = pending; document.getElementById('dash-expected').innerText = "Rs. " + expectedBal.toLocaleString(); document.getElementById('dash-expenses').innerText = "Rs. " + expenses.toLocaleString(); document.getElementById('dash-week-profit').innerText = "Rs. " + weekProfit.toLocaleString(); document.getElementById('dash-stock-value').innerText = "Rs. " + stockVal.toLocaleString();
-    }
-
-    // Pagination Logic for Dashboard
-    function renderDashboardTable(resetLimit = false) {
-      if(resetLimit) currentOrderLimit = 20;
-      
-      const filter = document.getElementById('dashSearch').value.toLowerCase(); 
-      const tbody = document.getElementById('dashboardTableBody'); 
-      tbody.innerHTML = '';
-      
-      const filtered = orders.filter(o => o.invoiceNo.toLowerCase().includes(filter) || o.fault.toLowerCase().includes(filter) || o.customerName.toLowerCase().includes(filter));
-      
-      const reversedOrders = [...filtered].reverse();
-      const paginatedOrders = reversedOrders.slice(0, currentOrderLimit);
-      
-      paginatedOrders.forEach(o => {
-        let badge = o.status === 'Pending' ? `<span class="status-badge status-pending">Pending</span>` : o.status === 'Completed' ? `<span class="status-badge status-completed">Completed</span>` : `<span class="status-badge status-delivered">Delivered</span>`;
-        tbody.innerHTML += `<tr class="hover:bg-indigo-50 cursor-pointer transition-colors group" onclick="viewOrder('${o.invoiceNo}')"><td class="p-3 md:p-4 text-gray-500 font-medium">${new Date(o.date).toLocaleDateString('en-GB')}</td><td class="p-3 md:p-4 font-black text-indigo-600 group-hover:text-indigo-800">${o.invoiceNo}</td><td class="p-3 md:p-4"><span class="font-bold text-gray-800">${o.customerName}</span><br><span class="text-[9px] md:text-[10px] text-gray-400 font-bold">${o.phone}</span></td><td class="p-3 md:p-4 font-bold text-gray-700 truncate max-w-[150px] md:max-w-[200px]">${o.fault}</td><td class="p-3 md:p-4 text-right font-black ${o.balance>0?'text-red-500':'text-emerald-500'}">${Number(o.balance).toLocaleString()}</td><td class="p-3 md:p-4 text-center">${badge}</td></tr>`;
-      });
-
-      const loadMoreContainer = document.getElementById('loadMoreContainer');
-      if (loadMoreContainer) {
-        if (currentOrderLimit < reversedOrders.length) {
-          loadMoreContainer.classList.remove('hidden');
-        } else {
-          loadMoreContainer.classList.add('hidden');
-        }
-      }
-    }
-
-    function loadMoreOrders() {
-      currentOrderLimit += 10;
-      renderDashboardTable();
-    }
-
-    function openPendingListModal() {
-      const tbody = document.getElementById('pendingListBody'); tbody.innerHTML = ''; const pendingOrders = orders.filter(o => o.status === 'Pending');
-      if(pendingOrders.length === 0) { tbody.innerHTML = `<tr><td class="p-6 md:p-8 text-center text-gray-500 font-bold"><i class="fas fa-check-circle text-emerald-500 text-2xl md:text-3xl mb-2 md:mb-3 block"></i> All Caught Up! No pending repairs.</td></tr>`; } else {
-        pendingOrders.forEach(o => { tbody.innerHTML += `<tr class="hover:bg-amber-50 cursor-pointer transition-colors group" onclick="document.getElementById('pendingListModal').classList.add('hidden'); viewOrder('${o.invoiceNo}')"><td class="p-3 md:p-4 md:p-5"><div class="font-black text-gray-800 text-xs md:text-sm md:text-base truncate max-w-[150px] md:max-w-[200px]">${o.fault}</div><div class="text-[9px] md:text-[10px] md:text-xs text-gray-500 font-bold mt-1"><i class="fas fa-user text-gray-400 mr-1"></i> ${o.customerName} &bull; ${o.invoiceNo}</div></td><td class="p-3 md:p-4 md:p-5 text-right text-blue-400 group-hover:text-blue-600 transition-colors"><i class="fas fa-arrow-right bg-white p-1.5 md:p-2 rounded-full shadow-sm"></i></td></tr>`; });
-      }
-      document.getElementById('pendingListModal').classList.remove('hidden');
-    }
-
-    function viewOrder(inv) {
-      const o = orders.find(x => x.invoiceNo === inv); if(!o) return;
-      document.getElementById('edit-invoice-id').value = inv; document.getElementById('det-date').innerText = new Date(o.date).toLocaleDateString('en-GB'); document.getElementById('det-del-date').innerText = o.deliveredDate ? new Date(o.deliveredDate).toLocaleDateString('en-GB') : "Processing"; document.getElementById('det-name').innerText = o.customerName; document.getElementById('det-phone').innerText = o.phone; 
-      
-      const itemsList = document.getElementById('det-items-list'); itemsList.innerHTML = '';
-      let itemsArr = o.items || [{fault: o.fault, price: o.quotedPrice, warranty: o.warranty}]; 
-      itemsArr.forEach(it => {
-        itemsList.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100"><div class="text-xs md:text-sm font-bold text-gray-700">${it.fault} <span class="text-[9px] md:text-[10px] bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded ml-1 md:ml-2">${it.warranty}</span></div><div class="text-xs md:text-sm font-black text-gray-800">Rs. ${it.price}</div></div>`;
-      });
-      
-      document.getElementById('det-total').innerText = "Rs. " + Number(o.quotedPrice).toLocaleString(); document.getElementById('det-balance').innerText = "Rs. " + Number(o.balance).toLocaleString(); document.getElementById('edit-status').value = o.status; document.getElementById('edit-payment').value = '';
-      
-      // Order modal update madalu
-      const wb = document.getElementById('war-status-box'), ws = document.getElementById('det-war-status'); wb.className = "bg-white p-2 md:p-3 rounded-2xl shadow-sm border text-center col-span-2 transition-colors";
-      
-      let priWar = itemsArr[0]?.warranty || o.warranty || 'None';
-      if(!priWar || priWar === 'None') { ws.innerText = "No Warranty Provided"; ws.className = "font-black text-xs md:text-sm text-gray-400"; } else if (!o.deliveredDate) { ws.innerText = "Starts upon delivery"; ws.className = "font-black text-xs md:text-sm text-amber-500"; } else {
-        let expiry = new Date(o.deliveredDate); if(priWar.includes('Days')) expiry.setDate(expiry.getDate() + parseInt(priWar)); else if(priWar.includes('Month')) expiry.setMonth(expiry.getMonth() + parseInt(priWar));
-        if(new Date() > expiry) { ws.innerText = "Expired on " + expiry.toLocaleDateString('en-GB'); ws.className = "font-black text-xs md:text-sm text-red-600"; wb.classList.add('border-red-200', 'bg-red-50'); } else { ws.innerText = "Active until " + expiry.toLocaleDateString('en-GB'); ws.className = "font-black text-xs md:text-sm text-emerald-600"; wb.classList.add('border-emerald-200', 'bg-emerald-50'); }
-      }
-      document.getElementById('orderDetailsModal').classList.remove('hidden');
-    }
-
-    function closeDetailsModal() { document.getElementById('orderDetailsModal').classList.add('hidden'); }
+    // 2. අලුත් Data ටික ආපහු Sheets වලින් ගන්නවා (GET) - මේකෙන් බ්‍රවුසර් එකේ ඩේටා අප්ඩේට් වෙනවා
+    const getRes = await fetch(CONFIG_GAS_URL + "?action=getData");
+    const data = await getRes.json();
     
-    function updateOrder() {
-      const inv = document.getElementById('edit-invoice-id').value, newStatus = document.getElementById('edit-status').value; const addedPayment = Number(document.getElementById('edit-payment').value) || 0; let o = orders.find(x => x.invoiceNo === inv); if(!o) return;
-      if(newStatus === 'Delivered' && o.status !== 'Delivered') { o.deliveredDate = new Date().toISOString(); Swal.fire({icon: 'success', title: 'Device Delivered!', text:'Warranty period has started.', timer:2000, showConfirmButton:false}); } else if (newStatus !== 'Delivered') o.deliveredDate = null;
-      o.status = newStatus; o.advance += addedPayment; o.balance = o.quotedPrice - o.advance; if(o.balance < 0) o.balance = 0; localStorage.setItem('smartx_orders', JSON.stringify(orders)); closeDetailsModal(); renderDashboardTable(); updateDashboardStats();
-      backgroundAutoSync(); // Trigger sync
+    if(data.success) {
+      orders = data.orders || [];
+      inv = data.inventory || [];
+      exps = data.tools || [];
+      sa(); 
+      renderDash(); renderInv(); renderExps(); renderSales();
+      sIcon.className = "fas fa-cloud-check text-emerald-500 text-xs";
+      if(showToast) tst('Synced securely with Cloud', 'ok');
+    } else {
+      throw new Error("Fetch failed");
     }
-    
-    // Bill download karnyachi function (Auto Download Logic)
-    function downloadBillText(o) {
-      let content = `*SMARTX REPAIR RECEIPT*\n`;
-      content += `========================\n`;
-      content += `Invoice No : ${o.invoiceNo}\n`;
-      content += `Customer   : ${o.customerName}\n`;
-      content += `Date       : ${new Date(o.date).toLocaleDateString('en-GB')}\n`;
-      content += `Status     : ${o.status}\n`;
-      content += `========================\n`;
-      content += `Items & Faults:\n`;
-      let itemsArr = o.items || [{fault: o.fault, price: o.quotedPrice, warranty: o.warranty}];
-      itemsArr.forEach(it => {
-        content += `- ${it.fault} | Rs.${it.price} | Warranty: ${it.warranty}\n`;
-      });
-      content += `========================\n`;
-      content += `Total Bill : Rs.${o.quotedPrice}\n`;
-      content += `Advance    : Rs.${o.advance}\n`;
-      content += `Balance Due: Rs.${o.balance}\n`;
-      content += `========================\n`;
-      content += `Track Online: ${CONFIG_TRACKING_URL}?inv=${o.invoiceNo}\n`;
-      content += `Thank you for choosing SmartX!\n`;
+  } catch(e) {
+    sIcon.className = "fas fa-cloud-download-alt text-amber-500 text-xs";
+    if(showToast) tst('Offline: Saved locally', 'warn');
+  }
+  isSyncing = false;
+}
+function manualSync() { syncData(true); }
 
-      const blob = new Blob([content], { type: 'text/plain' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = `SmartX_Bill_${o.invoiceNo}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-    }
+// ---- AUTH PIN LOGIC & KEYBOARD EVENTS ----
+let enteredPin = "";
+function initLock() {
+  if(!sessionStorage.getItem('validPin')) {
+    document.getElementById('lock-screen').classList.remove('hidden');
+  } else {
+    syncData(); updateCustomersList();
+  }
+}
+function updateDots() {
+  const dots = document.querySelectorAll('#pin-dots .pin-dot');
+  dots.forEach((d,i) => d.classList.toggle('filled', i < enteredPin.length));
+}
+function pressPin(n) {
+  if(enteredPin.length < 6) enteredPin += String(n);
+  updateDots();
+}
+function clearPin() { enteredPin = enteredPin.slice(0,-1); updateDots(); }
 
-    function sendWhatsApp() { 
-      const o = orders.find(x => x.invoiceNo === document.getElementById('edit-invoice-id').value); 
-      if(!o) return; 
-      
-      // WhatsApp open honyachya aadhi bill text file download kara
-      downloadBillText(o);
+async function verifyPin() {
+  if(enteredPin.length === 0) return;
+  document.getElementById('auth-loader').classList.remove('hidden');
+  try {
+    const res = await fetch(CONFIG_GAS_URL + "?action=verifyPin&pin=" + enteredPin);
+    const data = await res.json();
+    if(data.success) {
+      sessionStorage.setItem('validPin', enteredPin);
+      document.getElementById('lock-screen').classList.add('hidden');
+      syncData(true);
+      updateCustomersList();
+    } else { failPin(); }
+  } catch(e) { 
+    if(enteredPin === "030512") { // local fallback
+       sessionStorage.setItem('validPin', enteredPin);
+       document.getElementById('lock-screen').classList.add('hidden');
+       tst('Offline Mode Started', 'warn');
+       updateCustomersList();
+    } else { failPin(); }
+  }
+  document.getElementById('auth-loader').classList.add('hidden');
+}
+function failPin() {
+  const dots = document.getElementById('pin-dots');
+  dots.classList.add('shake');
+  setTimeout(() => { dots.classList.remove('shake'); enteredPin=""; updateDots(); }, 400);
+  tst('Incorrect PIN', 'err');
+}
 
-      let msg = `Hello ${o.customerName},\n\nUpdate regarding your repair at *SmartX*:\n\n*Device Details:* ${o.fault}\n*Status:* ${o.status}\n*Total Bill:* Rs.${o.quotedPrice}\n*Balance Due:* Rs.${o.balance}\n\nTrack online:\n${CONFIG_TRACKING_URL}?inv=${o.invoiceNo}\n\nThank you!`; 
-      window.open(`https://wa.me/${o.phone.replace('+','')}?text=${encodeURIComponent(msg)}`, '_blank'); 
+// Delete Auth Logic
+let pendingDelAction = null;
+let delPin = "";
+function requireAuth(actionFunction) {
+  pendingDelAction = actionFunction;
+  delPin = ""; updateDelDots();
+  document.getElementById('del-screen').classList.remove('hidden');
+}
+function updateDelDots() {
+  const dots = document.querySelectorAll('#del-dots .pin-dot');
+  dots.forEach((d,i) => d.classList.toggle('filled', i < delPin.length));
+}
+function pressDelPin(n) {
+  if(delPin.length < 6) delPin += String(n);
+  updateDelDots();
+  if(delPin.length === 6) verifyDelPin();
+}
+function clearDelPin() { delPin = delPin.slice(0,-1); updateDelDots(); }
+function verifyDelPin() {
+    if(delPin === sessionStorage.getItem('validPin') || delPin === "030512") {
+      document.getElementById('del-screen').classList.add('hidden');
+      if(pendingDelAction) pendingDelAction();
+    } else {
+      const dbx = document.getElementById('del-dots');
+      dbx.classList.add('shake');
+      setTimeout(()=>{ dbx.classList.remove('shake'); delPin=""; updateDelDots(); tst('Access Denied', 'err'); }, 400);
     }
-    
-    function printFromModal() { 
-      const o = orders.find(x => x.invoiceNo === document.getElementById('edit-invoice-id').value); 
-      if(o) { 
-        downloadBillText(o); // Print kartana pan download kara
-        localStorage.setItem('currentOrder', JSON.stringify(o)); 
-        window.open('bil.html', '_blank'); 
-      } 
-    }
+}
+function cancelDel() { document.getElementById('del-screen').classList.add('hidden'); pendingDelAction=null; }
 
-    function addTool() { const name = document.getElementById('tName').value, brand = document.getElementById('tBrand').value, price = Number(document.getElementById('tPrice').value); if(!name || !price) return Swal.fire('Error', 'Name and Cost are required', 'error'); toolsList.push({ id: Date.now(), date: new Date().toISOString(), name, brand, price }); localStorage.setItem('smartx_tools', JSON.stringify(toolsList)); document.getElementById('toolForm').reset(); renderToolsTable(); updateDashboardStats(); Swal.fire({toast:true, position:'top-end', icon:'success', title:'Expense Recorded', showConfirmButton:false, timer:1500}); backgroundAutoSync(); }
-    function renderToolsTable() { const tbody = document.getElementById('toolsTableBody'); tbody.innerHTML = ''; [...toolsList].reverse().forEach(t => { tbody.innerHTML += `<tr class="hover:bg-gray-50 transition-colors"><td class="p-3 text-gray-500 text-[10px] md:text-xs">${new Date(t.date).toLocaleDateString('en-GB')}</td><td class="p-3 font-bold">${t.name}</td><td class="p-3 text-gray-500 font-medium">${t.brand||'-'}</td><td class="p-3 text-right font-black text-red-500">Rs. ${Number(t.price).toLocaleString()}</td><td class="p-3 text-center"><button onclick="deleteTool(${t.id})" class="text-red-300 hover:text-red-500 bg-red-50 p-1.5 md:p-2 rounded-lg"><i class="fas fa-trash"></i></button></td></tr>`; }); }
-    function deleteTool(id) { toolsList = toolsList.filter(t => t.id !== id); localStorage.setItem('smartx_tools', JSON.stringify(toolsList)); renderToolsTable(); updateDashboardStats(); backgroundAutoSync(); }
+// Keyboard Listener for PINs
+document.addEventListener('keydown', function(e) {
+  const lock = document.getElementById('lock-screen');
+  const delLock = document.getElementById('del-screen');
+  
+  if (!lock.classList.contains('hidden')) {
+    if (e.key >= '0' && e.key <= '9') pressPin(e.key);
+    if (e.key === 'Backspace') clearPin();
+    if (e.key === 'Enter') verifyPin();
+  } else if (!delLock.classList.contains('hidden')) {
+    if (e.key >= '0' && e.key <= '9') pressDelPin(e.key);
+    if (e.key === 'Backspace') clearDelPin();
+    if (e.key === 'Enter' && delPin.length === 6) verifyDelPin();
+  }
+});
 
-    function openStockModal(rowId) { document.getElementById('activeItemRowId').value = rowId; document.getElementById('stockModal').classList.remove('hidden'); renderModalStock(); }
-    function closeStockModal() { document.getElementById('stockModal').classList.add('hidden'); }
-    function renderModalStock(val="") { 
-      const tbody = document.getElementById('modalStockBody'); tbody.innerHTML = ''; 
-      // Sort out of stock to bottom
-      let filtered = inventory.filter(i => i.name.toLowerCase().includes(val.toLowerCase())).sort((a,b) => {
-          if (a.qty > 0 && b.qty === 0) return -1;
-          if (a.qty === 0 && b.qty > 0) return 1;
-          return 0; 
-      });
-      
-      filtered.forEach(i => { 
-        let btn = i.qty > 0 ? `<button onclick="selectStock('${i.name}', ${i.price})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold shadow-sm transition-transform hover:-translate-y-0.5">Use</button>` : `<span class="text-[9px] md:text-[10px] text-red-600 font-black bg-red-100 px-2 py-1 rounded">OUT OF STOCK</span>`; 
-        let rowClass = i.qty === 0 ? "opacity-60 bg-red-50/30" : "hover:bg-gray-50";
-        tbody.innerHTML += `<tr class="border-b border-gray-100 ${rowClass}"><td class="py-2 md:py-3 px-2 text-xs md:text-sm font-bold text-gray-700">${i.name}</td><td class="py-2 md:py-3 px-2 text-right text-emerald-600 font-black text-xs md:text-sm">Rs. ${Number(i.price).toLocaleString()}</td><td class="py-2 md:py-3 px-2 text-center">${btn}</td></tr>`; 
-      }); 
-    }
-    function selectStock(name, price) { 
-      const rowId = document.getElementById('activeItemRowId').value;
-      const row = document.getElementById(`itemRow-${rowId}`);
-      if(row) {
-         row.querySelector('.item-cost').value = price; 
-         row.querySelector('.item-fault').value = name; 
-         row.querySelector('.item-stock-used').value = name; 
-         calculateTotals();
-      }
-      closeStockModal(); 
-    }
-    
-    function addStockItem() { const name = document.getElementById('sName').value, price = Number(document.getElementById('sPrice').value), qty = Number(document.getElementById('sQty').value); if(!name || !price || !qty) return Swal.fire('Error', 'Fill all fields', 'error'); let exist = inventory.find(i => i.name.toLowerCase() === name.toLowerCase()); if(exist) { exist.qty += qty; exist.price = price; } else inventory.push({ id: Date.now(), name, price, qty }); localStorage.setItem('smartx_inventory', JSON.stringify(inventory)); document.getElementById('stockForm').reset(); renderStockTable(); updateDashboardStats(); backgroundAutoSync(); }
-    
-    function renderStockTable(val="") { 
-      const tbody = document.getElementById('stockTableBody'); tbody.innerHTML = ''; 
-      // Sort out of stock to bottom
-      let filtered = inventory.filter(i => i.name.toLowerCase().includes(val.toLowerCase())).sort((a,b) => {
-          if (a.qty > 0 && b.qty === 0) return -1;
-          if (a.qty === 0 && b.qty > 0) return 1;
-          return 0; 
-      });
-      
-      filtered.forEach(i => { 
-        let rowClass = i.qty === 0 ? "bg-red-50/50 opacity-60" : "hover:bg-gray-50 transition-colors";
-        let qtyBadge = i.qty === 0 ? `<span class="text-[9px] md:text-[10px] bg-red-100 text-red-600 px-1.5 md:px-2 py-0.5 md:py-1 rounded font-black">OUT OF STOCK</span>` : `<span class="font-black ${i.qty<=2?'text-red-500 bg-red-50 px-2 py-1 rounded-lg':''}">${i.qty}</span>`;
-        tbody.innerHTML += `<tr class="${rowClass}"><td class="p-3 text-xs md:text-sm font-bold text-gray-800">${i.name}</td><td class="p-3 text-right text-xs md:text-sm font-black text-emerald-600">Rs. ${Number(i.price).toLocaleString()}</td><td class="p-3 text-center">${qtyBadge}</td><td class="p-3 text-center"><button onclick="promptDeleteStock(${i.id})" class="text-red-400 hover:text-red-600"><i class="fas fa-trash"></i></button></td></tr>`; 
-      }); 
-    }
-    
-    async function promptDeleteStock(id) {
-       const { value: pin } = await Swal.fire({ title: 'Enter Passcode', input: 'password', inputPlaceholder: 'System PIN required to delete', showCancelButton: true, confirmButtonColor: '#4f46e5' });
-       if (!pin) return;
-       try {
-           Swal.fire({title: 'Verifying...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
-           const res = await fetch(CONFIG_GAS_URL + "?action=verifyPin&pin=" + pin);
-           const data = await res.json();
-           if (data.success) {
-               deleteStock(id);
-               Swal.fire('Deleted!', 'Item has been removed.', 'success');
-           } else {
-               Swal.fire('Error', 'Incorrect Passcode', 'error');
-           }
-       } catch(e) {
-           Swal.fire('Error', 'Verification failed. Check internet.', 'error');
-       }
-    }
-    
-    function deleteStock(id) { inventory = inventory.filter(i => i.id !== id); localStorage.setItem('smartx_inventory', JSON.stringify(inventory)); renderStockTable(); updateDashboardStats(); backgroundAutoSync(); }
 
-    function renderSalesTable() {
-      const tbody = document.getElementById('salesTableBody'); tbody.innerHTML = '';
-      [...soldItems].reverse().forEach(s => {
-        tbody.innerHTML += `<tr><td class="p-3 text-[10px] md:text-xs text-gray-500">${new Date(s.date).toLocaleDateString('en-GB')}</td><td class="p-3 text-xs md:text-sm font-bold text-gray-800">${s.itemName}</td><td class="p-3 text-xs md:text-sm font-bold text-blue-600">${s.invoiceNo}</td><td class="p-3 text-xs md:text-sm font-medium text-gray-700">${s.customerName}</td></tr>`;
-      });
-    }
-  </script>
+// Clock
+setInterval(()=>{
+  const n=new Date();
+  document.getElementById('clk').textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('ddisp').textContent=n.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+},1000);
+
+// Toast & Nav
+function tst(m,t='ok'){ const ts=document.getElementById('tst'); ts.textContent=m; ts.style.background=t==='err'?'#ef4444':t==='warn'?'#f59e0b':'#1e293b'; ts.className='toast show'; setTimeout(()=>ts.classList.remove('show'),2000); }
+const TITLES={dashboard:'Dashboard','new-order':'New Order',inventory:'Inventory',expenses:'Tools & Expenses',sales:'Sales History'};
+function switchTab(id){
+  document.querySelectorAll('.view-section').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('ptitle').textContent=TITLES[id];
+  document.querySelectorAll('#dnav button').forEach(b=>{const on=b.dataset.t===id;b.classList.toggle('active',on);b.style.color=on?'':''});
+  document.querySelectorAll('.mob-btn').forEach(b=>b.classList.toggle('am',b.dataset.t===id));
+  if(id==='dashboard')renderDash(); if(id==='inventory')renderInv(); if(id==='expenses')renderExps(); if(id==='sales')renderSales();
+  if(id==='new-order'){document.getElementById('pinv').textContent=genInv();}
+}
+
+// 🛑 RANDOM INVOICE GENERATOR
+function genInv(){
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let res = 'INVSA-';
+  for(let i=0; i<5; i++) res += chars.charAt(Math.floor(Math.random()*chars.length));
+  return res;
+}
+
+// Dashboard Data
+let stFilter='';
+function renderDash(){
+  const pend=orders.filter(o=>o.status==='Pending').length;
+  const wrev=orders.filter(o=>o.status==='Delivered').reduce((s,o)=>s+Number(o.quotedPrice),0);
+  const wexp=exps.reduce((s,e)=>s+Number(e.cost),0);
+  const bal=orders.filter(o=>o.status!=='Delivered').reduce((s,o)=>s+(Number(o.quotedPrice)-Number(o.advance)),0);
+  const sv=inv.reduce((s,i)=>s+Number(i.cost)*Number(i.qty),0);
+  
+  document.getElementById('dp').textContent=pend;
+  document.getElementById('dw').textContent='Rs.'+wrev.toLocaleString();
+  document.getElementById('de').textContent='Rs.'+wexp.toLocaleString();
+  document.getElementById('db').textContent='Rs.'+bal.toLocaleString();
+  document.getElementById('ds').textContent='Rs.'+sv.toLocaleString();
+  renderOrders();
+}
+function filterStatus(s){stFilter=s; switchTab('dashboard'); setTimeout(()=>{document.getElementById('dsrch').value='';renderOrders();},50)}
+function renderOrders(){
+  const q=(document.getElementById('dsrch')?.value||'').toLowerCase();
+  let list=[...orders].reverse().filter(o=>{
+    const mq=!q||o.invoiceNo.toLowerCase().includes(q)||o.customerName.toLowerCase().includes(q)||(o.phone||'').includes(q);
+    const ms=!stFilter||stFilter==='All'||o.status===stFilter; return mq&&ms;
+  }).slice(0,30);
+  document.getElementById('obadge').textContent=list.length;
+  const tb=document.getElementById('otbody');
+  if(!list.length){tb.innerHTML=`<tr><td colspan="6" class="text-center py-6 text-gray-400 text-xs">No orders</td></tr>`;return;}
+  tb.innerHTML=list.map(o=>{
+    const bl=Number(o.quotedPrice)-Number(o.advance);
+    const items=o.items||[{fault:o.fault}]; const fstr=items.map(i=>i.fault).join(', ');
+    const sc=o.status==='Pending'?'pill-p':o.status==='Completed'?'pill-c':'pill-d';
+    return `<tr class="order-row" onclick="openOM('${o.invoiceNo}')">
+      <td class="py-2.5 px-4"><p class="font-black text-indigo-600 text-xs">${o.invoiceNo}</p></td>
+      <td class="py-2.5 px-4"><p class="font-bold text-xs">${o.customerName}</p><p class="text-[9px] text-gray-400">${o.phone}</p></td>
+      <td class="py-2.5 px-4 max-w-[150px] truncate"><p class="text-xs font-bold text-gray-700">${o.model||'Unknown Device'}</p><p class="text-[10px] text-gray-400">${fstr}</p></td>
+      <td class="py-2.5 px-4"><p class="font-black text-xs ${bl>0?'text-red-500':'text-emerald-500'}">${bl>0?'Rs.'+bl.toLocaleString():'PAID ✓'}</p></td>
+      <td class="py-2.5 px-4"><span class="pill ${sc}">${o.status}</span></td>
+      <td class="py-2.5 px-4 text-right" onclick="event.stopPropagation()">
+        <button onclick="sendWARow('${o.invoiceNo}')" class="w-7 h-7 rounded bg-green-50 text-green-500 hover:bg-green-100 mr-1"><i class="fab fa-whatsapp"></i></button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// New Order Form
+let rids=[];
+function addRow(){
+  const id='r'+Date.now(); rids.push(id);
+  const div=document.createElement('div'); div.className='irow grid grid-cols-12 gap-2 items-end'; div.id='w-'+id;
+  div.innerHTML=`<div class="col-span-12 md:col-span-4"><label class="lbl">Fault / Issue *</label><input type="text" id="ff-${id}" class="inp py-1.5 text-xs"></div>
+    <div class="col-span-6 md:col-span-2"><label class="lbl flex justify-between">Cost <button type="button" onclick="openSM('${id}')" class="text-indigo-500 text-[9px]"><i class="fas fa-box"></i></button></label><input type="number" id="fc-${id}" oninput="calcT()" class="inp py-1.5 text-xs bg-red-50 text-red-600"></div>
+    <div class="col-span-6 md:col-span-2"><label class="lbl">Price</label><input type="number" id="fp-${id}" oninput="calcT()" class="inp py-1.5 text-xs bg-green-50 text-green-700"></div>
+    <div class="col-span-10 md:col-span-3"><label class="lbl">Warranty</label><select id="fw-${id}" class="inp py-1.5 text-xs">${['None','1 Month','3 Months','6 Months','1 Year'].map(w=>`<option>${w}</option>`).join('')}</select></div>
+    <div class="col-span-2 md:col-span-1 text-right"><button onclick="remRow('${id}')" class="w-7 h-7 bg-red-50 text-red-400 rounded"><i class="fas fa-times text-xs"></i></button></div>`;
+  document.getElementById('icontainer').appendChild(div); calcT();
+}
+function remRow(id){rids=rids.filter(r=>r!==id);document.getElementById('w-'+id)?.remove();calcT()}
+function calcT(){
+  let tc=0,tp=0;
+  rids.forEach(id=>{tc+=Number(document.getElementById('fc-'+id)?.value||0);tp+=Number(document.getElementById('fp-'+id)?.value||0)});
+  document.getElementById('tc').textContent='Rs.'+tc; document.getElementById('tp').textContent='Rs.'+tp;
+  document.getElementById('tb').textContent='Rs.'+(tp-Number(document.getElementById('fa').value||0));
+}
+function clearForm(){ ['fc','fp','fm','fa','fn'].forEach(id=>document.getElementById(id).value=''); document.getElementById('icontainer').innerHTML=''; rids=[]; addRow(); document.getElementById('pinv').textContent=genInv(); calcT();}
+function saveOrd(print){
+  const name=document.getElementById('fc').value.trim(), phone=document.getElementById('fp').value.trim();
+  if(!name||!phone){tst('Name & Phone required!','err');return}
+  const items=rids.map(id=>({fault:document.getElementById('ff-'+id)?.value||'',cost:Number(document.getElementById('fc-'+id)?.value||0),price:Number(document.getElementById('fp-'+id)?.value||0),warranty:document.getElementById('fw-'+id)?.value||'None'})).filter(i=>i.fault);
+  if(!items.length){tst('Add repair item!','err');return}
+  items.forEach(it=>{const si=inv.find(i=>i.name===it.fault);if(si&&si.qty>0)si.qty--;});
+  const tp=items.reduce((s,i)=>s+i.price,0), ad=Number(document.getElementById('fa').value||0);
+  const o={invoiceNo:document.getElementById('pinv').textContent,customerName:name,phone:'0'+phone,model:document.getElementById('fm').value,items,fault:items.map(i=>i.fault).join(', '),quotedPrice:tp,advance:ad,balance:tp-ad,customerMessage:document.getElementById('fn').value,date:new Date().toISOString(),status:'Pending'};
+  orders.push(o); sa(); syncData(); tst('Saved: '+o.invoiceNo);
+  if(print){localStorage.setItem('currentOrder',JSON.stringify(o));window.open('bil.html','_blank')}
+  clearForm(); switchTab('dashboard');
+}
+
+// 🛑 EDIT ORDER LOGIC 🛑
+let curInv=null;
+let tempOMItems=[];
+
+function openOM(invNo){
+  const o=orders.find(x=>x.invoiceNo===invNo); if(!o)return;
+  curInv=invNo;
+  document.getElementById('om-inv').textContent=o.invoiceNo;
+  document.getElementById('om-n').value=o.customerName;
+  document.getElementById('om-ph').value=o.phone;
+  document.getElementById('om-ad').value=o.advance;
+  
+  tempOMItems = JSON.parse(JSON.stringify(o.items || [{fault:o.fault, warranty:o.warranty||'None', price:o.quotedPrice, cost:o.cost||0}]));
+  renderOMItems();
+  
+  ['Pending','Completed','Delivered'].forEach(s=>{
+    const b=document.getElementById('sb-'+s); const on=o.status===s;
+    b.style.borderColor=on?(s==='Pending'?'#f59e0b':s==='Completed'?'#3b82f6':'#10b981'):'transparent';
+    b.style.color=on?(s==='Pending'?'#b45309':s==='Completed'?'#1d4ed8':'#065f46'):'#9ca3af';
+  });
+  document.getElementById('omodal').classList.remove('hidden');
+}
+
+function renderOMItems(){
+  let h='';
+  tempOMItems.forEach((it,i)=>{
+    h+=`<div class="flex gap-2 items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
+      <input type="text" value="${it.fault}" onchange="tempOMItems[${i}].fault=this.value" class="inp py-1 text-xs w-1/3" placeholder="Item Name">
+      <input type="number" value="${it.price}" onchange="tempOMItems[${i}].price=Number(this.value); calcOMTot()" class="inp py-1 text-xs w-1/4" placeholder="Price">
+      <select onchange="tempOMItems[${i}].warranty=this.value" class="inp py-1 text-xs w-1/4">${['None','1 Month','3 Months','6 Months','1 Year'].map(w=>`<option${it.warranty===w?' selected':''}>${w}</option>`).join('')}</select>
+      <button onclick="remModalItem(${i})" class="w-6 h-6 bg-red-100 text-red-500 rounded flex-shrink-0 text-[10px]"><i class="fas fa-trash"></i></button>
+    </div>`;
+  });
+  document.getElementById('om-items').innerHTML=h;
+  calcOMTot();
+}
+function addModalItem(){ tempOMItems.push({fault:'', price:0, cost:0, warranty:'None'}); renderOMItems(); }
+function remModalItem(i){ tempOMItems.splice(i,1); renderOMItems(); }
+function calcOMTot(){
+  const tPrice = tempOMItems.reduce((s,it)=>s+(Number(it.price)||0), 0);
+  document.getElementById('om-pr').value = tPrice;
+  rcM();
+}
+function rcM(){
+  const p=Number(document.getElementById('om-pr').value||0), a=Number(document.getElementById('om-ad').value||0);
+  document.getElementById('om-bl').value='Rs.'+(p-a);
+}
+function closeOM(){document.getElementById('omodal').classList.add('hidden');curInv=null}
+
+function setSt(s){
+  const o=orders.find(x=>x.invoiceNo===curInv); if(!o)return;
+  o.status=s; if(s==='Delivered')o.deliveredDate=new Date().toISOString();
+  sa(); syncData(); tst('Status: '+s); openOM(curInv);
+}
+function saveOM(){
+  const o=orders.find(x=>x.invoiceNo===curInv); if(!o)return;
+  o.customerName=document.getElementById('om-n').value;
+  o.phone=document.getElementById('om-ph').value;
+  o.items=tempOMItems.filter(i=>i.fault); // Save the updated items array
+  o.fault=o.items.map(i=>i.fault).join(', ');
+  o.quotedPrice=Number(document.getElementById('om-pr').value);
+  o.advance=Number(document.getElementById('om-ad').value);
+  o.balance=o.quotedPrice-o.advance;
+  sa(); syncData(true); closeOM(); renderDash(); tst('✓ Updated Successfully');
+}
+function prtOrdModal(){ const o=orders.find(x=>x.invoiceNo===curInv); localStorage.setItem('currentOrder',JSON.stringify(o)); window.open('bil.html','_blank'); }
+
+// 🛑 WHATSAPP INTEGRATION 🛑
+function sendWARow(invNo) { generateWA(orders.find(x=>x.invoiceNo===invNo)); }
+function sendWA() { generateWA(orders.find(x=>x.invoiceNo===curInv)); }
+function generateWA(o) {
+  if(!o) return;
+  let p = o.phone.trim();
+  if(p.startsWith('0')) p = '94' + p.substring(1);
+  const text = `Hello ${o.customerName},%0A%0AYour SmartX repair order *${o.invoiceNo}* has been updated.%0ATotal Amount: Rs.${o.quotedPrice}%0AAdvance: Rs.${o.advance}%0A%0ATrack your repair live here:%0A${CONFIG_TRACK_URL}?inv=${o.invoiceNo}%0A%0AThank you!`;
+  window.open(`https://wa.me/${p}?text=${text}`, '_blank');
+}
+
+// Stock Picker
+let stgId=null;
+function openSM(id){stgId=id;document.getElementById('ss2').value='';renderSL();document.getElementById('stkmodal').classList.remove('hidden')}
+function closeSM(){document.getElementById('stkmodal').classList.add('hidden')}
+function renderSL(){
+  const q=document.getElementById('ss2').value.toLowerCase(); const f=inv.filter(i=>i.qty>0&&(!q||i.name.toLowerCase().includes(q)));
+  document.getElementById('slist').innerHTML=f.length?f.map(i=>`<div onclick="pickS('${i.name}',${i.cost})" class="p-2 border-b cursor-pointer hover:bg-gray-50 flex justify-between"><span class="text-xs font-bold">${i.name}</span><span class="text-[10px] text-red-500">Rs.${i.cost} (Qty:${i.qty})</span></div>`).join(''):'<p class="text-xs text-center">No Stock</p>';
+}
+function pickS(n,c){ const fn=document.getElementById('ff-'+stgId), cn=document.getElementById('fc-'+stgId); if(fn)fn.value=n; if(cn){cn.value=c; calcT();} closeSM(); }
+
+// Inventory & Exps
+function renderInv(){
+  const q=(document.getElementById('isrch')?.value||'').toLowerCase();
+  const tb=document.getElementById('itbody');
+  const f=inv.filter(i=>!q||i.name.toLowerCase().includes(q));
+  tb.innerHTML=f.length?f.map((i,idx)=>`<tr><td class="py-2 font-bold">${i.name}</td><td class="py-2 text-red-500">${i.cost}</td><td class="py-2">${i.qty}</td><td class="py-2 text-right"><button onclick="requireAuth(()=>delInv('${i.name}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan=\"4\" class=\"text-center py-4 text-xs text-gray-400\">Empty</td></tr>';
+}
+function addInv(){
+  const n=document.getElementById('in').value, c=Number(document.getElementById('ic').value), q=Number(document.getElementById('iq').value);
+  if(!n||!c)return tst('Fill details','err');
+  inv.push({name:n,cost:c,qty:q}); sa(); syncData();
+  document.getElementById('in').value=''; document.getElementById('ic').value=''; document.getElementById('iq').value=''; renderInv();
+}
+function delInv(name){ const idx=inv.findIndex(i=>i.name===name); if(idx>-1){ inv.splice(idx,1); delInvs.push(name); sa(); syncData(); renderInv(); tst('Deleted','err'); } }
+
+function renderExps(){
+  document.getElementById('etotal').textContent='Rs.'+exps.reduce((s,e)=>s+e.cost,0);
+  document.getElementById('etbody').innerHTML=exps.length?[...exps].reverse().map(e=>`<tr><td class="py-2 text-gray-400">${e.date}</td><td class="py-2 font-bold">${e.desc}</td><td class="py-2 text-red-500">${e.cost}</td><td class="py-2 text-right"><button onclick="requireAuth(()=>delExp('${e.date}','${e.desc}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan=\"4\" class=\"text-center py-4 text-xs text-gray-400\">Empty</td></tr>';
+}
+function addExp(){
+  const d=document.getElementById('ed').value, b=document.getElementById('eb').value, c=Number(document.getElementById('ec').value);
+  if(!d||!c)return;
+  exps.push({date:new Date().toLocaleDateString('en-GB'),desc:d,brand:b,cost:c}); sa(); syncData();
+  document.getElementById('ed').value=''; document.getElementById('eb').value=''; document.getElementById('ec').value=''; renderExps();
+}
+function delExp(dt,ds){ const idx=exps.findIndex(e=>e.date===dt&&e.desc===ds); if(idx>-1){ exps.splice(idx,1); delExps.push(dt+ds); sa(); syncData(); renderExps(); tst('Deleted','err'); } }
+
+// 🛑 INVOICE SEARCHBAR (Search by Invoice/Name)
+function renderSales(){
+  const q=(document.getElementById('ss')?.value||'').toLowerCase();
+  const f=[...orders].reverse().filter(o=>!q||o.invoiceNo.toLowerCase().includes(q)||o.customerName.toLowerCase().includes(q));
+  document.getElementById('stbody').innerHTML=f.length?f.map(o=>`<tr><td class="py-2">${new Date(o.date).toLocaleDateString('en-GB')}</td><td class="py-2 font-black text-indigo-600">${o.invoiceNo}</td><td class="py-2 font-bold">${o.customerName}</td><td class="py-2 font-black">${o.quotedPrice}</td><td class="py-2 font-black ${o.balance<=0?'text-emerald-500':'text-red-500'}">${o.balance<=0?'PAID ✓':o.balance}</td><td class="py-2"><span class="pill ${o.status==='Pending'?'pill-p':'pill-c'}">${o.status}</span></td><td class="py-2 text-right"><button onclick="requireAuth(()=>delOrd('${o.invoiceNo}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan=\"7\" class=\"text-center py-4 text-xs text-gray-400\">Empty</td></tr>';
+}
+function delOrd(invNo){
+  orders=orders.filter(o=>o.invoiceNo!==invNo); delOrds.push(invNo); sa(); syncData(); renderSales(); renderDash(); tst('Deleted','err');
+}
+
+initLock();
+clearForm(); switchTab('dashboard');
+</script>
 </body>
 </html>
