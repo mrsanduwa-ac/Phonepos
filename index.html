@@ -30,7 +30,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 .pill-p{background:#fef3c7;color:#b45309}
 .pill-c{background:#dbeafe;color:#1d4ed8}
 .pill-d{background:#d1fae5;color:#065f46}
-.wpill{background:#d1fae5;color:#047857;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;display:inline-flex;align-items:center;gap:2px}
 .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.65);backdrop-filter:blur(6px);z-index:800;display:flex;align-items:center;justify-content:center;padding:12px;animation:fIn .2s}
 @keyframes fIn{from{opacity:0}to{opacity:1}}
 .mbox{background:#fff;border-radius:22px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;animation:mIn .3s cubic-bezier(.4,0,.2,1)}
@@ -44,12 +43,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 .btn{padding:10px 18px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;border:none;display:inline-flex;align-items:center;gap:6px;justify-content:center}
 .btn:active{transform:scale(.97)}
 .bp{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.3)}
-.bp:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(99,102,241,.4)}
 .bs{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,.25)}
 .bw{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;box-shadow:0 4px 12px rgba(37,211,102,.25)}
 .br{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
 .bg2{background:#f1f5f9;color:#475569}
-.bg2:hover{background:#e2e8f0}
 .irow{background:#f8fafc;border:1.5px solid #e8ecf4;border-radius:14px;padding:12px;margin-bottom:8px;animation:slideUp .2s}
 .content-area{padding-bottom:88px}
 @media(min-width:768px){.content-area{padding-bottom:28px}}
@@ -58,7 +55,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 .mob-btn.am::after{content:'';position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);width:16px;height:2.5px;background:#6366f1;border-radius:2px}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
-
 /* Lock Screen PIN UI */
 .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #6366f1; transition: all 0.2s; }
 .pin-dot.filled { background-color: #6366f1; box-shadow: 0 0 10px rgba(99,102,241,0.5); }
@@ -72,7 +68,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 
 <!-- 🛑 CONFIGURATION 🛑 -->
 <script>
-  // 🛑 Apps Script link 🛑
   const CONFIG_GAS_URL = "https://script.google.com/macros/s/AKfycbzpS2XSiRZrqwPQdn_Dow-V4R4dWbgqc4rw4TSubn0XoTzhvIdFl-Vz0apOJZSVAbIZfg/exec";
   const CONFIG_TRACK_URL = "https://mrsanduwa-ac.github.io/track.html"; 
 </script>
@@ -83,17 +78,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     <div class="w-20 h-20 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
     <i class="fas fa-cloud-download-alt absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-indigo-500 text-xl"></i>
   </div>
-  <h2 class="text-white text-lg font-black tracking-widest mt-6">DATA SYNC CHEYYUNNU</h2>
-  <p class="text-indigo-200 text-xs mt-2 font-semibold animate-pulse" id="sync-msg">Cloud-umayi surakshithamayi bandhippikkunnu...</p>
+  <h2 class="text-white text-lg font-black tracking-widest mt-6">SYNCING DATA</h2>
+  <p class="text-indigo-200 text-xs mt-2 font-semibold animate-pulse" id="sync-msg">Securely connecting to Cloud...</p>
 </div>
 
 <!-- LOCK SCREEN -->
 <div id="lock-screen" class="fixed inset-0 z-[99999] bg-slate-900 flex flex-col items-center justify-center hidden">
   <div class="text-center mb-8">
     <i class="fas fa-lock text-4xl text-indigo-400 mb-4"></i>
-    <h2 class="text-white text-xl font-bold tracking-widest">PIN NALKUKA</h2>
+    <h2 class="text-white text-xl font-bold tracking-widest">ENTER PIN</h2>
     <p class="text-slate-400 text-xs mt-1">SmartX Secure System</p>
-    <p class="text-slate-500 text-[10px] mt-2 italic">(Ningalkku keyboard upayogikkam)</p>
   </div>
   <div class="flex gap-4 mb-10" id="pin-dots">
     <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
@@ -110,10 +104,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
   <div id="auth-loader" class="text-indigo-400 mt-6 hidden"><i class="fas fa-circle-notch fa-spin text-2xl"></i></div>
 </div>
 
-<!-- DELETE Auth SCREEN (Mini) -->
+<!-- DELETE Auth SCREEN -->
 <div id="del-screen" class="modal-bg hidden !z-[9999]">
   <div class="bg-slate-900 rounded-3xl p-6 text-center max-w-[320px] w-full border border-slate-700 shadow-2xl">
-    <h3 class="text-white font-bold mb-4 text-sm text-red-400"><i class="fas fa-shield-alt mr-2"></i>Delete Cheyyan Auth Aavashyamanu</h3>
+    <h3 class="text-white font-bold mb-4 text-sm text-red-400"><i class="fas fa-shield-alt mr-2"></i>Auth Required</h3>
     <div class="flex justify-center gap-3 mb-6" id="del-dots">
       <div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div>
       <div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div>
@@ -139,25 +133,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     </div>
     <nav class="mt-4 flex flex-col px-3 gap-0.5" id="dnav">
       <button onclick="switchTab('dashboard')" data-t="dashboard" class="nav-item active w-full text-left flex items-center px-3.5 py-2.5 text-white gap-2.5 text-[13px] font-semibold"><i class="fas fa-chart-pie text-indigo-200 w-4 text-center text-sm"></i>Dashboard</button>
-      <button onclick="switchTab('new-order')" data-t="new-order" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-plus-circle w-4 text-center text-sm"></i>Puthiya Order</button>
-      <button onclick="switchTab('inventory')" data-t="inventory" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-boxes w-4 text-center text-sm"></i>Stock</button>
-      <button onclick="switchTab('expenses')" data-t="expenses" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-wrench w-4 text-center text-sm"></i>Chilavukal</button>
+      <button onclick="switchTab('new-order')" data-t="new-order" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-plus-circle w-4 text-center text-sm"></i>New Order</button>
+      <button onclick="switchTab('inventory')" data-t="inventory" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-boxes w-4 text-center text-sm"></i>Inventory</button>
+      <button onclick="switchTab('expenses')" data-t="expenses" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-wrench w-4 text-center text-sm"></i>Tools & Expenses</button>
       <button onclick="switchTab('sales')" data-t="sales" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-history w-4 text-center text-sm"></i>Sales History</button>
     </nav>
-  </div>
-  
-  <div class="mt-auto">
-    <!-- Watermark -->
-    <div class="text-center pb-4 text-[10px] text-indigo-200/40 font-semibold px-4">
-      <a href="https://designverse.lk/track" target="_blank" class="hover:text-indigo-300 transition-colors">© 2026 DesignVerse by Sandusha Avishkha <br> SmartX POS</a>
-    </div>
-    <div class="p-4 border-t border-white/10 flex items-center gap-2.5 bg-black/20">
-      <div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white font-bold text-sm"><i class="fas fa-user-shield"></i></div>
-      <div class="flex-1 min-w-0">
-        <p class="text-sm font-bold text-white">Admin</p>
-        <div class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div><p class="text-[10px] text-emerald-400 font-semibold">Secure Mode</p></div>
-      </div>
-    </div>
   </div>
 </aside>
 
@@ -169,10 +149,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
       <h2 class="text-lg font-black text-gray-800 hidden md:block" id="ptitle">Dashboard</h2>
     </div>
     <div class="flex items-center gap-3">
-      <!-- Sync Status -->
+      <!-- Sync Status Button -->
       <button onclick="manualSync()" class="bg-gray-50 border border-gray-200 rounded-full px-3 py-1.5 flex items-center gap-1.5 hover:bg-gray-100 transition-colors">
         <i id="sync-icon" class="fas fa-cloud-check text-emerald-500 text-xs"></i>
-        <span id="sync-text" class="text-[10px] font-bold text-gray-500 hidden md:inline">Sync Cheythu</span>
+        <span id="sync-text" class="text-[10px] font-bold text-gray-500 hidden md:inline">Cloud Sync</span>
       </button>
       <div class="w-px h-5 bg-gray-200 hidden md:block"></div>
       <div class="hidden md:block text-right">
@@ -187,23 +167,23 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     <div id="dashboard" class="view-section active p-4 md:p-7">
       <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
         <div onclick="filterStatus('Pending')" class="stat-card col-span-2 md:col-span-1" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
-          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-amber-100 uppercase tracking-wider">Pending Repairukal</p><div class="cicon"><i class="fas fa-tools text-white text-sm"></i></div></div>
-          <h3 class="text-3xl font-black text-white" id="dp">0</h3><p class="text-amber-200 text-[10px] font-semibold mt-1">Kanan click cheyyuka →</p></div><div class="shine"></div>
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-amber-100 uppercase tracking-wider">Pending Repair</p><div class="cicon"><i class="fas fa-tools text-white text-sm"></i></div></div>
+          <h3 class="text-3xl font-black text-white" id="dp">0</h3><p class="text-amber-200 text-[10px] font-semibold mt-1">Tap to view →</p></div><div class="shine"></div>
         </div>
         <div class="stat-card" style="background:linear-gradient(135deg,#10b981,#059669)">
-          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-emerald-100 uppercase tracking-wider">Azhchayile Labham</p><div class="cicon"><i class="fas fa-chart-line text-white text-sm"></i></div></div>
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-emerald-100 uppercase tracking-wider">Weekly Profit</p><div class="cicon"><i class="fas fa-chart-line text-white text-sm"></i></div></div>
           <h3 class="text-lg font-black text-white leading-tight" id="dw">Rs. 0</h3></div><div class="shine"></div>
         </div>
         <div class="stat-card" style="background:linear-gradient(135deg,#ef4444,#dc2626)">
-          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-red-100 uppercase tracking-wider">Aake Chilavukal</p><div class="cicon"><i class="fas fa-receipt text-white text-sm"></i></div></div>
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-red-100 uppercase tracking-wider">Total Expenses</p><div class="cicon"><i class="fas fa-receipt text-white text-sm"></i></div></div>
           <h3 class="text-lg font-black text-white leading-tight" id="de">Rs. 0</h3></div><div class="shine"></div>
         </div>
         <div class="stat-card col-span-2 md:col-span-1" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
-          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">Pratheekshikkunna Balance</p><div class="cicon"><i class="fas fa-wallet text-white text-sm"></i></div></div>
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">Expected Balance</p><div class="cicon"><i class="fas fa-wallet text-white text-sm"></i></div></div>
           <h3 class="text-lg font-black text-white leading-tight" id="db">Rs. 0</h3></div><div class="shine"></div>
         </div>
         <div onclick="switchTab('inventory')" class="stat-card" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">
-          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-sky-100 uppercase tracking-wider">Stock Moolyam</p><div class="cicon"><i class="fas fa-box-open text-white text-sm"></i></div></div>
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-sky-100 uppercase tracking-wider">Stock Value</p><div class="cicon"><i class="fas fa-box-open text-white text-sm"></i></div></div>
           <h3 class="text-lg font-black text-white leading-tight" id="ds">Rs. 0</h3></div><div class="shine"></div>
         </div>
       </div>
@@ -213,15 +193,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
         <div class="p-4 md:p-5 border-b border-gray-100 flex flex-col md:flex-row gap-2.5 items-start md:items-center justify-between">
           <div class="flex items-center gap-2.5">
             <div class="w-7 h-7 rounded-xl bg-indigo-100 flex items-center justify-center"><i class="fas fa-clipboard-list text-indigo-600 text-xs"></i></div>
-            <h3 class="font-black text-gray-800 text-sm uppercase tracking-wider">Repair Orderukal</h3>
+            <h3 class="font-black text-gray-800 text-sm uppercase tracking-wider">Repair Orders</h3>
             <span id="obadge" class="bg-indigo-100 text-indigo-700 text-[10px] font-black px-2 py-0.5 rounded-full">0</span>
           </div>
           <div class="flex gap-2 w-full md:w-auto">
             <div class="relative flex-1 md:w-60">
-              <input id="dsrch" type="text" placeholder="Invoice, customer thirayuka..." oninput="renderOrders()" class="inp text-xs py-2 pl-8">
+              <input id="dsrch" type="text" placeholder="Search invoice, customer..." oninput="renderOrders()" class="inp text-xs py-2 pl-8">
               <i class="fas fa-search absolute left-2.5 top-2.5 text-gray-400 text-[10px]"></i>
             </div>
-            <button onclick="switchTab('new-order')" class="btn bp text-xs py-2 px-3 whitespace-nowrap"><i class="fas fa-plus text-[10px]"></i>Puthiya</button>
+            <button onclick="switchTab('new-order')" class="btn bp text-xs py-2 px-3 whitespace-nowrap"><i class="fas fa-plus text-[10px]"></i>New</button>
           </div>
         </div>
         <div class="overflow-x-auto">
@@ -244,13 +224,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     <div id="new-order" class="view-section p-4 md:p-7">
       <div class="max-w-2xl mx-auto">
         <div class="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl p-4 mb-4 flex items-center justify-between shadow-lg">
-          <div><p class="text-[10px] text-indigo-200 font-bold uppercase tracking-wider">Puthiya Invoice</p><h3 class="text-xl font-black text-white tracking-wider" id="pinv">INVSA-XXXXX</h3></div>
+          <div><p class="text-[10px] text-indigo-200 font-bold uppercase tracking-wider">New Invoice</p><h3 class="text-xl font-black text-white tracking-wider" id="pinv">INVSA-XXXXX</h3></div>
         </div>
         <!-- Customer -->
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-3.5">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
-              <label class="lbl">Customer Peru *</label>
+              <label class="lbl">Customer Name *</label>
               <input type="text" id="fc" list="customersList" oninput="autoFillCust(this.value)" class="inp" placeholder="Type name...">
             </div>
             <div><label class="lbl">WhatsApp *</label>
@@ -262,8 +242,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
         <!-- Items -->
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-3.5">
           <div class="flex items-center justify-between mb-3.5">
-            <h3 class="text-xs font-black text-gray-800 uppercase tracking-wider">Repair Itemukalum Kuttangalum</h3>
-            <button onclick="addRow()" class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg">Item Cherkkuka</button>
+            <h3 class="text-xs font-black text-gray-800 uppercase tracking-wider">Repair Items & Faults</h3>
+            <button onclick="addRow()" class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg">Add Item</button>
           </div>
           <div id="icontainer"></div>
         </div>
@@ -271,16 +251,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-4">
           <div class="bg-white rounded-2xl p-4 border border-gray-100"><label class="lbl">Customer Note</label><textarea id="fn" class="inp h-24 resize-none"></textarea></div>
           <div class="bg-white rounded-2xl p-4 border border-gray-100">
-            <div class="flex justify-between mb-2"><span class="text-xs font-bold text-red-500 uppercase">Uddesha Chilavu</span><span class="font-black text-red-600" id="tc">Rs. 0</span></div>
-            <div class="flex justify-between mb-3"><span class="text-xs font-bold text-emerald-600 uppercase">Paranja Vila</span><span class="font-black text-emerald-700 text-lg" id="tp">Rs. 0</span></div>
+            <div class="flex justify-between mb-2"><span class="text-xs font-bold text-red-500 uppercase">Est. Cost</span><span class="font-black text-red-600" id="tc">Rs. 0</span></div>
+            <div class="flex justify-between mb-3"><span class="text-xs font-bold text-emerald-600 uppercase">Quoted Price</span><span class="font-black text-emerald-700 text-lg" id="tp">Rs. 0</span></div>
             <label class="lbl">Advance (Rs)</label><input type="number" id="fa" placeholder="0" oninput="calcT()" class="inp mt-1 mb-2.5">
-            <div class="flex justify-between border-t border-gray-100 pt-2.5"><span class="text-xs font-bold">Baakki Thuka</span><span class="font-black text-gray-800" id="tb">Rs. 0</span></div>
+            <div class="flex justify-between border-t border-gray-100 pt-2.5"><span class="text-xs font-bold">Balance Due</span><span class="font-black text-gray-800" id="tb">Rs. 0</span></div>
           </div>
         </div>
         <div class="flex justify-end gap-2.5">
-          <button onclick="clearForm()" class="btn bg2 w-auto">Clear Cheyyuka</button>
-          <button onclick="saveOrd(false)" class="btn bs w-auto">Save Cheyyuka</button>
-          <button onclick="saveOrd(true)" class="btn bp w-auto">Save & Print Cheyyuka</button>
+          <button onclick="clearForm()" class="btn bg2 w-auto">Clear</button>
+          <button onclick="saveOrd(false)" class="btn bs w-auto">Save Only</button>
+          <button onclick="saveOrd(true)" class="btn bp w-auto">Save & Print</button>
         </div>
       </div>
     </div>
@@ -289,24 +269,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     <div id="inventory" class="view-section p-4 md:p-7">
       <div class="flex flex-col md:flex-row gap-4">
         <div class="w-full md:w-64 bg-white rounded-2xl border border-gray-100 shadow-sm p-4 h-fit">
-          <h3 class="text-xs font-black mb-3">Stock Cherkkuka</h3>
+          <h3 class="text-xs font-black mb-3">Add Stock</h3>
           <div class="space-y-3">
-            <div><label class="lbl">Item Peru *</label><input type="text" id="in" class="inp"></div>
+            <div><label class="lbl">Item Name *</label><input type="text" id="in" class="inp"></div>
             <div class="grid grid-cols-2 gap-2">
-              <div><label class="lbl">Chilavu (Rs) *</label><input type="number" id="ic" class="inp"></div>
-              <div><label class="lbl">Alavu *</label><input type="number" id="iq" class="inp"></div>
+              <div><label class="lbl">Cost (Rs) *</label><input type="number" id="ic" class="inp"></div>
+              <div><label class="lbl">Qty *</label><input type="number" id="iq" class="inp"></div>
             </div>
-            <button onclick="addInv()" class="btn bp w-full">Stock-ilekku Cherkkuka</button>
+            <button onclick="addInv()" class="btn bp w-full">Add to Stock</button>
           </div>
         </div>
         <div class="flex-1 bg-white rounded-2xl p-4 border border-gray-100">
           <div class="flex justify-between items-center mb-3">
             <h3 class="text-xs font-black">Stock List</h3>
-            <input type="text" id="isrch" placeholder="Thirayuka..." oninput="renderInv()" class="inp w-36 text-xs py-1.5">
+            <input type="text" id="isrch" placeholder="Search..." oninput="renderInv()" class="inp w-36 text-xs py-1.5">
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-xs">
-              <thead><tr class="border-b"><th class="py-2 text-left">Item</th><th class="py-2 text-left">Chilavu</th><th class="py-2 text-left">Alavu</th><th class="py-2 text-right">Act</th></tr></thead>
+              <thead><tr class="border-b"><th class="py-2 text-left">Item</th><th class="py-2 text-left">Cost</th><th class="py-2 text-left">Qty</th><th class="py-2 text-right">Act</th></tr></thead>
               <tbody id="itbody"></tbody>
             </table>
           </div>
@@ -318,21 +298,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     <div id="expenses" class="view-section p-4 md:p-7">
       <div class="flex flex-col md:flex-row gap-4">
         <div class="w-full md:w-64 bg-white rounded-2xl p-4 border border-gray-100 h-fit">
-          <h3 class="text-xs font-black mb-3">Chilavu Cherkkuka</h3>
+          <h3 class="text-xs font-black mb-3">Add Expense</h3>
           <div class="space-y-3">
-            <div><label class="lbl">Vivaranam *</label><input type="text" id="ed" class="inp"></div>
+            <div><label class="lbl">Description *</label><input type="text" id="ed" class="inp"></div>
             <div><label class="lbl">Brand</label><input type="text" id="eb" class="inp"></div>
-            <div><label class="lbl">Chilavu (Rs) *</label><input type="number" id="ec" class="inp"></div>
-            <button onclick="addExp()" class="btn br w-full">Record Cheyyuka</button>
+            <div><label class="lbl">Cost (Rs) *</label><input type="number" id="ec" class="inp"></div>
+            <button onclick="addExp()" class="btn br w-full">Record</button>
           </div>
         </div>
         <div class="flex-1 bg-white rounded-2xl p-4 border border-gray-100">
           <div class="flex justify-between items-center mb-3">
-            <h3 class="text-xs font-black">Chilavu Recordukal</h3>
+            <h3 class="text-xs font-black">Expense Records</h3>
             <span class="text-xs font-black text-red-600 bg-red-50 px-2 py-1 rounded-xl" id="etotal">Rs. 0</span>
           </div>
           <table class="w-full text-xs">
-            <thead><tr class="border-b"><th class="py-2 text-left">Thiyathi</th><th class="py-2 text-left">Vivaranam</th><th class="py-2 text-left">Chilavu</th><th class="py-2 text-right">Act</th></tr></thead>
+            <thead><tr class="border-b"><th class="py-2 text-left">Date</th><th class="py-2 text-left">Desc</th><th class="py-2 text-left">Cost</th><th class="py-2 text-right">Act</th></tr></thead>
             <tbody id="etbody"></tbody>
           </table>
         </div>
@@ -343,14 +323,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     <div id="sales" class="view-section p-4 md:p-7">
       <div class="bg-white rounded-2xl p-4 border border-gray-100">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-xs font-black">Ella Orderukalum</h3>
-          <input type="text" id="ss" placeholder="Invoice thirayuka..." oninput="renderSales()" class="inp w-48 text-xs py-2">
+          <h3 class="text-xs font-black">All Orders</h3>
+          <input type="text" id="ss" placeholder="Search invoices..." oninput="renderSales()" class="inp w-48 text-xs py-2">
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-xs">
             <thead><tr class="bg-gray-50 border-b">
-              <th class="py-2 px-2 text-left">Thiyathi</th><th class="py-2 px-2 text-left">Invoice</th><th class="py-2 px-2 text-left">Customer</th>
-              <th class="py-2 px-2 text-left">Aake</th><th class="py-2 px-2 text-left">Baakki</th><th class="py-2 px-2 text-left">Status</th><th class="py-2 px-2 text-right">Act</th>
+              <th class="py-2 px-2 text-left">Date</th><th class="py-2 px-2 text-left">Invoice</th><th class="py-2 px-2 text-left">Customer</th>
+              <th class="py-2 px-2 text-left">Total</th><th class="py-2 px-2 text-left">Bal</th><th class="py-2 px-2 text-left">Status</th><th class="py-2 px-2 text-right">Act</th>
             </tr></thead>
             <tbody id="stbody"></tbody>
           </table>
@@ -393,16 +373,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     <!-- Dynamic Items Area -->
     <div class="mb-3 bg-white border border-gray-100 rounded-xl p-3">
       <div class="flex justify-between items-center mb-2">
-        <label class="lbl !mb-0 text-indigo-500">Repair Itemukalum Kuttangalum</label>
-        <button onclick="addModalItem()" class="text-[9px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-bold">+ Item Cherkkuka</button>
+        <label class="lbl !mb-0 text-indigo-500">Repair Items / Faults</label>
+        <button onclick="addModalItem()" class="text-[9px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-bold">+ Add Item</button>
       </div>
       <div id="om-items" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
     </div>
 
     <div class="grid grid-cols-3 gap-2 mb-3">
-      <div><label class="lbl">Aake</label><input type="number" id="om-pr" oninput="rcM()" class="inp py-1.5 font-bold" readonly></div>
+      <div><label class="lbl">Total</label><input type="number" id="om-pr" oninput="rcM()" class="inp py-1.5 font-bold" readonly></div>
       <div><label class="lbl">Advance</label><input type="number" id="om-ad" oninput="rcM()" class="inp py-1.5 font-bold text-emerald-600"></div>
-      <div><label class="lbl">Baakki</label><input type="text" id="om-bl" readonly class="inp py-1.5 font-bold text-red-600"></div>
+      <div><label class="lbl">Balance</label><input type="text" id="om-bl" readonly class="inp py-1.5 font-bold text-red-600"></div>
     </div>
     
     <div class="flex gap-2 flex-wrap mt-5">
@@ -418,14 +398,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 <!-- STOCK SELECTOR (For Add Order) -->
 <div id="stkmodal" class="modal-bg hidden !z-[900]">
   <div class="mbox p-5 max-w-[400px]">
-    <div class="flex items-center justify-between mb-3"><h3 class="font-black text-gray-800">Stock Thiranjedukkuka</h3><button onclick="closeSM()" class="w-8 h-8 rounded-full bg-gray-100"><i class="fas fa-times"></i></button></div>
-    <input type="text" id="ss2" placeholder="Thirayuka..." oninput="renderSL()" class="inp mb-3">
+    <div class="flex items-center justify-between mb-3"><h3 class="font-black text-gray-800">Pick Stock</h3><button onclick="closeSM()" class="w-8 h-8 rounded-full bg-gray-100"><i class="fas fa-times"></i></button></div>
+    <input type="text" id="ss2" placeholder="Search..." oninput="renderSL()" class="inp mb-3">
     <div id="slist" class="space-y-1 max-h-48 overflow-y-auto"></div>
   </div>
 </div>
 
 <script>
-// Local Storage Upakaranangal
+// Local Storage Utils
 function gd(k,d){try{return JSON.parse(localStorage.getItem('sx_'+k))||d}catch(e){return d}}
 function sd(k,v){localStorage.setItem('sx_'+k,JSON.stringify(v))}
 
@@ -433,7 +413,7 @@ let orders = gd('orders',[]);
 let inv = gd('inv',[]);
 let exps = gd('exps',[]);
 
-// Cloud Sync-nayi delete cheytha itemukal track cheyyunnu
+// Tracking Deleted items for Cloud Sync
 let delOrds = gd('del_ords', []);
 let delInvs = gd('del_invs', []);
 let delExps = gd('del_exps', []);
@@ -460,15 +440,15 @@ function autoFillCust(val) {
   }
 }
 
-// 🛑 STRONGER JSONP Fetcher 🛑
+// 🛑 STRONGER JSONP Fetcher with Cache-Buster (Fixes Mobile Offline) 🛑
 function fetchJSONP(url) {
   return new Promise((resolve, reject) => {
       const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
       
       const timeoutId = setTimeout(() => {
           delete window[callbackName];
-          reject(new Error('Connection timeout! Google Apps Script URL shariyanennum "Anyone" access undennum urappakkuka.'));
-      }, 20000); // Mobile network speed kooduthalaayal 20s wait cheyyan
+          reject(new Error('Connection timeout!'));
+      }, 15000); 
 
       window[callbackName] = function(data) {
           clearTimeout(timeoutId);
@@ -478,11 +458,11 @@ function fetchJSONP(url) {
       };
       
       const script = document.createElement('script');
-      // Cache buster mobile browserukalkkayi add cheythu
-      script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName + '&_=' + Date.now();
+      // &_t=Date.now() forces mobile browsers to fetch fresh data every time
+      script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName + '&_t=' + Date.now();
       script.onerror = () => {
           clearTimeout(timeoutId);
-          reject(new Error('Network Error! Apps script blocked.'));
+          reject(new Error('Network Error!'));
       };
       document.body.appendChild(script);
   });
@@ -498,23 +478,21 @@ async function syncData(isSilent = false) {
   const sText = document.getElementById('sync-text');
   
   sIcon.className = "fas fa-sync fa-spin text-indigo-500 text-xs";
-  if(sText) sText.innerText = "Sync Cheyyunnu...";
+  if(sText) sText.innerText = "Syncing...";
   
   if(!isSilent) {
     document.getElementById('sync-loader').classList.remove('hidden');
     document.getElementById('sync-loader').classList.add('flex');
-    document.getElementById('sync-msg').innerText = "Cloud-umayi surakshithamayi bandhippikkunnu...";
+    document.getElementById('sync-msg').innerText = "Securely connecting to Cloud...";
   }
   
   try {
-    // 1. Data POST cheyyunnu (No-CORS)
     const payload = { action: 'syncData', orders, inventory: inv, tools: exps, deletedOrders: delOrds, deletedInv: delInvs, deletedExps: delExps };
     await fetch(CONFIG_GAS_URL, { method: 'POST', body: JSON.stringify(payload), mode: 'no-cors' });
     
     delOrds = []; delInvs = []; delExps = [];
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // 2. Data GET cheyyunnu (JSONP)
     const data = await fetchJSONP(CONFIG_GAS_URL + "?action=getData");
     
     if(data.success) {
@@ -522,15 +500,15 @@ async function syncData(isSilent = false) {
       sa(); renderDash(); renderInv(); renderExps(); renderSales();
       
       sIcon.className = "fas fa-cloud-check text-emerald-500 text-xs";
-      if(sText) sText.innerText = "Sync Cheythu";
-      if(!isSilent) tst('Cloud-umayi surakshithamayi sync cheythu', 'ok');
+      if(sText) sText.innerText = "Synced";
+      if(!isSilent) tst('Synced securely with Cloud', 'ok');
     } else {
-       throw new Error("Google Sheet-il ninnu valid data labhikkunnilla.");
+       throw new Error("Failed to get valid data from Google Sheet.");
     }
   } catch(e) {
     sIcon.className = "fas fa-cloud-download-alt text-amber-500 text-xs";
     if(sText) sText.innerText = "Offline";
-    if(!isSilent) tst('Offline: Local aayi save cheythu', 'warn');
+    if(!isSilent) tst('Offline: Saved locally', 'warn');
     console.error("Sync Error: ", e.message);
   }
   
@@ -577,7 +555,7 @@ async function verifyPin() {
     if(enteredPin === "030512") { 
        sessionStorage.setItem('validPin', enteredPin);
        document.getElementById('lock-screen').classList.add('hidden');
-       tst('Offline Mode Thudangi', 'warn');
+       tst('Offline Mode Started', 'warn');
        updateCustomersList();
     } else { failPin(); }
   }
@@ -587,7 +565,7 @@ function failPin() {
   const dots = document.getElementById('pin-dots');
   dots.classList.add('shake');
   setTimeout(() => { dots.classList.remove('shake'); enteredPin=""; updateDots(); }, 400);
-  tst('Thettaya PIN', 'err');
+  tst('Incorrect PIN', 'err');
 }
 
 // Delete Auth Logic
@@ -615,7 +593,7 @@ function verifyDelPin() {
     } else {
       const dbx = document.getElementById('del-dots');
       dbx.classList.add('shake');
-      setTimeout(()=>{ dbx.classList.remove('shake'); delPin=""; updateDelDots(); tst('Access Nishedhichu', 'err'); }, 400);
+      setTimeout(()=>{ dbx.classList.remove('shake'); delPin=""; updateDelDots(); tst('Access Denied', 'err'); }, 400);
     }
 }
 function cancelDel() { document.getElementById('del-screen').classList.add('hidden'); pendingDelAction=null; }
@@ -643,7 +621,7 @@ setInterval(()=>{
 },1000);
 
 function tst(m,t='ok'){ const ts=document.getElementById('tst'); ts.textContent=m; ts.style.background=t==='err'?'#ef4444':t==='warn'?'#f59e0b':'#1e293b'; ts.className='toast show'; setTimeout(()=>ts.classList.remove('show'),2000); }
-const TITLES={dashboard:'Dashboard','new-order':'Puthiya Order',inventory:'Stock',expenses:'Chilavukal',sales:'Sales History'};
+const TITLES={dashboard:'Dashboard','new-order':'New Order',inventory:'Inventory',expenses:'Tools & Expenses',sales:'Sales History'};
 function switchTab(id){
   document.querySelectorAll('.view-section').forEach(v=>v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -660,12 +638,18 @@ function genInv(){
   for(let i=0; i<5; i++) res += chars.charAt(Math.floor(Math.random()*chars.length));
   return res;
 }
+// 🛑 Tracking ID Generator
+function genTrackId() {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let res = '';
+  for(let i=0; i<8; i++) res += chars.charAt(Math.floor(Math.random()*chars.length)); return res;
+}
 
 // 🛑 DASHBOARD DATA & PROFIT LOGIC 🛑
 let stFilter='';
 function renderDash(){
   const pend = orders.filter(o=>o.status==='Pending').length;
   
+  // Weekly Profit = Delivered orders only. (Quoted Price - Real Item Cost)
   const wrev = orders.filter(o=>o.status==='Delivered').reduce((s,o)=>{
       const cost = (o.items||[]).reduce((c,it)=>c+(Number(it.cost)||0), 0);
       return s + (Number(o.quotedPrice) - cost);
@@ -673,6 +657,7 @@ function renderDash(){
   
   const wexp = exps.reduce((s,e)=>s+Number(e.cost),0);
   
+  // Expected Balance = Sum of all unpaid balances
   const bal = orders.reduce((s,o)=>s+Number(o.balance),0); 
   
   const sv = inv.reduce((s,i)=>s+(Number(i.cost)*Number(i.qty)),0);
@@ -706,6 +691,7 @@ function renderOrders(){
       <td class="py-2.5 px-4"><p class="font-black text-xs ${bl>0?'text-red-500':'text-emerald-500'}">${bl>0?'Rs.'+bl.toLocaleString():'PAID ✓'}</p></td>
       <td class="py-2.5 px-4"><span class="pill ${sc}">${o.status}</span></td>
       <td class="py-2.5 px-4 text-right">
+        <!-- 🛑 FIX: Stop Propagation for WhatsApp Button 🛑 -->
         <button onclick="event.stopPropagation(); sendWARow('${o.invoiceNo}')" class="w-7 h-7 rounded bg-green-50 text-green-500 hover:bg-green-100 mr-1"><i class="fab fa-whatsapp"></i></button>
       </td>
     </tr>`;
@@ -717,7 +703,7 @@ function addRow(){
   const id='r'+Date.now(); rids.push(id);
   const div=document.createElement('div'); div.className='irow grid grid-cols-12 gap-2 items-end'; div.id='w-'+id;
   div.innerHTML=`<div class="col-span-12 md:col-span-4"><label class="lbl">Fault / Issue *</label><input type="text" id="ff-${id}" class="inp py-1.5 text-xs"></div>
-    <div class="col-span-6 md:col-span-2"><label class="lbl flex justify-between">Chilavu <button type="button" onclick="openSM('${id}')" class="text-indigo-500 text-[9px]"><i class="fas fa-box"></i></button></label><input type="number" id="fc-${id}" oninput="calcT()" class="inp py-1.5 text-xs bg-red-50 text-red-600"></div>
+    <div class="col-span-6 md:col-span-2"><label class="lbl flex justify-between">Cost <button type="button" onclick="openSM('${id}')" class="text-indigo-500 text-[9px]"><i class="fas fa-box"></i></button></label><input type="number" id="fc-${id}" oninput="calcT()" class="inp py-1.5 text-xs bg-red-50 text-red-600"></div>
     <div class="col-span-6 md:col-span-2"><label class="lbl">Price</label><input type="number" id="fp-${id}" oninput="calcT()" class="inp py-1.5 text-xs bg-green-50 text-green-700"></div>
     <div class="col-span-10 md:col-span-3"><label class="lbl">Warranty</label><select id="fw-${id}" class="inp py-1.5 text-xs">${['None','1 Month','3 Months','6 Months','1 Year'].map(w=>`<option>${w}</option>`).join('')}</select></div>
     <div class="col-span-2 md:col-span-1 text-right"><button onclick="remRow('${id}')" class="w-7 h-7 bg-red-50 text-red-400 rounded"><i class="fas fa-times text-xs"></i></button></div>`;
@@ -732,27 +718,29 @@ function calcT(){
 }
 function clearForm(){ ['fc','fp','fm','fa','fn'].forEach(id=>document.getElementById(id).value=''); document.getElementById('icontainer').innerHTML=''; rids=[]; addRow(); document.getElementById('pinv').textContent=genInv(); calcT();}
 
+// 🛑 SILENT SYNC ON SAVING 🛑
 function saveOrd(print){
   const name=document.getElementById('fc').value.trim(), phone=document.getElementById('fp').value.trim();
-  if(!name||!phone){tst('Perum Phone numberum aavashyamanu!','err');return}
+  if(!name||!phone){tst('Name & Phone required!','err');return}
   const items=rids.map(id=>({fault:document.getElementById('ff-'+id)?.value||'',cost:Number(document.getElementById('fc-'+id)?.value||0),price:Number(document.getElementById('fp-'+id)?.value||0),warranty:document.getElementById('fw-'+id)?.value||'None'})).filter(i=>i.fault);
-  if(!items.length){tst('Repair item cherkkuka!','err');return}
+  if(!items.length){tst('Add repair item!','err');return}
   
+  // Deduct Inventory Qty
   items.forEach(it=>{const si=inv.find(i=>i.name===it.fault);if(si&&si.qty>0)si.qty--;});
   
   const tp=items.reduce((s,i)=>s+i.price,0), ad=Number(document.getElementById('fa').value||0);
   const tId = genTrackId();
   
   const o={invoiceNo:document.getElementById('pinv').textContent, trackingId: tId, customerName:name,phone:'0'+phone,model:document.getElementById('fm').value,items,fault:items.map(i=>i.fault).join(', '),quotedPrice:tp,advance:ad,balance:tp-ad,customerMessage:document.getElementById('fn').value,date:new Date().toISOString(),status:'Pending'};
-  
   orders.push(o); sa(); 
-  syncData(true); 
-  tst('Save cheythu: '+o.invoiceNo);
+  syncData(true); // Silent Sync starts
+  tst('Saved: '+o.invoiceNo);
   
   if(print){localStorage.setItem('currentOrder',JSON.stringify(o));window.open('bil.html','_blank')}
   clearForm(); switchTab('dashboard');
 }
 
+// 🛑 EDIT ORDER LOGIC 🛑
 let curInv=null;
 let tempOMItems=[];
 
@@ -779,7 +767,7 @@ function renderOMItems(){
   let h='';
   tempOMItems.forEach((it,i)=>{
     h+=`<div class="flex gap-2 items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
-      <input type="text" value="${it.fault}" onchange="tempOMItems[${i}].fault=this.value" class="inp py-1 text-xs w-1/3" placeholder="Item Peru">
+      <input type="text" value="${it.fault}" onchange="tempOMItems[${i}].fault=this.value" class="inp py-1 text-xs w-1/3" placeholder="Item Name">
       <input type="number" value="${it.price}" onchange="tempOMItems[${i}].price=Number(this.value); calcOMTot()" class="inp py-1 text-xs w-1/4" placeholder="Price">
       <select onchange="tempOMItems[${i}].warranty=this.value" class="inp py-1 text-xs w-1/4">${['None','1 Month','3 Months','6 Months','1 Year'].map(w=>`<option${it.warranty===w?' selected':''}>${w}</option>`).join('')}</select>
       <button onclick="remModalItem(${i})" class="w-6 h-6 bg-red-100 text-red-500 rounded flex-shrink-0 text-[10px]"><i class="fas fa-trash"></i></button>
@@ -810,15 +798,16 @@ function saveOM(){
   const o=orders.find(x=>x.invoiceNo===curInv); if(!o)return;
   o.customerName=document.getElementById('om-n').value;
   o.phone=document.getElementById('om-ph').value;
-  o.items=tempOMItems.filter(i=>i.fault); 
+  o.items=tempOMItems.filter(i=>i.fault); // Save the updated items array
   o.fault=o.items.map(i=>i.fault).join(', ');
   o.quotedPrice=Number(document.getElementById('om-pr').value);
   o.advance=Number(document.getElementById('om-ad').value);
   o.balance=o.quotedPrice-o.advance;
-  sa(); syncData(true); closeOM(); renderDash(); tst('✓ Vijayakaramayi update cheythu');
+  sa(); syncData(true); closeOM(); renderDash(); tst('✓ Updated Successfully');
 }
 function prtOrdModal(){ const o=orders.find(x=>x.invoiceNo===curInv); localStorage.setItem('currentOrder',JSON.stringify(o)); window.open('bil.html','_blank'); }
 
+// 🛑 WHATSAPP INTEGRATION (Uses Tracking ID) 🛑
 function sendWARow(invNo) { generateWA(orders.find(x=>x.invoiceNo===invNo)); }
 function sendWA() { generateWA(orders.find(x=>x.invoiceNo===curInv)); }
 function generateWA(o) {
@@ -830,6 +819,7 @@ function generateWA(o) {
   window.open(`https://wa.me/${p}?text=${text}`, '_blank');
 }
 
+// Stock Picker
 let stgId=null;
 function openSM(id){stgId=id;document.getElementById('ss2').value='';renderSL();document.getElementById('stkmodal').classList.remove('hidden')}
 function closeSM(){document.getElementById('stkmodal').classList.add('hidden')}
@@ -839,6 +829,7 @@ function renderSL(){
 }
 function pickS(n,c){ const fn=document.getElementById('ff-'+stgId), cn=document.getElementById('fc-'+stgId); if(fn)fn.value=n; if(cn){cn.value=c; calcT();} closeSM(); }
 
+// Inventory & Exps
 function renderInv(){
   const q=(document.getElementById('isrch')?.value||'').toLowerCase();
   const tb=document.getElementById('itbody');
@@ -847,11 +838,11 @@ function renderInv(){
 }
 function addInv(){
   const n=document.getElementById('in').value, c=Number(document.getElementById('ic').value), q=Number(document.getElementById('iq').value);
-  if(!n||!c)return tst('Vivarangal nalkuka','err');
+  if(!n||!c)return tst('Fill details','err');
   inv.push({name:n,cost:c,qty:q}); sa(); syncData(true);
   document.getElementById('in').value=''; document.getElementById('ic').value=''; document.getElementById('iq').value=''; renderInv();
 }
-function delInv(name){ const idx=inv.findIndex(i=>i.name===name); if(idx>-1){ inv.splice(idx,1); delInvs.push(name); sa(); syncData(true); renderInv(); tst('Delete cheythu','err'); } }
+function delInv(name){ const idx=inv.findIndex(i=>i.name===name); if(idx>-1){ inv.splice(idx,1); delInvs.push(name); sa(); syncData(true); renderInv(); tst('Deleted','err'); } }
 
 function renderExps(){
   document.getElementById('etotal').textContent='Rs.'+exps.reduce((s,e)=>s+e.cost,0);
@@ -863,7 +854,7 @@ function addExp(){
   exps.push({date:new Date().toLocaleDateString('en-GB'),desc:d,brand:b,cost:c}); sa(); syncData(true);
   document.getElementById('ed').value=''; document.getElementById('eb').value=''; document.getElementById('ec').value=''; renderExps();
 }
-function delExp(dt,ds){ const idx=exps.findIndex(e=>e.date===dt&&e.desc===ds); if(idx>-1){ exps.splice(idx,1); delExps.push(dt+ds); sa(); syncData(true); renderExps(); tst('Delete cheythu','err'); } }
+function delExp(dt,ds){ const idx=exps.findIndex(e=>e.date===dt&&e.desc===ds); if(idx>-1){ exps.splice(idx,1); delExps.push(dt+ds); sa(); syncData(true); renderExps(); tst('Deleted','err'); } }
 
 function renderSales(){
   const q=(document.getElementById('ss')?.value||'').toLowerCase();
@@ -871,7 +862,7 @@ function renderSales(){
   document.getElementById('stbody').innerHTML=f.length?f.map(o=>`<tr><td class="py-2">${new Date(o.date).toLocaleDateString('en-GB')}</td><td class="py-2 font-black text-indigo-600">${o.invoiceNo}</td><td class="py-2 font-bold">${o.customerName}</td><td class="py-2 font-black">${o.quotedPrice}</td><td class="py-2 font-black ${o.balance<=0?'text-emerald-500':'text-red-500'}">${o.balance<=0?'PAID ✓':o.balance}</td><td class="py-2"><span class="pill ${o.status==='Pending'?'pill-p':'pill-c'}">${o.status}</span></td><td class="py-2 text-right"><button onclick="requireAuth(()=>delOrd('${o.invoiceNo}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan=\"7\" class=\"text-center py-4 text-xs text-gray-400\">Empty</td></tr>';
 }
 function delOrd(invNo){
-  orders=orders.filter(o=>o.invoiceNo!==invNo); delOrds.push(invNo); sa(); syncData(true); renderSales(); renderDash(); tst('Delete cheythu','err');
+  orders=orders.filter(o=>o.invoiceNo!==invNo); delOrds.push(invNo); sa(); syncData(true); renderSales(); renderDash(); tst('Deleted','err');
 }
 
 initLock();
