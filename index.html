@@ -37,57 +37,54 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 .inp{width:100%;padding:9px 13px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:11px;font-size:13px;font-family:inherit;outline:none;transition:all .2s;color:#1e293b}
 .inp:focus{background:#fff;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
 .lbl{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:block}
-.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(10px);padding:9px 20px;border-radius:13px;font-size:12px;font-weight:700;z-index:9999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none;font-family:'Plus Jakarta Sans',sans-serif}
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(10px);padding:9px 20px;border-radius:13px;font-size:12px;font-weight:700;z-index:9999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none;color:#fff;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(min-width:768px){.toast{bottom:20px}}
-.btn{padding:10px 18px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;border:none;display:inline-flex;align-items:center;gap:6px;justify-content:center}
+.btn{padding:10px 18px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;border:none;display:inline-flex;align-items:center;gap:6px;justify-content:center}
 .btn:active{transform:scale(.97)}
 .bp{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.3)}
-.bs{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,.25)}
-.bw{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;box-shadow:0 4px 12px rgba(37,211,102,.25)}
+.bs{background:linear-gradient(135deg,#10b981,#059669);color:#fff;}
+.bw{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;}
 .br{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
 .bg2{background:#f1f5f9;color:#475569}
-.irow{background:#f8fafc;border:1.5px solid #e8ecf4;border-radius:14px;padding:12px;margin-bottom:8px;animation:slideUp .2s}
+.irow{background:#f8fafc;border:1.5px solid #e8ecf4;border-radius:14px;padding:12px;margin-bottom:8px;}
 .content-area{padding-bottom:88px}
 @media(min-width:768px){.content-area{padding-bottom:28px}}
 .mob-btn{transition:all .2s}
 .mob-btn.am{color:#6366f1!important}
-.mob-btn.am::after{content:'';position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);width:16px;height:2.5px;background:#6366f1;border-radius:2px}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
-/* Lock Screen PIN UI */
+
+/* Lock Screen & Loader */
 .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #6366f1; transition: all 0.2s; }
 .pin-dot.filled { background-color: #6366f1; box-shadow: 0 0 10px rgba(99,102,241,0.5); }
-.numpad-btn { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: white; background: rgba(255,255,255,0.1); transition: all 0.1s; cursor: pointer; }
-.numpad-btn:active { background: rgba(255,255,255,0.3); transform: scale(0.9); }
+.numpad-btn { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: white; background: rgba(255,255,255,0.1); cursor: pointer; }
 .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
 @keyframes shake { 10%,90%{transform:translate3d(-2px,0,0)} 20%,80%{transform:translate3d(4px,0,0)} 30%,50%,70%{transform:translate3d(-8px,0,0)} 40%,60%{transform:translate3d(8px,0,0)} }
+
+/* Main Loader */
+#main-loader { z-index: 999999; background: #eef0f8; }
+.spinner { border: 4px solid rgba(99, 102, 241, 0.2); border-left-color: #6366f1; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
 </head>
 <body class="flex h-screen text-gray-800 relative">
 
-<!-- 🛑 CONFIGURATION 🛑 -->
 <script>
-  const CONFIG_GAS_URL = "https://script.google.com/macros/s/AKfycbzpS2XSiRZrqwPQdn_Dow-V4R4dWbgqc4rw4TSubn0XoTzhvIdFl-Vz0apOJZSVAbIZfg/exec";
-  const CONFIG_TRACK_URL = "https://mrsanduwa-ac.github.io/track.html"; 
+  const CONFIG_GAS_URL = "https://script.google.com/macros/s/AKfycbxu-nLkDuLzkMHXdLhO6uADYP8ykDbGSwITe_I6ljWn46z8KRvPQuWMcgNU3aGEyTeGvA/exec";
+  const CONFIG_TRACK_URL = "https://designverse.lk/track"; 
 </script>
 
-<!-- Full Screen Sync Loader -->
-<div id="sync-loader" class="fixed inset-0 z-[999999] bg-slate-900/80 backdrop-blur-sm hidden flex-col items-center justify-center transition-opacity duration-300">
-  <div class="relative">
-    <div class="w-20 h-20 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-    <i class="fas fa-cloud-download-alt absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-indigo-500 text-xl"></i>
-  </div>
-  <h2 class="text-white text-lg font-black tracking-widest mt-6">SYNCING DATA</h2>
-  <p class="text-indigo-200 text-xs mt-2 font-semibold animate-pulse" id="sync-msg">Securely connecting to Cloud...</p>
+<div id="main-loader" class="fixed inset-0 flex flex-col items-center justify-center">
+  <img src="phoneshoplogo.png" alt="SmartX" onerror="this.outerHTML='<h1 class=\'text-3xl font-black text-gray-800 tracking-wider mb-4\'>SMART<span class=\'text-indigo-600\'>X</span></h1>'" class="h-16 w-auto object-contain mb-6">
+  <div class="spinner mb-4"></div>
+  <p class="text-xs font-bold text-gray-500 tracking-widest uppercase animate-pulse">Syncing & Loading Data...</p>
 </div>
 
-<!-- LOCK SCREEN -->
 <div id="lock-screen" class="fixed inset-0 z-[99999] bg-slate-900 flex flex-col items-center justify-center hidden">
   <div class="text-center mb-8">
     <i class="fas fa-lock text-4xl text-indigo-400 mb-4"></i>
     <h2 class="text-white text-xl font-bold tracking-widest">ENTER PIN</h2>
-    <p class="text-slate-400 text-xs mt-1">SmartX Secure System</p>
   </div>
   <div class="flex gap-4 mb-10" id="pin-dots">
     <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
@@ -101,13 +98,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     <div class="numpad-btn" onclick="pressPin('0')">0</div>
     <div class="numpad-btn text-slate-400" style="background:transparent" onclick="clearPin()"><i class="fas fa-backspace"></i></div>
   </div>
-  <div id="auth-loader" class="text-indigo-400 mt-6 hidden"><i class="fas fa-circle-notch fa-spin text-2xl"></i></div>
 </div>
 
-<!-- DELETE Auth SCREEN -->
 <div id="del-screen" class="modal-bg hidden !z-[9999]">
   <div class="bg-slate-900 rounded-3xl p-6 text-center max-w-[320px] w-full border border-slate-700 shadow-2xl">
-    <h3 class="text-white font-bold mb-4 text-sm text-red-400"><i class="fas fa-shield-alt mr-2"></i>Auth Required</h3>
+    <h3 class="text-white font-bold mb-4 text-sm text-red-400"><i class="fas fa-shield-alt mr-2"></i>Auth Required to Delete</h3>
     <div class="flex justify-center gap-3 mb-6" id="del-dots">
       <div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div>
       <div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div>
@@ -125,7 +120,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 
 <datalist id="customersList"></datalist>
 
-<!-- SIDEBAR -->
 <aside class="sidebar w-60 hidden md:flex flex-col justify-between h-screen shrink-0 z-20">
   <div>
     <div class="h-18 flex items-center px-5 gap-3 border-b border-white/10 py-5">
@@ -139,80 +133,67 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
       <button onclick="switchTab('sales')" data-t="sales" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-history w-4 text-center text-sm"></i>Sales History</button>
     </nav>
   </div>
+  <div class="mt-auto">
+    <div class="p-4 border-t border-white/10 flex items-center gap-2.5 bg-black/20">
+      <div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white font-bold text-sm"><i class="fas fa-user-shield"></i></div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-bold text-white">Admin</p>
+        <div class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div><p class="text-[10px] text-emerald-400 font-semibold">Secure Mode</p></div>
+      </div>
+    </div>
+  </div>
 </aside>
 
-<!-- MAIN -->
 <main class="flex-1 flex flex-col h-screen overflow-hidden">
   <header class="h-16 bg-white/90 backdrop-blur-sm border-b border-gray-100 flex items-center justify-between px-4 md:px-7 shrink-0 shadow-sm z-10">
     <div class="flex items-center gap-2.5">
-      <img src="phoneshoplogo.png" alt="SmartX" onerror="this.outerHTML='<h1 class=\'text-lg md:hidden font-black text-gray-800 tracking-wide\'>SMART<span class=\'text-indigo-600\'>X</span></h1>'" class="h-7 w-auto object-contain md:hidden">
-      <h2 class="text-lg font-black text-gray-800 hidden md:block" id="ptitle">Dashboard</h2>
+      <h2 class="text-lg font-black text-gray-800" id="ptitle">Dashboard</h2>
     </div>
     <div class="flex items-center gap-3">
-      <!-- Sync Status Button -->
-      <button onclick="manualSync()" class="bg-gray-50 border border-gray-200 rounded-full px-3 py-1.5 flex items-center gap-1.5 hover:bg-gray-100 transition-colors">
-        <i id="sync-icon" class="fas fa-cloud-check text-emerald-500 text-xs"></i>
-        <span id="sync-text" class="text-[10px] font-bold text-gray-500 hidden md:inline">Cloud Sync</span>
+      <button onclick="manualSync()" id="sync-btn" class="bg-gray-50 border border-gray-200 rounded-full px-3 py-1.5 flex items-center gap-1.5 hover:bg-gray-100 transition-colors">
+        <i id="sync-icon" class="fas fa-cloud text-gray-400 text-xs transition-colors"></i>
+        <span id="sync-text" class="text-[10px] font-bold text-gray-500 hidden md:inline transition-colors">Cloud Sync</span>
       </button>
-      <div class="w-px h-5 bg-gray-200 hidden md:block"></div>
-      <div class="hidden md:block text-right">
-        <p class="text-base font-black text-indigo-600 leading-none" id="clk">00:00:00</p>
-        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5" id="ddisp"></p>
-      </div>
     </div>
   </header>
 
   <div class="flex-1 overflow-y-auto content-area">
-    <!-- DASHBOARD -->
     <div id="dashboard" class="view-section active p-4 md:p-7">
       <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
         <div onclick="filterStatus('Pending')" class="stat-card col-span-2 md:col-span-1" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
-          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-amber-100 uppercase tracking-wider">Pending Repair</p><div class="cicon"><i class="fas fa-tools text-white text-sm"></i></div></div>
-          <h3 class="text-3xl font-black text-white" id="dp">0</h3><p class="text-amber-200 text-[10px] font-semibold mt-1">Tap to view →</p></div><div class="shine"></div>
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-amber-100 uppercase tracking-wider">Pending</p><div class="cicon"><i class="fas fa-tools text-white text-sm"></i></div></div><h3 class="text-3xl font-black text-white" id="dp">0</h3></div><div class="shine"></div>
         </div>
         <div class="stat-card" style="background:linear-gradient(135deg,#10b981,#059669)">
-          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-emerald-100 uppercase tracking-wider">Weekly Profit</p><div class="cicon"><i class="fas fa-chart-line text-white text-sm"></i></div></div>
-          <h3 class="text-lg font-black text-white leading-tight" id="dw">Rs. 0</h3></div><div class="shine"></div>
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-emerald-100 uppercase tracking-wider">Profit</p><div class="cicon"><i class="fas fa-chart-line text-white text-sm"></i></div></div><h3 class="text-lg font-black text-white leading-tight" id="dw">Rs. 0</h3></div><div class="shine"></div>
         </div>
         <div class="stat-card" style="background:linear-gradient(135deg,#ef4444,#dc2626)">
-          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-red-100 uppercase tracking-wider">Total Expenses</p><div class="cicon"><i class="fas fa-receipt text-white text-sm"></i></div></div>
-          <h3 class="text-lg font-black text-white leading-tight" id="de">Rs. 0</h3></div><div class="shine"></div>
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-red-100 uppercase tracking-wider">Expenses</p><div class="cicon"><i class="fas fa-receipt text-white text-sm"></i></div></div><h3 class="text-lg font-black text-white leading-tight" id="de">Rs. 0</h3></div><div class="shine"></div>
         </div>
         <div class="stat-card col-span-2 md:col-span-1" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
-          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">Expected Balance</p><div class="cicon"><i class="fas fa-wallet text-white text-sm"></i></div></div>
-          <h3 class="text-lg font-black text-white leading-tight" id="db">Rs. 0</h3></div><div class="shine"></div>
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">Balance</p><div class="cicon"><i class="fas fa-wallet text-white text-sm"></i></div></div><h3 class="text-lg font-black text-white leading-tight" id="db">Rs. 0</h3></div><div class="shine"></div>
         </div>
-        <div onclick="switchTab('inventory')" class="stat-card" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">
-          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-sky-100 uppercase tracking-wider">Stock Value</p><div class="cicon"><i class="fas fa-box-open text-white text-sm"></i></div></div>
-          <h3 class="text-lg font-black text-white leading-tight" id="ds">Rs. 0</h3></div><div class="shine"></div>
+        <div class="stat-card" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">
+          <div class="p-4"><div class="flex justify-between items-start mb-2.5"><p class="text-[10px] font-bold text-sky-100 uppercase tracking-wider">Stock</p><div class="cicon"><i class="fas fa-box-open text-white text-sm"></i></div></div><h3 class="text-lg font-black text-white leading-tight" id="ds">Rs. 0</h3></div><div class="shine"></div>
         </div>
       </div>
 
-      <!-- Orders Card -->
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-4 md:p-5 border-b border-gray-100 flex flex-col md:flex-row gap-2.5 items-start md:items-center justify-between">
-          <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-xl bg-indigo-100 flex items-center justify-center"><i class="fas fa-clipboard-list text-indigo-600 text-xs"></i></div>
-            <h3 class="font-black text-gray-800 text-sm uppercase tracking-wider">Repair Orders</h3>
-            <span id="obadge" class="bg-indigo-100 text-indigo-700 text-[10px] font-black px-2 py-0.5 rounded-full">0</span>
-          </div>
+        <div class="p-4 border-b border-gray-100 flex flex-col md:flex-row gap-2.5 items-center justify-between">
+          <h3 class="font-black text-gray-800 text-sm uppercase tracking-wider">Repair Orders</h3>
           <div class="flex gap-2 w-full md:w-auto">
-            <div class="relative flex-1 md:w-60">
-              <input id="dsrch" type="text" placeholder="Search invoice, customer..." oninput="renderOrders()" class="inp text-xs py-2 pl-8">
-              <i class="fas fa-search absolute left-2.5 top-2.5 text-gray-400 text-[10px]"></i>
-            </div>
-            <button onclick="switchTab('new-order')" class="btn bp text-xs py-2 px-3 whitespace-nowrap"><i class="fas fa-plus text-[10px]"></i>New</button>
+            <input id="dsrch" type="text" placeholder="Search invoice, customer..." oninput="renderOrders()" class="inp text-xs py-2 w-full md:w-60">
+            <button onclick="switchTab('new-order')" class="btn bp text-xs py-2 px-3">New</button>
           </div>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left min-w-[620px]">
-            <thead><tr class="bg-gray-50/80 border-b border-gray-100">
+            <thead><tr class="bg-gray-50/80 border-b">
               <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">Invoice</th>
               <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">Customer</th>
-              <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">Model / Issue</th>
+              <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">Model</th>
               <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">Balance</th>
               <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider">Status</th>
-              <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider text-right">Action</th>
+              <th class="py-2.5 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider text-right">WA</th>
             </tr></thead>
             <tbody id="otbody"></tbody>
           </table>
@@ -220,653 +201,346 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
       </div>
     </div>
 
-    <!-- NEW ORDER -->
     <div id="new-order" class="view-section p-4 md:p-7">
       <div class="max-w-2xl mx-auto">
-        <div class="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl p-4 mb-4 flex items-center justify-between shadow-lg">
-          <div><p class="text-[10px] text-indigo-200 font-bold uppercase tracking-wider">New Invoice</p><h3 class="text-xl font-black text-white tracking-wider" id="pinv">INVSA-XXXXX</h3></div>
+        <div class="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl p-4 mb-4 flex justify-between shadow-lg">
+          <div><p class="text-[10px] text-indigo-200 font-bold uppercase">New Invoice</p><h3 class="text-xl font-black text-white" id="pinv">INV-X</h3></div>
         </div>
-        <!-- Customer -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-3.5">
+        <div class="bg-white rounded-2xl border p-4 mb-3.5">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div>
-              <label class="lbl">Customer Name *</label>
-              <input type="text" id="fc" list="customersList" oninput="autoFillCust(this.value)" class="inp" placeholder="Type name...">
-            </div>
-            <div><label class="lbl">WhatsApp *</label>
-              <div class="flex"><span class="flex items-center px-2.5 bg-emerald-50 border-y border-l border-gray-200 rounded-l-xl text-xs font-bold text-gray-500 whitespace-nowrap"><i class="fab fa-whatsapp text-emerald-500 mr-1"></i>+94</span><input type="tel" id="fp" class="inp rounded-l-none flex-1" style="border-left:none"></div>
-            </div>
-            <div><label class="lbl">Device Model *</label><input type="text" id="fm" placeholder="e.g. iPhone 13" class="inp"></div>
+            <div><label class="lbl">Customer Name *</label><input type="text" id="fc" list="customersList" oninput="autoFillCust(this.value)" class="inp"></div>
+            <div><label class="lbl">WhatsApp *</label><div class="flex"><span class="flex items-center px-2.5 bg-emerald-50 border-y border-l rounded-l-xl text-xs font-bold text-gray-500">+94</span><input type="tel" id="fp" class="inp rounded-l-none flex-1" style="border-left:none"></div></div>
+            <div><label class="lbl">Device Model *</label><input type="text" id="fm" class="inp"></div>
           </div>
         </div>
-        <!-- Items -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-3.5">
-          <div class="flex items-center justify-between mb-3.5">
-            <h3 class="text-xs font-black text-gray-800 uppercase tracking-wider">Repair Items & Faults</h3>
-            <button onclick="addRow()" class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg">Add Item</button>
-          </div>
+        <div class="bg-white rounded-2xl border p-4 mb-3.5">
+          <div class="flex items-center justify-between mb-3.5"><h3 class="text-xs font-black uppercase">Items</h3><button onclick="addRow()" class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg">Add Item</button></div>
           <div id="icontainer"></div>
         </div>
-        <!-- Totals -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-4">
-          <div class="bg-white rounded-2xl p-4 border border-gray-100"><label class="lbl">Customer Note</label><textarea id="fn" class="inp h-24 resize-none"></textarea></div>
-          <div class="bg-white rounded-2xl p-4 border border-gray-100">
-            <div class="flex justify-between mb-2"><span class="text-xs font-bold text-red-500 uppercase">Est. Cost</span><span class="font-black text-red-600" id="tc">Rs. 0</span></div>
-            <div class="flex justify-between mb-3"><span class="text-xs font-bold text-emerald-600 uppercase">Quoted Price</span><span class="font-black text-emerald-700 text-lg" id="tp">Rs. 0</span></div>
-            <label class="lbl">Advance (Rs)</label><input type="number" id="fa" placeholder="0" oninput="calcT()" class="inp mt-1 mb-2.5">
-            <div class="flex justify-between border-t border-gray-100 pt-2.5"><span class="text-xs font-bold">Balance Due</span><span class="font-black text-gray-800" id="tb">Rs. 0</span></div>
+          <div class="bg-white rounded-2xl p-4 border"><label class="lbl">Note</label><textarea id="fn" class="inp h-24 resize-none"></textarea></div>
+          <div class="bg-white rounded-2xl p-4 border">
+            <div class="flex justify-between mb-2"><span class="text-xs font-bold text-red-500 uppercase">Cost</span><span class="font-black text-red-600" id="tc">Rs. 0</span></div>
+            <div class="flex justify-between mb-3"><span class="text-xs font-bold text-emerald-600 uppercase">Quoted</span><span class="font-black text-emerald-700 text-lg" id="tp">Rs. 0</span></div>
+            <label class="lbl">Advance</label><input type="number" id="fa" oninput="calcT()" class="inp mt-1 mb-2.5">
+            <div class="flex justify-between border-t pt-2.5"><span class="text-xs font-bold">Balance Due</span><span class="font-black" id="tb">Rs. 0</span></div>
           </div>
         </div>
         <div class="flex justify-end gap-2.5">
-          <button onclick="clearForm()" class="btn bg2 w-auto">Clear</button>
-          <button onclick="saveOrd(false)" class="btn bs w-auto">Save Only</button>
-          <button onclick="saveOrd(true)" class="btn bp w-auto">Save & Print</button>
+          <button onclick="clearForm()" class="btn bg2">Clear</button>
+          <button onclick="saveOrd(false)" class="btn bs">Save</button>
+          <button onclick="saveOrd(true)" class="btn bp">Save & Print</button>
         </div>
       </div>
     </div>
 
-    <!-- INVENTORY -->
     <div id="inventory" class="view-section p-4 md:p-7">
       <div class="flex flex-col md:flex-row gap-4">
-        <div class="w-full md:w-64 bg-white rounded-2xl border border-gray-100 shadow-sm p-4 h-fit">
+        <div class="w-full md:w-64 bg-white rounded-2xl border p-4 h-fit">
           <h3 class="text-xs font-black mb-3">Add Stock</h3>
           <div class="space-y-3">
-            <div><label class="lbl">Item Name *</label><input type="text" id="in" class="inp"></div>
-            <div class="grid grid-cols-2 gap-2">
-              <div><label class="lbl">Cost (Rs) *</label><input type="number" id="ic" class="inp"></div>
-              <div><label class="lbl">Qty *</label><input type="number" id="iq" class="inp"></div>
-            </div>
-            <button onclick="addInv()" class="btn bp w-full">Add to Stock</button>
+            <div><label class="lbl">Item Name</label><input type="text" id="in" class="inp"></div>
+            <div class="grid grid-cols-2 gap-2"><div><label class="lbl">Cost</label><input type="number" id="ic" class="inp"></div><div><label class="lbl">Qty</label><input type="number" id="iq" class="inp"></div></div>
+            <button onclick="addInv()" class="btn bp w-full">Add</button>
           </div>
         </div>
-        <div class="flex-1 bg-white rounded-2xl p-4 border border-gray-100">
-          <div class="flex justify-between items-center mb-3">
-            <h3 class="text-xs font-black">Stock List</h3>
-            <input type="text" id="isrch" placeholder="Search..." oninput="renderInv()" class="inp w-36 text-xs py-1.5">
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-xs">
-              <thead><tr class="border-b"><th class="py-2 text-left">Item</th><th class="py-2 text-left">Cost</th><th class="py-2 text-left">Qty</th><th class="py-2 text-right">Act</th></tr></thead>
-              <tbody id="itbody"></tbody>
-            </table>
-          </div>
+        <div class="flex-1 bg-white rounded-2xl p-4 border">
+          <input type="text" id="isrch" placeholder="Search stock..." oninput="renderInv()" class="inp w-full md:w-48 text-xs py-1.5 mb-3">
+          <table class="w-full text-xs text-left"><thead><tr class="border-b"><th class="py-2">Item</th><th class="py-2">Cost</th><th class="py-2">Qty</th><th class="py-2 text-right">Act</th></tr></thead><tbody id="itbody"></tbody></table>
         </div>
       </div>
     </div>
 
-    <!-- EXPENSES -->
     <div id="expenses" class="view-section p-4 md:p-7">
       <div class="flex flex-col md:flex-row gap-4">
-        <div class="w-full md:w-64 bg-white rounded-2xl p-4 border border-gray-100 h-fit">
+        <div class="w-full md:w-64 bg-white rounded-2xl p-4 border h-fit">
           <h3 class="text-xs font-black mb-3">Add Expense</h3>
           <div class="space-y-3">
-            <div><label class="lbl">Description *</label><input type="text" id="ed" class="inp"></div>
-            <div><label class="lbl">Brand</label><input type="text" id="eb" class="inp"></div>
-            <div><label class="lbl">Cost (Rs) *</label><input type="number" id="ec" class="inp"></div>
+            <div><label class="lbl">Desc</label><input type="text" id="ed" class="inp"></div>
+            <div><label class="lbl">Cost</label><input type="number" id="ec" class="inp"></div>
             <button onclick="addExp()" class="btn br w-full">Record</button>
           </div>
         </div>
-        <div class="flex-1 bg-white rounded-2xl p-4 border border-gray-100">
-          <div class="flex justify-between items-center mb-3">
-            <h3 class="text-xs font-black">Expense Records</h3>
-            <span class="text-xs font-black text-red-600 bg-red-50 px-2 py-1 rounded-xl" id="etotal">Rs. 0</span>
-          </div>
-          <table class="w-full text-xs">
-            <thead><tr class="border-b"><th class="py-2 text-left">Date</th><th class="py-2 text-left">Desc</th><th class="py-2 text-left">Cost</th><th class="py-2 text-right">Act</th></tr></thead>
-            <tbody id="etbody"></tbody>
-          </table>
+        <div class="flex-1 bg-white rounded-2xl p-4 border">
+          <table class="w-full text-xs text-left"><thead><tr class="border-b"><th class="py-2">Date</th><th class="py-2">Desc</th><th class="py-2">Cost</th><th class="py-2 text-right">Act</th></tr></thead><tbody id="etbody"></tbody></table>
         </div>
       </div>
     </div>
 
-    <!-- SALES -->
     <div id="sales" class="view-section p-4 md:p-7">
-      <div class="bg-white rounded-2xl p-4 border border-gray-100">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-xs font-black">All Orders</h3>
-          <input type="text" id="ss" placeholder="Search invoices..." oninput="renderSales()" class="inp w-48 text-xs py-2">
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-xs">
-            <thead><tr class="bg-gray-50 border-b">
-              <th class="py-2 px-2 text-left">Date</th><th class="py-2 px-2 text-left">Invoice</th><th class="py-2 px-2 text-left">Customer</th>
-              <th class="py-2 px-2 text-left">Total</th><th class="py-2 px-2 text-left">Bal</th><th class="py-2 px-2 text-left">Status</th><th class="py-2 px-2 text-right">Act</th>
-            </tr></thead>
-            <tbody id="stbody"></tbody>
-          </table>
-        </div>
+      <div class="bg-white rounded-2xl p-4 border">
+        <input type="text" id="ss" placeholder="Search..." oninput="renderSales()" class="inp w-48 text-xs py-2 mb-4">
+        <table class="w-full text-xs text-left"><thead><tr class="bg-gray-50 border-b"><th class="py-2 px-2">Date</th><th class="py-2 px-2">Invoice</th><th class="py-2 px-2">Customer</th><th class="py-2 px-2">Total</th><th class="py-2 px-2">Bal</th><th class="py-2 px-2">Status</th><th class="py-2 px-2 text-right">Act</th></tr></thead><tbody id="stbody"></tbody></table>
       </div>
     </div>
   </div>
 </main>
 
-<!-- MOBILE NAV -->
 <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white shadow-2xl flex items-end px-1 pb-2 pt-2 z-50 rounded-t-3xl border-t">
-  <button onclick="switchTab('dashboard')" data-t="dashboard" class="mob-btn am flex-1 flex flex-col items-center gap-0.5 text-gray-400 text-[9px] font-bold"><i class="fas fa-chart-pie text-lg"></i>Dash</button>
-  <button onclick="switchTab('inventory')" data-t="inventory" class="mob-btn flex-1 flex flex-col items-center gap-0.5 text-gray-400 text-[9px] font-bold"><i class="fas fa-boxes text-lg"></i>Stock</button>
-  <div class="flex-1 flex justify-center relative -top-3.5">
-    <button onclick="switchTab('new-order')" data-t="new-order" class="bg-indigo-600 w-13 h-13 rounded-full flex items-center justify-center text-white text-xl shadow-lg border-4 border-white" style="width:52px;height:52px"><i class="fas fa-plus"></i></button>
-  </div>
-  <button onclick="switchTab('expenses')" data-t="expenses" class="mob-btn flex-1 flex flex-col items-center gap-0.5 text-gray-400 text-[9px] font-bold"><i class="fas fa-wrench text-lg"></i>Tools</button>
-  <button onclick="switchTab('sales')" data-t="sales" class="mob-btn flex-1 flex flex-col items-center gap-0.5 text-gray-400 text-[9px] font-bold"><i class="fas fa-history text-lg"></i>Sales</button>
+  <button onclick="switchTab('dashboard')" data-t="dashboard" class="mob-btn am flex-1 flex flex-col items-center text-gray-400 text-[9px] font-bold"><i class="fas fa-chart-pie text-lg"></i>Dash</button>
+  <button onclick="switchTab('inventory')" data-t="inventory" class="mob-btn flex-1 flex flex-col items-center text-gray-400 text-[9px] font-bold"><i class="fas fa-boxes text-lg"></i>Stock</button>
+  <div class="flex-1 flex justify-center relative -top-3.5"><button onclick="switchTab('new-order')" class="bg-indigo-600 w-12 h-12 rounded-full text-white text-xl shadow-lg border-4 border-white"><i class="fas fa-plus"></i></button></div>
+  <button onclick="switchTab('expenses')" data-t="expenses" class="mob-btn flex-1 flex flex-col items-center text-gray-400 text-[9px] font-bold"><i class="fas fa-wrench text-lg"></i>Tools</button>
+  <button onclick="switchTab('sales')" data-t="sales" class="mob-btn flex-1 flex flex-col items-center text-gray-400 text-[9px] font-bold"><i class="fas fa-history text-lg"></i>Sales</button>
 </nav>
 
-<!-- ORDER DETAIL MODAL -->
 <div id="omodal" class="modal-bg hidden">
   <div class="mbox p-5">
-    <div class="flex items-start justify-between mb-4">
-      <div><h3 class="text-base font-black text-indigo-600 tracking-wider" id="om-inv">INV</h3></div>
-      <button onclick="closeOM()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500"><i class="fas fa-times text-xs"></i></button>
-    </div>
-    
+    <div class="flex justify-between mb-4"><div><h3 class="text-base font-black text-indigo-600" id="om-inv">INV</h3></div><button onclick="closeOM()" class="w-8 h-8 rounded-full bg-gray-100"><i class="fas fa-times"></i></button></div>
     <div class="grid grid-cols-3 gap-2 mb-4 p-2 bg-gray-50 rounded-xl">
-      <button onclick="setSt('Pending')" id="sb-Pending" class="py-2 rounded-xl font-black text-xs text-gray-400 border-2 border-transparent"><span class="block w-2 h-2 rounded-full bg-amber-400 mx-auto mb-1"></span>Pending</button>
-      <button onclick="setSt('Completed')" id="sb-Completed" class="py-2 rounded-xl font-black text-xs text-gray-400 border-2 border-transparent"><span class="block w-2 h-2 rounded-full bg-blue-400 mx-auto mb-1"></span>Completed</button>
-      <button onclick="setSt('Delivered')" id="sb-Delivered" class="py-2 rounded-xl font-black text-xs text-gray-400 border-2 border-transparent"><span class="block w-2 h-2 rounded-full bg-emerald-400 mx-auto mb-1"></span>Delivered</button>
+      <button onclick="setSt('Pending')" id="sb-Pending" class="py-2 rounded-xl font-black text-xs text-gray-400 border-2">Pending</button>
+      <button onclick="setSt('Completed')" id="sb-Completed" class="py-2 rounded-xl font-black text-xs text-gray-400 border-2">Completed</button>
+      <button onclick="setSt('Delivered')" id="sb-Delivered" class="py-2 rounded-xl font-black text-xs text-gray-400 border-2">Delivered</button>
     </div>
-
-    <div class="grid grid-cols-2 gap-2 mb-2">
-      <div><label class="lbl">Customer</label><input type="text" id="om-n" class="inp py-1.5"></div>
-      <div><label class="lbl">Phone</label><input type="text" id="om-ph" class="inp py-1.5"></div>
-    </div>
-    
-    <!-- Dynamic Items Area -->
-    <div class="mb-3 bg-white border border-gray-100 rounded-xl p-3">
-      <div class="flex justify-between items-center mb-2">
-        <label class="lbl !mb-0 text-indigo-500">Repair Items / Faults</label>
-        <button onclick="addModalItem()" class="text-[9px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-bold">+ Add Item</button>
-      </div>
-      <div id="om-items" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
-    </div>
-
-    <div class="grid grid-cols-3 gap-2 mb-3">
-      <div><label class="lbl">Total</label><input type="number" id="om-pr" oninput="rcM()" class="inp py-1.5 font-bold" readonly></div>
-      <div><label class="lbl">Advance</label><input type="number" id="om-ad" oninput="rcM()" class="inp py-1.5 font-bold text-emerald-600"></div>
-      <div><label class="lbl">Balance</label><input type="text" id="om-bl" readonly class="inp py-1.5 font-bold text-red-600"></div>
-    </div>
-    
-    <div class="flex gap-2 flex-wrap mt-5">
-      <button onclick="sendWA()" class="btn bw flex-1 text-xs"><i class="fab fa-whatsapp text-sm"></i> WhatsApp</button>
-      <button onclick="prtOrdModal()" class="btn bs flex-1 text-xs"><i class="fas fa-print text-sm"></i> Print</button>
-      <button onclick="saveOM()" class="btn bp flex-1 text-xs"><i class="fas fa-save text-sm"></i> Save</button>
-    </div>
+    <div class="grid grid-cols-2 gap-2 mb-2"><div><label class="lbl">Customer</label><input type="text" id="om-n" class="inp py-1.5"></div><div><label class="lbl">Phone</label><input type="text" id="om-ph" class="inp py-1.5"></div></div>
+    <div id="om-items" class="space-y-2 mb-3 max-h-40 overflow-y-auto"></div>
+    <div class="grid grid-cols-3 gap-2 mb-3"><div><label class="lbl">Total</label><input type="number" id="om-pr" oninput="rcM()" class="inp py-1.5 font-bold" readonly></div><div><label class="lbl">Advance</label><input type="number" id="om-ad" oninput="rcM()" class="inp py-1.5 font-bold text-emerald-600"></div><div><label class="lbl">Balance</label><input type="text" id="om-bl" readonly class="inp py-1.5 font-bold text-red-600"></div></div>
+    <div class="flex gap-2"><button onclick="sendWA()" class="btn bw flex-1"><i class="fab fa-whatsapp"></i> WA</button><button onclick="prtOrdModal()" class="btn bs flex-1">Print</button><button onclick="saveOM()" class="btn bp flex-1">Save</button></div>
   </div>
 </div>
 
 <div class="toast" id="tst"></div>
 
-<!-- STOCK SELECTOR (For Add Order) -->
-<div id="stkmodal" class="modal-bg hidden !z-[900]">
-  <div class="mbox p-5 max-w-[400px]">
-    <div class="flex items-center justify-between mb-3"><h3 class="font-black text-gray-800">Pick Stock</h3><button onclick="closeSM()" class="w-8 h-8 rounded-full bg-gray-100"><i class="fas fa-times"></i></button></div>
-    <input type="text" id="ss2" placeholder="Search..." oninput="renderSL()" class="inp mb-3">
-    <div id="slist" class="space-y-1 max-h-48 overflow-y-auto"></div>
-  </div>
-</div>
-
 <script>
-// Local Storage Utils
+// Local Storage
 function gd(k,d){try{return JSON.parse(localStorage.getItem('sx_'+k))||d}catch(e){return d}}
 function sd(k,v){localStorage.setItem('sx_'+k,JSON.stringify(v))}
 
-let orders = gd('orders',[]);
-let inv = gd('inv',[]);
-let exps = gd('exps',[]);
+let orders = gd('orders',[]); let inv = gd('inv',[]); let exps = gd('exps',[]);
+let delOrds = gd('del_ords', []); let delInvs = gd('del_invs', []); let delExps = gd('del_exps', []);
 
-// Tracking Deleted items for Cloud Sync
-let delOrds = gd('del_ords', []);
-let delInvs = gd('del_invs', []);
-let delExps = gd('del_exps', []);
+function sa(){ sd('orders',orders); sd('inv',inv); sd('exps',exps); sd('del_ords', delOrds); sd('del_invs', delInvs); sd('del_exps', delExps); updateCustomersList(); }
 
-function sa(){
-  sd('orders',orders); sd('inv',inv); sd('exps',exps);
-  sd('del_ords', delOrds); sd('del_invs', delInvs); sd('del_exps', delExps);
-  updateCustomersList();
-}
-
-// 🛑 CUSTOMER AUTOCOMPLETE LOGIC
 function updateCustomersList() {
-  const clist = document.getElementById('customersList');
-  const uniqueCusts = [...new Map(orders.map(item => [item.customerName, item])).values()];
-  clist.innerHTML = uniqueCusts.map(c => `<option value="${c.customerName}">`).join('');
+  document.getElementById('customersList').innerHTML = [...new Map(orders.map(item => [item.customerName, item])).values()].map(c => `<option value="${c.customerName}">`).join('');
 }
 function autoFillCust(val) {
-  const match = orders.find(o => o.customerName.toLowerCase() === val.toLowerCase());
-  if(match && match.phone) {
-    let p = match.phone;
+  const m = orders.find(o => o.customerName.toLowerCase() === val.toLowerCase());
+  if(m && m.phone) {
+    let p = m.phone.trim();
     if(p.startsWith('0')) p = p.substring(1);
     else if(p.startsWith('94')) p = p.substring(2);
     document.getElementById('fp').value = p;
   }
 }
 
-// 🛑 STRONGER JSONP Fetcher with Cache-Buster (Fixes Mobile Offline) 🛑
-function fetchJSONP(url) {
-  return new Promise((resolve, reject) => {
-      const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
-      
-      const timeoutId = setTimeout(() => {
-          delete window[callbackName];
-          reject(new Error('Connection timeout!'));
-      }, 15000); 
-
-      window[callbackName] = function(data) {
-          clearTimeout(timeoutId);
-          delete window[callbackName];
-          if(script.parentNode) script.parentNode.removeChild(script);
-          resolve(data);
-      };
-      
-      const script = document.createElement('script');
-      // &_t=Date.now() forces mobile browsers to fetch fresh data every time
-      script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName + '&_t=' + Date.now();
-      script.onerror = () => {
-          clearTimeout(timeoutId);
-          reject(new Error('Network Error!'));
-      };
-      document.body.appendChild(script);
-  });
-}
-
-// ---- 🛑 SILENT CLOUD SYNC LOGIC 🛑 ----
+// 🛑 CLOUD SYNC & UI INDICATOR 🛑
 let isSyncing = false;
-async function syncData(isSilent = false) {
+async function syncData(showToast=false) {
   if(isSyncing || !sessionStorage.getItem('validPin')) return;
   isSyncing = true;
   
+  const sBtn = document.getElementById('sync-btn');
   const sIcon = document.getElementById('sync-icon');
   const sText = document.getElementById('sync-text');
   
   sIcon.className = "fas fa-sync fa-spin text-indigo-500 text-xs";
-  if(sText) sText.innerText = "Syncing...";
-  
-  if(!isSilent) {
-    document.getElementById('sync-loader').classList.remove('hidden');
-    document.getElementById('sync-loader').classList.add('flex');
-    document.getElementById('sync-msg').innerText = "Securely connecting to Cloud...";
-  }
+  sText.innerText = "Syncing...";
+  sBtn.classList.add("bg-indigo-50");
   
   try {
     const payload = { action: 'syncData', orders, inventory: inv, tools: exps, deletedOrders: delOrds, deletedInv: delInvs, deletedExps: delExps };
     await fetch(CONFIG_GAS_URL, { method: 'POST', body: JSON.stringify(payload), mode: 'no-cors' });
-    
     delOrds = []; delInvs = []; delExps = [];
-    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    const data = await fetchJSONP(CONFIG_GAS_URL + "?action=getData");
+    // Fetch latest
+    const getRes = await fetch(CONFIG_GAS_URL + "?action=getData");
+    const data = await getRes.json();
     
     if(data.success) {
       orders = data.orders || []; inv = data.inventory || []; exps = data.tools || [];
       sa(); renderDash(); renderInv(); renderExps(); renderSales();
       
-      sIcon.className = "fas fa-cloud-check text-emerald-500 text-xs";
-      if(sText) sText.innerText = "Synced";
-      if(!isSilent) tst('Synced securely with Cloud', 'ok');
-    } else {
-       throw new Error("Failed to get valid data from Google Sheet.");
+      // Sync Success UI
+      sBtn.classList.remove("bg-indigo-50"); sBtn.classList.add("bg-emerald-50", "border-emerald-200");
+      sIcon.className = "fas fa-check-circle text-emerald-500 text-xs";
+      sText.innerText = "Synced"; sText.className = "text-[10px] font-bold text-emerald-600 hidden md:inline";
+      
+      setTimeout(() => {
+        sBtn.classList.remove("bg-emerald-50", "border-emerald-200");
+        sIcon.className = "fas fa-cloud text-gray-400 text-xs";
+        sText.innerText = "Cloud Sync"; sText.className = "text-[10px] font-bold text-gray-500 hidden md:inline";
+      }, 3000);
+      
+      if(showToast) tst('Cloud Sync Complete', 'ok');
     }
   } catch(e) {
-    sIcon.className = "fas fa-cloud-download-alt text-amber-500 text-xs";
-    if(sText) sText.innerText = "Offline";
-    if(!isSilent) tst('Offline: Saved locally', 'warn');
-    console.error("Sync Error: ", e.message);
-  }
-  
-  if(!isSilent) {
-    document.getElementById('sync-loader').classList.add('hidden');
-    document.getElementById('sync-loader').classList.remove('flex');
+    sIcon.className = "fas fa-exclamation-circle text-amber-500 text-xs"; sText.innerText = "Offline";
+    if(showToast) tst('Offline: Saved locally', 'warn');
   }
   isSyncing = false;
+  document.getElementById('main-loader').classList.add('hidden'); // Hide loader if it was open
 }
+function manualSync() { syncData(true); }
 
-function manualSync() { syncData(false); }
+// Auto Sync on Online
+window.addEventListener('online', manualSync);
 
-// ---- AUTH PIN LOGIC & KEYBOARD EVENTS ----
-let enteredPin = "";
-function initLock() {
+// Initial Load Sequence
+async function initApp() {
   if(!sessionStorage.getItem('validPin')) {
+    document.getElementById('main-loader').classList.add('hidden');
     document.getElementById('lock-screen').classList.remove('hidden');
   } else {
-    syncData(false); updateCustomersList(); 
+    updateCustomersList(); renderDash();
+    syncData(); // Background sync
   }
 }
-function updateDots() {
-  const dots = document.querySelectorAll('#pin-dots .pin-dot');
-  dots.forEach((d,i) => d.classList.toggle('filled', i < enteredPin.length));
-}
-function pressPin(n) {
-  if(enteredPin.length < 6) enteredPin += String(n);
-  updateDots();
-}
+
+// PIN Verification
+let enteredPin = "";
+function updateDots() { document.querySelectorAll('#pin-dots .pin-dot').forEach((d,i) => d.classList.toggle('filled', i < enteredPin.length)); }
+function pressPin(n) { if(enteredPin.length < 6) enteredPin += String(n); updateDots(); }
 function clearPin() { enteredPin = enteredPin.slice(0,-1); updateDots(); }
 
 async function verifyPin() {
   if(enteredPin.length === 0) return;
-  document.getElementById('auth-loader').classList.remove('hidden');
+  document.getElementById('lock-screen').classList.add('hidden');
+  document.getElementById('main-loader').classList.remove('hidden'); // Show loading while verifying
   try {
-    const res = await fetchJSONP(CONFIG_GAS_URL + "?action=verifyPin&pin=" + enteredPin);
-    if(res.success) {
+    const res = await fetch(CONFIG_GAS_URL + "?action=verifyPin&pin=" + enteredPin);
+    const data = await res.json();
+    if(data.success) {
       sessionStorage.setItem('validPin', enteredPin);
-      document.getElementById('lock-screen').classList.add('hidden');
-      syncData(false);
-      updateCustomersList();
+      syncData(true); updateCustomersList(); renderDash();
     } else { failPin(); }
   } catch(e) { 
-    if(enteredPin === "030512") { 
+    if(enteredPin === "030512") {
        sessionStorage.setItem('validPin', enteredPin);
-       document.getElementById('lock-screen').classList.add('hidden');
-       tst('Offline Mode Started', 'warn');
-       updateCustomersList();
+       document.getElementById('main-loader').classList.add('hidden');
+       tst('Offline Mode', 'warn'); updateCustomersList(); renderDash();
     } else { failPin(); }
   }
-  document.getElementById('auth-loader').classList.add('hidden');
 }
 function failPin() {
-  const dots = document.getElementById('pin-dots');
-  dots.classList.add('shake');
-  setTimeout(() => { dots.classList.remove('shake'); enteredPin=""; updateDots(); }, 400);
-  tst('Incorrect PIN', 'err');
+  document.getElementById('main-loader').classList.add('hidden');
+  document.getElementById('lock-screen').classList.remove('hidden');
+  document.getElementById('pin-dots').classList.add('shake');
+  setTimeout(() => { document.getElementById('pin-dots').classList.remove('shake'); enteredPin=""; updateDots(); }, 400); tst('Incorrect PIN', 'err');
 }
 
-// Delete Auth Logic
-let pendingDelAction = null;
-let delPin = "";
-function requireAuth(actionFunction) {
-  pendingDelAction = actionFunction;
-  delPin = ""; updateDelDots();
-  document.getElementById('del-screen').classList.remove('hidden');
-}
-function updateDelDots() {
-  const dots = document.querySelectorAll('#del-dots .pin-dot');
-  dots.forEach((d,i) => d.classList.toggle('filled', i < delPin.length));
-}
-function pressDelPin(n) {
-  if(delPin.length < 6) delPin += String(n);
-  updateDelDots();
-  if(delPin.length === 6) verifyDelPin();
-}
+// Auth required for Delete
+let pendingDelAction = null, delPin = "";
+function requireAuth(fn) { pendingDelAction = fn; delPin = ""; updateDelDots(); document.getElementById('del-screen').classList.remove('hidden'); }
+function updateDelDots() { document.querySelectorAll('#del-dots .pin-dot').forEach((d,i) => d.classList.toggle('filled', i < delPin.length)); }
+function pressDelPin(n) { if(delPin.length < 6) delPin += String(n); updateDelDots(); if(delPin.length === 6) verifyDelPin(); }
 function clearDelPin() { delPin = delPin.slice(0,-1); updateDelDots(); }
 function verifyDelPin() {
     if(delPin === sessionStorage.getItem('validPin') || delPin === "030512") {
-      document.getElementById('del-screen').classList.add('hidden');
-      if(pendingDelAction) pendingDelAction();
-    } else {
-      const dbx = document.getElementById('del-dots');
-      dbx.classList.add('shake');
-      setTimeout(()=>{ dbx.classList.remove('shake'); delPin=""; updateDelDots(); tst('Access Denied', 'err'); }, 400);
-    }
+      document.getElementById('del-screen').classList.add('hidden'); if(pendingDelAction) pendingDelAction();
+    } else { document.getElementById('del-dots').classList.add('shake'); setTimeout(()=>{ document.getElementById('del-dots').classList.remove('shake'); delPin=""; updateDelDots(); tst('Denied', 'err'); }, 400); }
 }
 function cancelDel() { document.getElementById('del-screen').classList.add('hidden'); pendingDelAction=null; }
 
-document.addEventListener('keydown', function(e) {
-  const lock = document.getElementById('lock-screen');
-  const delLock = document.getElementById('del-screen');
-  
-  if (!lock.classList.contains('hidden')) {
-    if (e.key >= '0' && e.key <= '9') pressPin(e.key);
-    if (e.key === 'Backspace') clearPin();
-    if (e.key === 'Enter') verifyPin();
-  } else if (!delLock.classList.contains('hidden')) {
-    if (e.key >= '0' && e.key <= '9') pressDelPin(e.key);
-    if (e.key === 'Backspace') clearDelPin();
-    if (e.key === 'Enter' && delPin.length === 6) verifyDelPin();
-  }
-});
+// Utils
+function tst(m,t='ok'){ const ts=document.getElementById('tst'); ts.textContent=m; ts.style.background=t==='err'?'#ef4444':t==='warn'?'#f59e0b':'#10b981'; ts.className='toast show'; setTimeout(()=>ts.classList.remove('show'),2000); }
+function switchTab(id){ document.querySelectorAll('.view-section').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); if(id==='new-order') document.getElementById('pinv').textContent=genInv(); }
+function genInv(){ const c='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let r='INVSA-'; for(let i=0;i<5;i++)r+=c.charAt(Math.floor(Math.random()*c.length)); return r; }
 
+// 🛑 UNIQUE TRACKING CODE GENERATOR
+function generateTrackCode() { return Math.random().toString(36).substring(2, 8).toUpperCase() + Date.now().toString(36).substring(6).toUpperCase(); }
 
-setInterval(()=>{
-  const n=new Date();
-  document.getElementById('clk').textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  document.getElementById('ddisp').textContent=n.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-},1000);
-
-function tst(m,t='ok'){ const ts=document.getElementById('tst'); ts.textContent=m; ts.style.background=t==='err'?'#ef4444':t==='warn'?'#f59e0b':'#1e293b'; ts.className='toast show'; setTimeout(()=>ts.classList.remove('show'),2000); }
-const TITLES={dashboard:'Dashboard','new-order':'New Order',inventory:'Inventory',expenses:'Tools & Expenses',sales:'Sales History'};
-function switchTab(id){
-  document.querySelectorAll('.view-section').forEach(v=>v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.getElementById('ptitle').textContent=TITLES[id];
-  document.querySelectorAll('#dnav button').forEach(b=>{const on=b.dataset.t===id;b.classList.toggle('active',on);b.style.color=on?'':''});
-  document.querySelectorAll('.mob-btn').forEach(b=>b.classList.toggle('am',b.dataset.t===id));
-  if(id==='dashboard')renderDash(); if(id==='inventory')renderInv(); if(id==='expenses')renderExps(); if(id==='sales')renderSales();
-  if(id==='new-order'){document.getElementById('pinv').textContent=genInv();}
-}
-
-function genInv(){
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let res = 'INVSA-';
-  for(let i=0; i<5; i++) res += chars.charAt(Math.floor(Math.random()*chars.length));
-  return res;
-}
-// 🛑 Tracking ID Generator
-function genTrackId() {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let res = '';
-  for(let i=0; i<8; i++) res += chars.charAt(Math.floor(Math.random()*chars.length)); return res;
-}
-
-// 🛑 DASHBOARD DATA & PROFIT LOGIC 🛑
+// Render Dashboard
 let stFilter='';
+function filterStatus(s){stFilter=s; switchTab('dashboard'); setTimeout(()=>{document.getElementById('dsrch').value='';renderOrders();},50)}
 function renderDash(){
-  const pend = orders.filter(o=>o.status==='Pending').length;
-  
-  // Weekly Profit = Delivered orders only. (Quoted Price - Real Item Cost)
-  const wrev = orders.filter(o=>o.status==='Delivered').reduce((s,o)=>{
-      const cost = (o.items||[]).reduce((c,it)=>c+(Number(it.cost)||0), 0);
-      return s + (Number(o.quotedPrice) - cost);
-  }, 0);
-  
-  const wexp = exps.reduce((s,e)=>s+Number(e.cost),0);
-  
-  // Expected Balance = Sum of all unpaid balances
-  const bal = orders.reduce((s,o)=>s+Number(o.balance),0); 
-  
-  const sv = inv.reduce((s,i)=>s+(Number(i.cost)*Number(i.qty)),0);
-  
-  document.getElementById('dp').textContent=pend;
-  document.getElementById('dw').textContent='Rs.'+wrev.toLocaleString();
-  document.getElementById('de').textContent='Rs.'+wexp.toLocaleString();
-  document.getElementById('db').textContent='Rs.'+bal.toLocaleString();
-  document.getElementById('ds').textContent='Rs.'+sv.toLocaleString();
+  document.getElementById('dp').textContent=orders.filter(o=>o.status==='Pending').length;
+  document.getElementById('db').textContent='Rs.'+orders.filter(o=>o.status!=='Delivered').reduce((s,o)=>s+(Number(o.quotedPrice)-Number(o.advance)),0).toLocaleString();
   renderOrders();
 }
-function filterStatus(s){stFilter=s; switchTab('dashboard'); setTimeout(()=>{document.getElementById('dsrch').value='';renderOrders();},50)}
-
 function renderOrders(){
   const q=(document.getElementById('dsrch')?.value||'').toLowerCase();
-  let list=[...orders].reverse().filter(o=>{
-    const mq=!q||o.invoiceNo.toLowerCase().includes(q)||o.customerName.toLowerCase().includes(q)||(o.phone||'').includes(q);
+  const list=[...orders].reverse().filter(o=>{
+    const mq=!q||o.invoiceNo.toLowerCase().includes(q)||o.customerName.toLowerCase().includes(q);
     const ms=!stFilter||stFilter==='All'||o.status===stFilter; return mq&&ms;
   }).slice(0,30);
-  document.getElementById('obadge').textContent=list.length;
-  const tb=document.getElementById('otbody');
-  if(!list.length){tb.innerHTML=`<tr><td colspan="6" class="text-center py-6 text-gray-400 text-xs">No orders</td></tr>`;return;}
-  tb.innerHTML=list.map(o=>{
+  document.getElementById('otbody').innerHTML=list.length?list.map(o=>{
     const bl=Number(o.quotedPrice)-Number(o.advance);
-    const items=o.items||[{fault:o.fault}]; const fstr=items.map(i=>i.fault).join(', ');
-    const sc=o.status==='Pending'?'pill-p':o.status==='Completed'?'pill-c':'pill-d';
-    return `<tr class="order-row" onclick="openOM('${o.invoiceNo}')">
-      <td class="py-2.5 px-4"><p class="font-black text-indigo-600 text-xs">${o.invoiceNo}</p></td>
-      <td class="py-2.5 px-4"><p class="font-bold text-xs">${o.customerName}</p><p class="text-[9px] text-gray-400">${o.phone}</p></td>
-      <td class="py-2.5 px-4 max-w-[150px] truncate"><p class="text-xs font-bold text-gray-700">${o.model||'Unknown Device'}</p><p class="text-[10px] text-gray-400">${fstr}</p></td>
-      <td class="py-2.5 px-4"><p class="font-black text-xs ${bl>0?'text-red-500':'text-emerald-500'}">${bl>0?'Rs.'+bl.toLocaleString():'PAID ✓'}</p></td>
-      <td class="py-2.5 px-4"><span class="pill ${sc}">${o.status}</span></td>
-      <td class="py-2.5 px-4 text-right">
-        <!-- 🛑 FIX: Stop Propagation for WhatsApp Button 🛑 -->
-        <button onclick="event.stopPropagation(); sendWARow('${o.invoiceNo}')" class="w-7 h-7 rounded bg-green-50 text-green-500 hover:bg-green-100 mr-1"><i class="fab fa-whatsapp"></i></button>
-      </td>
-    </tr>`;
-  }).join('');
+    return `<tr class="order-row" onclick="openOM('${o.invoiceNo}')"><td class="py-2.5 px-4"><p class="font-black text-indigo-600">${o.invoiceNo}</p></td><td class="py-2.5 px-4"><p class="font-bold">${o.customerName}</p></td><td class="py-2.5 px-4"><p class="font-bold text-gray-700">${o.model||'Unknown'}</p></td><td class="py-2.5 px-4"><p class="font-black text-xs ${bl>0?'text-red-500':'text-emerald-500'}">${bl>0?'Rs.'+bl:'PAID ✓'}</p></td><td class="py-2.5 px-4"><span class="pill ${o.status==='Pending'?'pill-p':'pill-c'}">${o.status}</span></td><td class="py-2.5 px-4 text-right" onclick="event.stopPropagation()"><button onclick="sendWARow('${o.invoiceNo}')" class="w-7 h-7 rounded bg-green-50 text-green-500"><i class="fab fa-whatsapp"></i></button></td></tr>`;
+  }).join(''):'<tr><td colspan="6" class="text-center py-6 text-gray-400">No orders</td></tr>';
 }
 
+// New Order
 let rids=[];
 function addRow(){
   const id='r'+Date.now(); rids.push(id);
-  const div=document.createElement('div'); div.className='irow grid grid-cols-12 gap-2 items-end'; div.id='w-'+id;
-  div.innerHTML=`<div class="col-span-12 md:col-span-4"><label class="lbl">Fault / Issue *</label><input type="text" id="ff-${id}" class="inp py-1.5 text-xs"></div>
-    <div class="col-span-6 md:col-span-2"><label class="lbl flex justify-between">Cost <button type="button" onclick="openSM('${id}')" class="text-indigo-500 text-[9px]"><i class="fas fa-box"></i></button></label><input type="number" id="fc-${id}" oninput="calcT()" class="inp py-1.5 text-xs bg-red-50 text-red-600"></div>
-    <div class="col-span-6 md:col-span-2"><label class="lbl">Price</label><input type="number" id="fp-${id}" oninput="calcT()" class="inp py-1.5 text-xs bg-green-50 text-green-700"></div>
-    <div class="col-span-10 md:col-span-3"><label class="lbl">Warranty</label><select id="fw-${id}" class="inp py-1.5 text-xs">${['None','1 Month','3 Months','6 Months','1 Year'].map(w=>`<option>${w}</option>`).join('')}</select></div>
-    <div class="col-span-2 md:col-span-1 text-right"><button onclick="remRow('${id}')" class="w-7 h-7 bg-red-50 text-red-400 rounded"><i class="fas fa-times text-xs"></i></button></div>`;
+  const div=document.createElement('div'); div.className='irow grid grid-cols-12 gap-2'; div.id='w-'+id;
+  div.innerHTML=`<div class="col-span-12 md:col-span-5"><input type="text" id="ff-${id}" placeholder="Fault / Item" class="inp py-1.5 text-xs"></div><div class="col-span-6 md:col-span-3"><input type="number" id="fp-${id}" placeholder="Price" oninput="calcT()" class="inp py-1.5 text-xs"></div><div class="col-span-4 md:col-span-3"><select id="fw-${id}" class="inp py-1.5 text-xs"><option>None</option><option>1 Month</option><option>3 Months</option></select></div><div class="col-span-2 md:col-span-1 text-right"><button onclick="remRow('${id}')" class="w-7 h-7 bg-red-50 text-red-400 rounded"><i class="fas fa-times text-xs"></i></button></div>`;
   document.getElementById('icontainer').appendChild(div); calcT();
 }
 function remRow(id){rids=rids.filter(r=>r!==id);document.getElementById('w-'+id)?.remove();calcT()}
-function calcT(){
-  let tc=0,tp=0;
-  rids.forEach(id=>{tc+=Number(document.getElementById('fc-'+id)?.value||0);tp+=Number(document.getElementById('fp-'+id)?.value||0)});
-  document.getElementById('tc').textContent='Rs.'+tc; document.getElementById('tp').textContent='Rs.'+tp;
-  document.getElementById('tb').textContent='Rs.'+(tp-Number(document.getElementById('fa').value||0));
-}
+function calcT(){ let tp=0; rids.forEach(id=>{tp+=Number(document.getElementById('fp-'+id)?.value||0)}); document.getElementById('tp').textContent='Rs.'+tp; document.getElementById('tb').textContent='Rs.'+(tp-Number(document.getElementById('fa').value||0)); }
 function clearForm(){ ['fc','fp','fm','fa','fn'].forEach(id=>document.getElementById(id).value=''); document.getElementById('icontainer').innerHTML=''; rids=[]; addRow(); document.getElementById('pinv').textContent=genInv(); calcT();}
 
-// 🛑 SILENT SYNC ON SAVING 🛑
 function saveOrd(print){
-  const name=document.getElementById('fc').value.trim(), phone=document.getElementById('fp').value.trim();
-  if(!name||!phone){tst('Name & Phone required!','err');return}
-  const items=rids.map(id=>({fault:document.getElementById('ff-'+id)?.value||'',cost:Number(document.getElementById('fc-'+id)?.value||0),price:Number(document.getElementById('fp-'+id)?.value||0),warranty:document.getElementById('fw-'+id)?.value||'None'})).filter(i=>i.fault);
+  const name=document.getElementById('fc').value.trim();
+  // 🛑 Phone Number Fix 🛑
+  let rawPhone = document.getElementById('fp').value.trim();
+  if(rawPhone.startsWith('0')) rawPhone = rawPhone.substring(1);
+  if(rawPhone.startsWith('94')) rawPhone = rawPhone.substring(2);
+  const phone = '0' + rawPhone;
+  
+  if(!name||!rawPhone){tst('Name & Phone required!','err');return}
+  const items=rids.map(id=>({fault:document.getElementById('ff-'+id)?.value||'',cost:0,price:Number(document.getElementById('fp-'+id)?.value||0),warranty:document.getElementById('fw-'+id)?.value||'None'})).filter(i=>i.fault);
   if(!items.length){tst('Add repair item!','err');return}
   
-  // Deduct Inventory Qty
-  items.forEach(it=>{const si=inv.find(i=>i.name===it.fault);if(si&&si.qty>0)si.qty--;});
-  
   const tp=items.reduce((s,i)=>s+i.price,0), ad=Number(document.getElementById('fa').value||0);
-  const tId = genTrackId();
+  const trackCode = generateTrackCode(); // Generate unique tracking ID
   
-  const o={invoiceNo:document.getElementById('pinv').textContent, trackingId: tId, customerName:name,phone:'0'+phone,model:document.getElementById('fm').value,items,fault:items.map(i=>i.fault).join(', '),quotedPrice:tp,advance:ad,balance:tp-ad,customerMessage:document.getElementById('fn').value,date:new Date().toISOString(),status:'Pending'};
-  orders.push(o); sa(); 
-  syncData(true); // Silent Sync starts
-  tst('Saved: '+o.invoiceNo);
+  const o={invoiceNo:document.getElementById('pinv').textContent,customerName:name,phone:phone,model:document.getElementById('fm').value,items,fault:items.map(i=>i.fault).join(', '),quotedPrice:tp,advance:ad,balance:tp-ad,customerMessage:document.getElementById('fn').value,date:new Date().toISOString(),status:'Pending', trackCode: trackCode};
   
+  orders.push(o); sa(); syncData(); // Auto sync
   if(print){localStorage.setItem('currentOrder',JSON.stringify(o));window.open('bil.html','_blank')}
   clearForm(); switchTab('dashboard');
 }
 
-// 🛑 EDIT ORDER LOGIC 🛑
-let curInv=null;
-let tempOMItems=[];
-
+// Order Modal
+let curInv=null; let tempOMItems=[];
 function openOM(invNo){
-  const o=orders.find(x=>x.invoiceNo===invNo); if(!o)return;
-  curInv=invNo;
-  document.getElementById('om-inv').textContent=o.invoiceNo;
-  document.getElementById('om-n').value=o.customerName;
-  document.getElementById('om-ph').value=o.phone;
-  document.getElementById('om-ad').value=o.advance;
-  
-  tempOMItems = JSON.parse(JSON.stringify(o.items || [{fault:o.fault, warranty:o.warranty||'None', price:o.quotedPrice, cost:o.cost||0}]));
-  renderOMItems();
-  
-  ['Pending','Completed','Delivered'].forEach(s=>{
-    const b=document.getElementById('sb-'+s); const on=o.status===s;
-    b.style.borderColor=on?(s==='Pending'?'#f59e0b':s==='Completed'?'#3b82f6':'#10b981'):'transparent';
-    b.style.color=on?(s==='Pending'?'#b45309':s==='Completed'?'#1d4ed8':'#065f46'):'#9ca3af';
-  });
+  const o=orders.find(x=>x.invoiceNo===invNo); if(!o)return; curInv=invNo;
+  document.getElementById('om-inv').textContent=o.invoiceNo; document.getElementById('om-n').value=o.customerName; document.getElementById('om-ph').value=o.phone; document.getElementById('om-ad').value=o.advance;
+  tempOMItems = JSON.parse(JSON.stringify(o.items || [{fault:o.fault, warranty:o.warranty||'None', price:o.quotedPrice}])); renderOMItems();
+  ['Pending','Completed','Delivered'].forEach(s=>{ const b=document.getElementById('sb-'+s); const on=o.status===s; b.style.borderColor=on?(s==='Pending'?'#f59e0b':s==='Completed'?'#3b82f6':'#10b981'):'transparent'; b.style.color=on?(s==='Pending'?'#b45309':s==='Completed'?'#1d4ed8':'#065f46'):'#9ca3af'; });
   document.getElementById('omodal').classList.remove('hidden');
 }
-
 function renderOMItems(){
-  let h='';
-  tempOMItems.forEach((it,i)=>{
-    h+=`<div class="flex gap-2 items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
-      <input type="text" value="${it.fault}" onchange="tempOMItems[${i}].fault=this.value" class="inp py-1 text-xs w-1/3" placeholder="Item Name">
-      <input type="number" value="${it.price}" onchange="tempOMItems[${i}].price=Number(this.value); calcOMTot()" class="inp py-1 text-xs w-1/4" placeholder="Price">
-      <select onchange="tempOMItems[${i}].warranty=this.value" class="inp py-1 text-xs w-1/4">${['None','1 Month','3 Months','6 Months','1 Year'].map(w=>`<option${it.warranty===w?' selected':''}>${w}</option>`).join('')}</select>
-      <button onclick="remModalItem(${i})" class="w-6 h-6 bg-red-100 text-red-500 rounded flex-shrink-0 text-[10px]"><i class="fas fa-trash"></i></button>
-    </div>`;
-  });
-  document.getElementById('om-items').innerHTML=h;
-  calcOMTot();
+  document.getElementById('om-items').innerHTML=tempOMItems.map((it,i)=>`<div class="flex gap-2 items-center bg-gray-50 p-2 rounded"><input type="text" value="${it.fault}" onchange="tempOMItems[${i}].fault=this.value" class="inp py-1 text-xs w-1/2" placeholder="Item Name"><input type="number" value="${it.price}" onchange="tempOMItems[${i}].price=Number(this.value); calcOMTot()" class="inp py-1 text-xs w-1/4"></div>`).join(''); calcOMTot();
 }
-function addModalItem(){ tempOMItems.push({fault:'', price:0, cost:0, warranty:'None'}); renderOMItems(); }
-function remModalItem(i){ tempOMItems.splice(i,1); renderOMItems(); }
-function calcOMTot(){
-  const tPrice = tempOMItems.reduce((s,it)=>s+(Number(it.price)||0), 0);
-  document.getElementById('om-pr').value = tPrice;
-  rcM();
-}
-function rcM(){
-  const p=Number(document.getElementById('om-pr').value||0), a=Number(document.getElementById('om-ad').value||0);
-  document.getElementById('om-bl').value='Rs.'+(p-a);
-}
+function calcOMTot(){ document.getElementById('om-pr').value = tempOMItems.reduce((s,it)=>s+(Number(it.price)||0), 0); rcM(); }
+function rcM(){ document.getElementById('om-bl').value='Rs.'+(Number(document.getElementById('om-pr').value||0)-Number(document.getElementById('om-ad').value||0)); }
 function closeOM(){document.getElementById('omodal').classList.add('hidden');curInv=null}
-
-function setSt(s){
-  const o=orders.find(x=>x.invoiceNo===curInv); if(!o)return;
-  o.status=s; if(s==='Delivered')o.deliveredDate=new Date().toISOString();
-  sa(); syncData(true); tst('Status: '+s); openOM(curInv);
-}
+function setSt(s){ const o=orders.find(x=>x.invoiceNo===curInv); if(!o)return; o.status=s; sa(); syncData(); openOM(curInv); }
 function saveOM(){
   const o=orders.find(x=>x.invoiceNo===curInv); if(!o)return;
-  o.customerName=document.getElementById('om-n').value;
-  o.phone=document.getElementById('om-ph').value;
-  o.items=tempOMItems.filter(i=>i.fault); // Save the updated items array
-  o.fault=o.items.map(i=>i.fault).join(', ');
-  o.quotedPrice=Number(document.getElementById('om-pr').value);
-  o.advance=Number(document.getElementById('om-ad').value);
-  o.balance=o.quotedPrice-o.advance;
-  sa(); syncData(true); closeOM(); renderDash(); tst('✓ Updated Successfully');
+  o.customerName=document.getElementById('om-n').value; o.phone=document.getElementById('om-ph').value; o.items=tempOMItems.filter(i=>i.fault); o.fault=o.items.map(i=>i.fault).join(', '); o.quotedPrice=Number(document.getElementById('om-pr').value); o.advance=Number(document.getElementById('om-ad').value); o.balance=o.quotedPrice-o.advance;
+  sa(); syncData(); closeOM(); renderDash(); tst('Updated');
 }
-function prtOrdModal(){ const o=orders.find(x=>x.invoiceNo===curInv); localStorage.setItem('currentOrder',JSON.stringify(o)); window.open('bil.html','_blank'); }
 
-// 🛑 WHATSAPP INTEGRATION (Uses Tracking ID) 🛑
+// 🛑 WHATSAPP INTEGRATION - Uses Secure Track Code 🛑
 function sendWARow(invNo) { generateWA(orders.find(x=>x.invoiceNo===invNo)); }
 function sendWA() { generateWA(orders.find(x=>x.invoiceNo===curInv)); }
 function generateWA(o) {
   if(!o) return;
+  // If old order doesn't have trackCode, generate one now
+  if(!o.trackCode) { o.trackCode = generateTrackCode(); sa(); syncData(); }
+  
   let p = o.phone.trim();
   if(p.startsWith('0')) p = '94' + p.substring(1);
-  const tId = o.trackingId || o.invoiceNo;
-  const text = `Hello ${o.customerName},%0A%0AYour SmartX repair order *${o.invoiceNo}* has been updated.%0ATotal Amount: Rs.${o.quotedPrice}%0AAdvance: Rs.${o.advance}%0A%0ATrack your repair live here:%0A${CONFIG_TRACK_URL}?id=${tId}%0A%0AThank you!`;
+  const text = `Hello ${o.customerName},%0A%0AYour SmartX repair order *${o.invoiceNo}* has been updated.%0ATotal Amount: Rs.${o.quotedPrice}%0AAdvance: Rs.${o.advance}%0A%0ATrack your repair live here:%0A${CONFIG_TRACK_URL}?id=${o.trackCode}%0A%0AThank you!`;
   window.open(`https://wa.me/${p}?text=${text}`, '_blank');
 }
 
-// Stock Picker
-let stgId=null;
-function openSM(id){stgId=id;document.getElementById('ss2').value='';renderSL();document.getElementById('stkmodal').classList.remove('hidden')}
-function closeSM(){document.getElementById('stkmodal').classList.add('hidden')}
-function renderSL(){
-  const q=document.getElementById('ss2').value.toLowerCase(); const f=inv.filter(i=>i.qty>0&&(!q||i.name.toLowerCase().includes(q)));
-  document.getElementById('slist').innerHTML=f.length?f.map(i=>`<div onclick="pickS('${i.name}',${i.cost})" class="p-2 border-b cursor-pointer hover:bg-gray-50 flex justify-between"><span class="text-xs font-bold">${i.name}</span><span class="text-[10px] text-red-500">Rs.${i.cost} (Qty:${i.qty})</span></div>`).join(''):'<p class="text-xs text-center">No Stock</p>';
-}
-function pickS(n,c){ const fn=document.getElementById('ff-'+stgId), cn=document.getElementById('fc-'+stgId); if(fn)fn.value=n; if(cn){cn.value=c; calcT();} closeSM(); }
+// Basic Inventory & Exps functions
+function renderInv(){ document.getElementById('itbody').innerHTML=inv.map(i=>`<tr><td class="py-2 font-bold">${i.name}</td><td class="py-2 text-red-500">${i.cost}</td><td class="py-2">${i.qty}</td><td class="py-2 text-right"><button onclick="requireAuth(()=>delInv('${i.name}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''); }
+function addInv(){ const n=document.getElementById('in').value, c=Number(document.getElementById('ic').value), q=Number(document.getElementById('iq').value); if(n&&c){ inv.push({name:n,cost:c,qty:q}); sa(); syncData(); renderInv(); }}
+function delInv(name){ const idx=inv.findIndex(i=>i.name===name); if(idx>-1){ inv.splice(idx,1); delInvs.push(name); sa(); syncData(); renderInv(); tst('Deleted','err'); } }
+function addExp(){ const d=document.getElementById('ed').value, c=Number(document.getElementById('ec').value); if(d&&c){ exps.push({date:new Date().toLocaleDateString('en-GB'),desc:d,brand:'',cost:c}); sa(); syncData(); document.getElementById('ed').value=''; document.getElementById('ec').value=''; renderExps(); }}
+function renderExps(){ document.getElementById('etbody').innerHTML=exps.map(e=>`<tr><td class="py-2 text-gray-400">${e.date}</td><td class="py-2 font-bold">${e.desc}</td><td class="py-2 text-red-500">${e.cost}</td><td class="py-2 text-right"><button onclick="requireAuth(()=>delExp('${e.date}','${e.desc}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''); }
+function delExp(dt,ds){ const idx=exps.findIndex(e=>e.date===dt&&e.desc===ds); if(idx>-1){ exps.splice(idx,1); delExps.push(dt+ds); sa(); syncData(); renderExps(); } }
+function renderSales(){ document.getElementById('stbody').innerHTML=orders.map(o=>`<tr><td class="py-2">${new Date(o.date).toLocaleDateString('en-GB')}</td><td class="py-2 text-indigo-600">${o.invoiceNo}</td><td class="py-2">${o.customerName}</td><td class="py-2">${o.quotedPrice}</td><td class="py-2 text-red-500">${o.balance}</td><td class="py-2">${o.status}</td><td class="py-2 text-right"><button onclick="requireAuth(()=>delOrd('${o.invoiceNo}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''); }
+function delOrd(invNo){ orders=orders.filter(o=>o.invoiceNo!==invNo); delOrds.push(invNo); sa(); syncData(); renderSales(); renderDash(); tst('Deleted','err'); }
 
-// Inventory & Exps
-function renderInv(){
-  const q=(document.getElementById('isrch')?.value||'').toLowerCase();
-  const tb=document.getElementById('itbody');
-  const f=inv.filter(i=>!q||i.name.toLowerCase().includes(q));
-  tb.innerHTML=f.length?f.map((i,idx)=>`<tr><td class="py-2 font-bold">${i.name}</td><td class="py-2 text-red-500">${i.cost}</td><td class="py-2">${i.qty}</td><td class="py-2 text-right"><button onclick="requireAuth(()=>delInv('${i.name}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan=\"4\" class=\"text-center py-4 text-xs text-gray-400\">Empty</td></tr>';
-}
-function addInv(){
-  const n=document.getElementById('in').value, c=Number(document.getElementById('ic').value), q=Number(document.getElementById('iq').value);
-  if(!n||!c)return tst('Fill details','err');
-  inv.push({name:n,cost:c,qty:q}); sa(); syncData(true);
-  document.getElementById('in').value=''; document.getElementById('ic').value=''; document.getElementById('iq').value=''; renderInv();
-}
-function delInv(name){ const idx=inv.findIndex(i=>i.name===name); if(idx>-1){ inv.splice(idx,1); delInvs.push(name); sa(); syncData(true); renderInv(); tst('Deleted','err'); } }
-
-function renderExps(){
-  document.getElementById('etotal').textContent='Rs.'+exps.reduce((s,e)=>s+e.cost,0);
-  document.getElementById('etbody').innerHTML=exps.length?[...exps].reverse().map(e=>`<tr><td class="py-2 text-gray-400">${e.date}</td><td class="py-2 font-bold">${e.desc}</td><td class="py-2 text-red-500">${e.cost}</td><td class="py-2 text-right"><button onclick="requireAuth(()=>delExp('${e.date}','${e.desc}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan=\"4\" class=\"text-center py-4 text-xs text-gray-400\">Empty</td></tr>';
-}
-function addExp(){
-  const d=document.getElementById('ed').value, b=document.getElementById('eb').value, c=Number(document.getElementById('ec').value);
-  if(!d||!c)return;
-  exps.push({date:new Date().toLocaleDateString('en-GB'),desc:d,brand:b,cost:c}); sa(); syncData(true);
-  document.getElementById('ed').value=''; document.getElementById('eb').value=''; document.getElementById('ec').value=''; renderExps();
-}
-function delExp(dt,ds){ const idx=exps.findIndex(e=>e.date===dt&&e.desc===ds); if(idx>-1){ exps.splice(idx,1); delExps.push(dt+ds); sa(); syncData(true); renderExps(); tst('Deleted','err'); } }
-
-function renderSales(){
-  const q=(document.getElementById('ss')?.value||'').toLowerCase();
-  const f=[...orders].reverse().filter(o=>!q||o.invoiceNo.toLowerCase().includes(q)||o.customerName.toLowerCase().includes(q));
-  document.getElementById('stbody').innerHTML=f.length?f.map(o=>`<tr><td class="py-2">${new Date(o.date).toLocaleDateString('en-GB')}</td><td class="py-2 font-black text-indigo-600">${o.invoiceNo}</td><td class="py-2 font-bold">${o.customerName}</td><td class="py-2 font-black">${o.quotedPrice}</td><td class="py-2 font-black ${o.balance<=0?'text-emerald-500':'text-red-500'}">${o.balance<=0?'PAID ✓':o.balance}</td><td class="py-2"><span class="pill ${o.status==='Pending'?'pill-p':'pill-c'}">${o.status}</span></td><td class="py-2 text-right"><button onclick="requireAuth(()=>delOrd('${o.invoiceNo}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan=\"7\" class=\"text-center py-4 text-xs text-gray-400\">Empty</td></tr>';
-}
-function delOrd(invNo){
-  orders=orders.filter(o=>o.invoiceNo!==invNo); delOrds.push(invNo); sa(); syncData(true); renderSales(); renderDash(); tst('Deleted','err');
-}
-
-initLock();
-clearForm(); switchTab('dashboard');
+initApp();
 </script>
 </body>
 </html>
