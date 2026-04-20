@@ -55,7 +55,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 .mob-btn.am::after{content:'';position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);width:16px;height:2.5px;background:#6366f1;border-radius:2px}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
-/* Lock Screen PIN UI */
 .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #6366f1; transition: all 0.2s; }
 .pin-dot.filled { background-color: #6366f1; box-shadow: 0 0 10px rgba(99,102,241,0.5); }
 .numpad-btn { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: white; background: rgba(255,255,255,0.1); transition: all 0.1s; cursor: pointer; }
@@ -68,10 +67,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 
 <!-- 🛑 CONFIGURATION 🛑 -->
 <script>
-  // ඔයාගේ Apps Script අලුත් ලින්ක් එක මෙතනට දාන්න
-  const CONFIG_GAS_URL = "https://script.google.com/macros/s/AKfycbznuWUGgL9uLfbEwZnlnFGiXYDYHaKxqmRru2JmuPSpPj0iFl9SRO12xlNjSW_e1sFoSQ/exec";
-  // ඔයාගේ Track එකේ ලින්ක් එක මෙතනට දාන්න
-  const CONFIG_TRACK_URL = "https://mrsanduwa-ac.github.io/Phonepos/track"; 
+  // ඔයාගේ අලුත් Apps Script ලින්ක් එක මෙතනට අනිවාර්යයෙන් දාන්න
+  const CONFIG_GAS_URL = "https://script.google.com/macros/s/AKfycbzpS2XSiRZrqwPQdn_Dow-V4R4dWbgqc4rw4TSubn0XoTzhvIdFl-Vz0apOJZSVAbIZfg/exec";
+  // ඔයාගේ Track එකේ ලින්ක් එක (Github Pages)
+  const CONFIG_TRACK_URL = "https://mrsanduwa-ac.github.io/track.html"; 
 </script>
 
 <!-- Full Screen Sync Loader -->
@@ -81,7 +80,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     <i class="fas fa-cloud-download-alt absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-indigo-500 text-xl"></i>
   </div>
   <h2 class="text-white text-lg font-black tracking-widest mt-6">SYNCING DATA</h2>
-  <p class="text-indigo-200 text-xs mt-2 font-semibold animate-pulse">Securely connecting to Cloud...</p>
+  <p class="text-indigo-200 text-xs mt-2 font-semibold animate-pulse" id="sync-msg">Securely connecting to Cloud...</p>
 </div>
 
 <!-- LOCK SCREEN -->
@@ -432,23 +431,33 @@ function autoFillCust(val) {
   }
 }
 
-// 🛑 JSONP Fetcher (CORS Error Fix) 🛑
+// 🛑 STRONGER JSONP Fetcher 🛑
 function fetchJSONP(url) {
   return new Promise((resolve, reject) => {
       const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
-      window[callbackName] = function(data) {
+      
+      const timeoutId = setTimeout(() => {
           delete window[callbackName];
-          document.body.removeChild(script);
+          reject(new Error('Connection timeout! Please check if your Google Apps Script URL is correct and deployed to "Anyone".'));
+      }, 10000); // 10s wait before failing
+
+      window[callbackName] = function(data) {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          if(script.parentNode) script.parentNode.removeChild(script);
           resolve(data);
       };
+      
       const script = document.createElement('script');
       script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
-      script.onerror = () => reject(new Error('JSONP failed'));
+      script.onerror = () => {
+          clearTimeout(timeoutId);
+          reject(new Error('Network Error! The Apps script URL is blocked or incorrectly deployed.'));
+      };
       document.body.appendChild(script);
   });
 }
 
-// 🛑 Updated Sync Logic 🛑
 let isSyncing = false;
 async function syncData(showToast=false) {
   if(isSyncing || !sessionStorage.getItem('validPin')) return;
@@ -456,6 +465,8 @@ async function syncData(showToast=false) {
   
   document.getElementById('sync-loader').classList.remove('hidden');
   document.getElementById('sync-loader').classList.add('flex');
+  document.getElementById('sync-msg').innerText = "Securely connecting to Cloud...";
+  
   const sIcon = document.getElementById('sync-icon');
   sIcon.className = "fas fa-sync fa-spin text-indigo-500 text-xs";
   
@@ -465,7 +476,6 @@ async function syncData(showToast=false) {
     
     delOrds = []; delInvs = []; delExps = [];
     
-    // තත්පර 2ක් ඉන්නවා Sheet එකේ ලියවෙනකන් (Race Condition Fix)
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     const data = await fetchJSONP(CONFIG_GAS_URL + "?action=getData");
@@ -475,10 +485,15 @@ async function syncData(showToast=false) {
       sa(); renderDash(); renderInv(); renderExps(); renderSales();
       sIcon.className = "fas fa-cloud-check text-emerald-500 text-xs";
       if(showToast) tst('Synced securely with Cloud', 'ok');
-    } else throw new Error("Fetch failed");
+    } else {
+       throw new Error("Failed to get valid data from Google Sheet.");
+    }
   } catch(e) {
     sIcon.className = "fas fa-cloud-download-alt text-amber-500 text-xs";
     if(showToast) tst('Offline: Saved locally', 'warn');
+    console.error("Sync Error: ", e.message);
+    // Error Alert shown to user to diagnose the exact issue
+    tst("Sync Error: " + e.message, 'err'); 
   }
   
   document.getElementById('sync-loader').classList.add('hidden');
@@ -498,6 +513,7 @@ async function verifyPin() {
   if(enteredPin.length === 0) return;
   document.getElementById('sync-loader').classList.remove('hidden');
   document.getElementById('sync-loader').classList.add('flex');
+  document.getElementById('sync-msg').innerText = "Verifying PIN with Cloud...";
   
   try {
     const data = await fetchJSONP(CONFIG_GAS_URL + "?action=verifyPin&pin=" + enteredPin);
@@ -508,15 +524,18 @@ async function verifyPin() {
     } else { failPin(); }
   } catch(e) { 
     if(enteredPin === "030512") {
-       sessionStorage.setItem('validPin', enteredPin); document.getElementById('lock-screen').classList.add('hidden'); tst('Offline Mode', 'warn'); updateCustomersList();
-    } else { failPin(); }
+       sessionStorage.setItem('validPin', enteredPin); document.getElementById('lock-screen').classList.add('hidden'); tst('Offline Mode Active', 'warn'); updateCustomersList();
+    } else { 
+       tst('Connection Error: ' + e.message, 'err');
+       failPin(); 
+    }
   }
   document.getElementById('sync-loader').classList.add('hidden');
   document.getElementById('sync-loader').classList.remove('flex');
 }
 function failPin() {
   const dots = document.getElementById('pin-dots'); dots.classList.add('shake');
-  setTimeout(() => { dots.classList.remove('shake'); enteredPin=""; updateDots(); }, 400); tst('Incorrect PIN', 'err');
+  setTimeout(() => { dots.classList.remove('shake'); enteredPin=""; updateDots(); }, 400); tst('Incorrect PIN or Error', 'err');
 }
 
 // Delete Auth Logic
@@ -636,7 +655,7 @@ function saveOrd(print){
   items.forEach(it=>{const si=inv.find(i=>i.name===it.fault);if(si&&si.qty>0)si.qty--;});
   const tp=items.reduce((s,i)=>s+i.price,0), ad=Number(document.getElementById('fa').value||0);
   
-  // 🛑 Tracking ID Generate කරනවා
+  // Tracking ID Generate
   const tId = genTrackId();
   
   const o={invoiceNo:document.getElementById('pinv').textContent, trackingId: tId, customerName:name,phone:'0'+phone,model:document.getElementById('fm').value,items,fault:items.map(i=>i.fault).join(', '),quotedPrice:tp,advance:ad,balance:tp-ad,customerMessage:document.getElementById('fn').value,date:new Date().toISOString(),status:'Pending'};
@@ -691,8 +710,6 @@ function sendWA() { generateWA(orders.find(x=>x.invoiceNo===curInv)); }
 function generateWA(o) {
   if(!o) return;
   let p = o.phone.trim(); if(p.startsWith('0')) p = '94' + p.substring(1);
-  
-  // 🛑 WhatsApp Message එකේ යන්නේ Random Tracking ID එක 🛑
   const tId = o.trackingId || o.invoiceNo;
   const text = `Hello ${o.customerName},%0A%0AYour SmartX repair order *${o.invoiceNo}* has been updated.%0ATotal Amount: Rs.${o.quotedPrice}%0AAdvance: Rs.${o.advance}%0A%0ATrack your repair live here:%0A${CONFIG_TRACK_URL}?id=${tId}%0A%0AThank you!`;
   window.open(`https://wa.me/${p}?text=${text}`, '_blank');
