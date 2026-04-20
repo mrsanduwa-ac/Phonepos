@@ -30,7 +30,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 .pill-p{background:#fef3c7;color:#b45309}
 .pill-c{background:#dbeafe;color:#1d4ed8}
 .pill-d{background:#d1fae5;color:#065f46}
-.wpill{background:#d1fae5;color:#047857;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;display:inline-flex;align-items:center;gap:2px}
 .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.65);backdrop-filter:blur(6px);z-index:800;display:flex;align-items:center;justify-content:center;padding:12px;animation:fIn .2s}
 @keyframes fIn{from{opacity:0}to{opacity:1}}
 .mbox{background:#fff;border-radius:22px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;animation:mIn .3s cubic-bezier(.4,0,.2,1)}
@@ -44,12 +43,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 .btn{padding:10px 18px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;border:none;display:inline-flex;align-items:center;gap:6px;justify-content:center}
 .btn:active{transform:scale(.97)}
 .bp{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.3)}
-.bp:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(99,102,241,.4)}
 .bs{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,.25)}
 .bw{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;box-shadow:0 4px 12px rgba(37,211,102,.25)}
 .br{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
 .bg2{background:#f1f5f9;color:#475569}
-.bg2:hover{background:#e2e8f0}
 .irow{background:#f8fafc;border:1.5px solid #e8ecf4;border-radius:14px;padding:12px;margin-bottom:8px;animation:slideUp .2s}
 .content-area{padding-bottom:88px}
 @media(min-width:768px){.content-area{padding-bottom:28px}}
@@ -58,7 +55,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 .mob-btn.am::after{content:'';position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);width:16px;height:2.5px;background:#6366f1;border-radius:2px}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
-
 /* Lock Screen PIN UI */
 .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #6366f1; transition: all 0.2s; }
 .pin-dot.filled { background-color: #6366f1; box-shadow: 0 0 10px rgba(99,102,241,0.5); }
@@ -73,10 +69,20 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 <!-- 🛑 CONFIGURATION 🛑 -->
 <script>
   // ඔයාගේ Apps Script අලුත් ලින්ක් එක මෙතනට දාන්න
-  const CONFIG_GAS_URL = "https://script.google.com/macros/s/AKfycbwYGxX7rzl3hQH79Az5H98JTvPuyu_eBQX1KcXr54JhFQ8ku-xC8h89gotw3tF_-mTNhg/exec";
+  const CONFIG_GAS_URL = "https://script.google.com/macros/s/AKfycbznuWUGgL9uLfbEwZnlnFGiXYDYHaKxqmRru2JmuPSpPj0iFl9SRO12xlNjSW_e1sFoSQ/exec";
   // ඔයාගේ Track එකේ ලින්ක් එක මෙතනට දාන්න
-  const CONFIG_TRACK_URL = "https://designverse.lk/track"; 
+  const CONFIG_TRACK_URL = "https://mrsanduwa-ac.github.io/Phonepos/track"; 
 </script>
+
+<!-- Full Screen Sync Loader -->
+<div id="sync-loader" class="fixed inset-0 z-[999999] bg-slate-900/80 backdrop-blur-sm hidden flex-col items-center justify-center transition-opacity duration-300">
+  <div class="relative">
+    <div class="w-20 h-20 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+    <i class="fas fa-cloud-download-alt absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-indigo-500 text-xl"></i>
+  </div>
+  <h2 class="text-white text-lg font-black tracking-widest mt-6">SYNCING DATA</h2>
+  <p class="text-indigo-200 text-xs mt-2 font-semibold animate-pulse">Securely connecting to Cloud...</p>
+</div>
 
 <!-- LOCK SCREEN -->
 <div id="lock-screen" class="fixed inset-0 z-[99999] bg-slate-900 flex flex-col items-center justify-center hidden">
@@ -84,7 +90,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     <i class="fas fa-lock text-4xl text-indigo-400 mb-4"></i>
     <h2 class="text-white text-xl font-bold tracking-widest">ENTER PIN</h2>
     <p class="text-slate-400 text-xs mt-1">SmartX Secure System</p>
-    <p class="text-slate-500 text-[10px] mt-2 italic">(You can use your keyboard)</p>
   </div>
   <div class="flex gap-4 mb-10" id="pin-dots">
     <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
@@ -98,13 +103,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
     <div class="numpad-btn" onclick="pressPin('0')">0</div>
     <div class="numpad-btn text-slate-400" style="background:transparent" onclick="clearPin()"><i class="fas fa-backspace"></i></div>
   </div>
-  <div id="auth-loader" class="text-indigo-400 mt-6 hidden"><i class="fas fa-circle-notch fa-spin text-2xl"></i></div>
 </div>
 
-<!-- DELETE Auth SCREEN (Mini) -->
+<!-- DELETE Auth SCREEN -->
 <div id="del-screen" class="modal-bg hidden !z-[9999]">
   <div class="bg-slate-900 rounded-3xl p-6 text-center max-w-[320px] w-full border border-slate-700 shadow-2xl">
-    <h3 class="text-white font-bold mb-4 text-sm text-red-400"><i class="fas fa-shield-alt mr-2"></i>Auth Required to Delete</h3>
+    <h3 class="text-white font-bold mb-4 text-sm text-red-400"><i class="fas fa-shield-alt mr-2"></i>Auth Required</h3>
     <div class="flex justify-center gap-3 mb-6" id="del-dots">
       <div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div>
       <div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div><div class="pin-dot w-3 h-3"></div>
@@ -120,15 +124,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
   </div>
 </div>
 
-<!-- Datalist for Customer Auto-suggest -->
 <datalist id="customersList"></datalist>
 
 <!-- SIDEBAR -->
 <aside class="sidebar w-60 hidden md:flex flex-col justify-between h-screen shrink-0 z-20">
   <div>
     <div class="h-18 flex items-center px-5 gap-3 border-b border-white/10 py-5">
-      <!-- 🛑 Shop Logo 🛑 -->
-      <img src="phoneshoplogo.png" alt="SmartX" onerror="this.outerHTML='<div class=\'w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white font-black text-lg\'>S</div>'" class="w-10 h-auto object-contain">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white font-black text-lg">S</div>
+      <h1 class="text-white font-black text-xl tracking-wider">SMART<span class="text-indigo-400">X</span></h1>
     </div>
     <nav class="mt-4 flex flex-col px-3 gap-0.5" id="dnav">
       <button onclick="switchTab('dashboard')" data-t="dashboard" class="nav-item active w-full text-left flex items-center px-3.5 py-2.5 text-white gap-2.5 text-[13px] font-semibold"><i class="fas fa-chart-pie text-indigo-200 w-4 text-center text-sm"></i>Dashboard</button>
@@ -138,32 +141,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
       <button onclick="switchTab('sales')" data-t="sales" class="nav-item w-full text-left flex items-center px-3.5 py-2.5 text-indigo-200/70 gap-2.5 text-[13px] font-semibold hover:text-white"><i class="fas fa-history w-4 text-center text-sm"></i>Sales History</button>
     </nav>
   </div>
-  
-  <div class="mt-auto">
-    <!-- Watermark -->
-    <div class="text-center pb-4 text-[10px] text-indigo-200/40 font-semibold px-4">
-      <a href="https://designverse.lk/track" target="_blank" class="hover:text-indigo-300 transition-colors">© 2026 DesignVerse by Sandusha Avishkha <br> SmartX POS</a>
-    </div>
-    <div class="p-4 border-t border-white/10 flex items-center gap-2.5 bg-black/20">
-      <div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white font-bold text-sm"><i class="fas fa-user-shield"></i></div>
-      <div class="flex-1 min-w-0">
-        <p class="text-sm font-bold text-white">Admin</p>
-        <div class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div><p class="text-[10px] text-emerald-400 font-semibold">Secure Mode</p></div>
-      </div>
-    </div>
-  </div>
 </aside>
 
 <!-- MAIN -->
 <main class="flex-1 flex flex-col h-screen overflow-hidden">
   <header class="h-16 bg-white/90 backdrop-blur-sm border-b border-gray-100 flex items-center justify-between px-4 md:px-7 shrink-0 shadow-sm z-10">
     <div class="flex items-center gap-2.5">
-      <!-- 🛑 Shop Logo Mobile 🛑 -->
-      <img src="phoneshoplogo.png" alt="SmartX" onerror="this.outerHTML='<h1 class=\'text-lg md:hidden font-black text-gray-800 tracking-wide\'>SMART<span class=\'text-indigo-600\'>X</span></h1>'" class="h-7 w-auto object-contain md:hidden">
+      <h1 class="text-lg md:hidden font-black text-gray-800 tracking-wide">SMART<span class="text-indigo-600">X</span></h1>
       <h2 class="text-lg font-black text-gray-800 hidden md:block" id="ptitle">Dashboard</h2>
     </div>
     <div class="flex items-center gap-3">
-      <!-- Sync Status -->
       <button onclick="manualSync()" class="bg-gray-50 border border-gray-200 rounded-full px-3 py-1.5 flex items-center gap-1.5 hover:bg-gray-100 transition-colors">
         <i id="sync-icon" class="fas fa-cloud-check text-emerald-500 text-xs"></i>
         <span class="text-[10px] font-bold text-gray-500 hidden md:inline">Cloud Sync</span>
@@ -240,7 +227,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
         <div class="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl p-4 mb-4 flex items-center justify-between shadow-lg">
           <div><p class="text-[10px] text-indigo-200 font-bold uppercase tracking-wider">New Invoice</p><h3 class="text-xl font-black text-white tracking-wider" id="pinv">INVSA-XXXXX</h3></div>
         </div>
-        <!-- Customer -->
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-3.5">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
@@ -253,7 +239,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
             <div><label class="lbl">Device Model *</label><input type="text" id="fm" placeholder="e.g. iPhone 13" class="inp"></div>
           </div>
         </div>
-        <!-- Items -->
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-3.5">
           <div class="flex items-center justify-between mb-3.5">
             <h3 class="text-xs font-black text-gray-800 uppercase tracking-wider">Repair Items & Faults</h3>
@@ -261,7 +246,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
           </div>
           <div id="icontainer"></div>
         </div>
-        <!-- Totals -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-4">
           <div class="bg-white rounded-2xl p-4 border border-gray-100"><label class="lbl">Customer Note</label><textarea id="fn" class="inp h-24 resize-none"></textarea></div>
           <div class="bg-white rounded-2xl p-4 border border-gray-100">
@@ -384,7 +368,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
       <div><label class="lbl">Phone</label><input type="text" id="om-ph" class="inp py-1.5"></div>
     </div>
     
-    <!-- Dynamic Items Area -->
     <div class="mb-3 bg-white border border-gray-100 rounded-xl p-3">
       <div class="flex justify-between items-center mb-2">
         <label class="lbl !mb-0 text-indigo-500">Repair Items / Faults</label>
@@ -409,7 +392,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 
 <div class="toast" id="tst"></div>
 
-<!-- STOCK SELECTOR (For Add Order) -->
 <div id="stkmodal" class="modal-bg hidden !z-[900]">
   <div class="mbox p-5 max-w-[400px]">
     <div class="flex items-center justify-between mb-3"><h3 class="font-black text-gray-800">Pick Stock</h3><button onclick="closeSM()" class="w-8 h-8 rounded-full bg-gray-100"><i class="fas fa-times"></i></button></div>
@@ -419,15 +401,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#eef0f8;overflow:hidd
 </div>
 
 <script>
-// Local Storage Utils
 function gd(k,d){try{return JSON.parse(localStorage.getItem('sx_'+k))||d}catch(e){return d}}
 function sd(k,v){localStorage.setItem('sx_'+k,JSON.stringify(v))}
 
 let orders = gd('orders',[]);
 let inv = gd('inv',[]);
 let exps = gd('exps',[]);
-
-// Tracking Deleted items for Cloud Sync
 let delOrds = gd('del_ords', []);
 let delInvs = gd('del_invs', []);
 let delExps = gd('del_exps', []);
@@ -438,7 +417,6 @@ function sa(){
   updateCustomersList();
 }
 
-// 🛑 CUSTOMER AUTOCOMPLETE LOGIC
 function updateCustomersList() {
   const clist = document.getElementById('customersList');
   const uniqueCusts = [...new Map(orders.map(item => [item.customerName, item])).values()];
@@ -454,157 +432,128 @@ function autoFillCust(val) {
   }
 }
 
-// ---- CLOUD SYNC LOGIC ----
+// 🛑 JSONP Fetcher (CORS Error Fix) 🛑
+function fetchJSONP(url) {
+  return new Promise((resolve, reject) => {
+      const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
+      window[callbackName] = function(data) {
+          delete window[callbackName];
+          document.body.removeChild(script);
+          resolve(data);
+      };
+      const script = document.createElement('script');
+      script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+      script.onerror = () => reject(new Error('JSONP failed'));
+      document.body.appendChild(script);
+  });
+}
+
+// 🛑 Updated Sync Logic 🛑
 let isSyncing = false;
 async function syncData(showToast=false) {
   if(isSyncing || !sessionStorage.getItem('validPin')) return;
   isSyncing = true;
+  
+  document.getElementById('sync-loader').classList.remove('hidden');
+  document.getElementById('sync-loader').classList.add('flex');
   const sIcon = document.getElementById('sync-icon');
   sIcon.className = "fas fa-sync fa-spin text-indigo-500 text-xs";
   
   try {
-    // 1. Data එක Google Sheets වලට යවනවා (POST) - Error එන එක නවත්තන්න no-cors පාවිච්චි කරනවා
     const payload = { action: 'syncData', orders, inventory: inv, tools: exps, deletedOrders: delOrds, deletedInv: delInvs, deletedExps: delExps };
-    await fetch(CONFIG_GAS_URL, { 
-      method: 'POST', 
-      body: JSON.stringify(payload),
-      mode: 'no-cors' 
-    });
+    await fetch(CONFIG_GAS_URL, { method: 'POST', body: JSON.stringify(payload), mode: 'no-cors' });
     
-    // ඩිලීට් කරපු දේවල් Sheet එකට ගියාට පස්සේ මෙහෙන් අයින් කරනවා
     delOrds = []; delInvs = []; delExps = [];
     
-    // 2. අලුත් Data ටික ආපහු Sheets වලින් ගන්නවා (GET) - මේකෙන් බ්‍රවුසර් එකේ ඩේටා අප්ඩේට් වෙනවා
-    const getRes = await fetch(CONFIG_GAS_URL + "?action=getData");
-    const data = await getRes.json();
+    // තත්පර 2ක් ඉන්නවා Sheet එකේ ලියවෙනකන් (Race Condition Fix)
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    const data = await fetchJSONP(CONFIG_GAS_URL + "?action=getData");
     
     if(data.success) {
-      orders = data.orders || [];
-      inv = data.inventory || [];
-      exps = data.tools || [];
-      sa(); 
-      renderDash(); renderInv(); renderExps(); renderSales();
+      orders = data.orders || []; inv = data.inventory || []; exps = data.tools || [];
+      sa(); renderDash(); renderInv(); renderExps(); renderSales();
       sIcon.className = "fas fa-cloud-check text-emerald-500 text-xs";
       if(showToast) tst('Synced securely with Cloud', 'ok');
-    } else {
-      throw new Error("Fetch failed");
-    }
+    } else throw new Error("Fetch failed");
   } catch(e) {
     sIcon.className = "fas fa-cloud-download-alt text-amber-500 text-xs";
     if(showToast) tst('Offline: Saved locally', 'warn');
   }
+  
+  document.getElementById('sync-loader').classList.add('hidden');
+  document.getElementById('sync-loader').classList.remove('flex');
   isSyncing = false;
 }
 function manualSync() { syncData(true); }
 
-// ---- AUTH PIN LOGIC & KEYBOARD EVENTS ----
+// Auth PIN Logic
 let enteredPin = "";
-function initLock() {
-  if(!sessionStorage.getItem('validPin')) {
-    document.getElementById('lock-screen').classList.remove('hidden');
-  } else {
-    syncData(); updateCustomersList();
-  }
-}
-function updateDots() {
-  const dots = document.querySelectorAll('#pin-dots .pin-dot');
-  dots.forEach((d,i) => d.classList.toggle('filled', i < enteredPin.length));
-}
-function pressPin(n) {
-  if(enteredPin.length < 6) enteredPin += String(n);
-  updateDots();
-}
+function initLock() { if(!sessionStorage.getItem('validPin')) { document.getElementById('lock-screen').classList.remove('hidden'); } else { syncData(); updateCustomersList(); } }
+function updateDots() { document.querySelectorAll('#pin-dots .pin-dot').forEach((d,i) => d.classList.toggle('filled', i < enteredPin.length)); }
+function pressPin(n) { if(enteredPin.length < 6) enteredPin += String(n); updateDots(); }
 function clearPin() { enteredPin = enteredPin.slice(0,-1); updateDots(); }
 
 async function verifyPin() {
   if(enteredPin.length === 0) return;
-  document.getElementById('auth-loader').classList.remove('hidden');
+  document.getElementById('sync-loader').classList.remove('hidden');
+  document.getElementById('sync-loader').classList.add('flex');
+  
   try {
-    const res = await fetch(CONFIG_GAS_URL + "?action=verifyPin&pin=" + enteredPin);
-    const data = await res.json();
+    const data = await fetchJSONP(CONFIG_GAS_URL + "?action=verifyPin&pin=" + enteredPin);
     if(data.success) {
       sessionStorage.setItem('validPin', enteredPin);
       document.getElementById('lock-screen').classList.add('hidden');
-      syncData(true);
-      updateCustomersList();
+      syncData(true); updateCustomersList();
     } else { failPin(); }
   } catch(e) { 
-    if(enteredPin === "030512") { // local fallback
-       sessionStorage.setItem('validPin', enteredPin);
-       document.getElementById('lock-screen').classList.add('hidden');
-       tst('Offline Mode Started', 'warn');
-       updateCustomersList();
+    if(enteredPin === "030512") {
+       sessionStorage.setItem('validPin', enteredPin); document.getElementById('lock-screen').classList.add('hidden'); tst('Offline Mode', 'warn'); updateCustomersList();
     } else { failPin(); }
   }
-  document.getElementById('auth-loader').classList.add('hidden');
+  document.getElementById('sync-loader').classList.add('hidden');
+  document.getElementById('sync-loader').classList.remove('flex');
 }
 function failPin() {
-  const dots = document.getElementById('pin-dots');
-  dots.classList.add('shake');
-  setTimeout(() => { dots.classList.remove('shake'); enteredPin=""; updateDots(); }, 400);
-  tst('Incorrect PIN', 'err');
+  const dots = document.getElementById('pin-dots'); dots.classList.add('shake');
+  setTimeout(() => { dots.classList.remove('shake'); enteredPin=""; updateDots(); }, 400); tst('Incorrect PIN', 'err');
 }
 
 // Delete Auth Logic
-let pendingDelAction = null;
-let delPin = "";
-function requireAuth(actionFunction) {
-  pendingDelAction = actionFunction;
-  delPin = ""; updateDelDots();
-  document.getElementById('del-screen').classList.remove('hidden');
-}
-function updateDelDots() {
-  const dots = document.querySelectorAll('#del-dots .pin-dot');
-  dots.forEach((d,i) => d.classList.toggle('filled', i < delPin.length));
-}
-function pressDelPin(n) {
-  if(delPin.length < 6) delPin += String(n);
-  updateDelDots();
-  if(delPin.length === 6) verifyDelPin();
-}
+let pendingDelAction = null; let delPin = "";
+function requireAuth(actionFunction) { pendingDelAction = actionFunction; delPin = ""; updateDelDots(); document.getElementById('del-screen').classList.remove('hidden'); }
+function updateDelDots() { document.querySelectorAll('#del-dots .pin-dot').forEach((d,i) => d.classList.toggle('filled', i < delPin.length)); }
+function pressDelPin(n) { if(delPin.length < 6) delPin += String(n); updateDelDots(); if(delPin.length === 6) verifyDelPin(); }
 function clearDelPin() { delPin = delPin.slice(0,-1); updateDelDots(); }
 function verifyDelPin() {
     if(delPin === sessionStorage.getItem('validPin') || delPin === "030512") {
-      document.getElementById('del-screen').classList.add('hidden');
-      if(pendingDelAction) pendingDelAction();
+      document.getElementById('del-screen').classList.add('hidden'); if(pendingDelAction) pendingDelAction();
     } else {
-      const dbx = document.getElementById('del-dots');
-      dbx.classList.add('shake');
+      const dbx = document.getElementById('del-dots'); dbx.classList.add('shake');
       setTimeout(()=>{ dbx.classList.remove('shake'); delPin=""; updateDelDots(); tst('Access Denied', 'err'); }, 400);
     }
 }
 function cancelDel() { document.getElementById('del-screen').classList.add('hidden'); pendingDelAction=null; }
 
-// Keyboard Listener for PINs
 document.addEventListener('keydown', function(e) {
-  const lock = document.getElementById('lock-screen');
-  const delLock = document.getElementById('del-screen');
-  
+  const lock = document.getElementById('lock-screen'); const delLock = document.getElementById('del-screen');
   if (!lock.classList.contains('hidden')) {
-    if (e.key >= '0' && e.key <= '9') pressPin(e.key);
-    if (e.key === 'Backspace') clearPin();
-    if (e.key === 'Enter') verifyPin();
+    if (e.key >= '0' && e.key <= '9') pressPin(e.key); if (e.key === 'Backspace') clearPin(); if (e.key === 'Enter') verifyPin();
   } else if (!delLock.classList.contains('hidden')) {
-    if (e.key >= '0' && e.key <= '9') pressDelPin(e.key);
-    if (e.key === 'Backspace') clearDelPin();
-    if (e.key === 'Enter' && delPin.length === 6) verifyDelPin();
+    if (e.key >= '0' && e.key <= '9') pressDelPin(e.key); if (e.key === 'Backspace') clearDelPin(); if (e.key === 'Enter' && delPin.length === 6) verifyDelPin();
   }
 });
 
-
-// Clock
 setInterval(()=>{
   const n=new Date();
   document.getElementById('clk').textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   document.getElementById('ddisp').textContent=n.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
 },1000);
 
-// Toast & Nav
 function tst(m,t='ok'){ const ts=document.getElementById('tst'); ts.textContent=m; ts.style.background=t==='err'?'#ef4444':t==='warn'?'#f59e0b':'#1e293b'; ts.className='toast show'; setTimeout(()=>ts.classList.remove('show'),2000); }
 const TITLES={dashboard:'Dashboard','new-order':'New Order',inventory:'Inventory',expenses:'Tools & Expenses',sales:'Sales History'};
 function switchTab(id){
-  document.querySelectorAll('.view-section').forEach(v=>v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.view-section').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active');
   document.getElementById('ptitle').textContent=TITLES[id];
   document.querySelectorAll('#dnav button').forEach(b=>{const on=b.dataset.t===id;b.classList.toggle('active',on);b.style.color=on?'':''});
   document.querySelectorAll('.mob-btn').forEach(b=>b.classList.toggle('am',b.dataset.t===id));
@@ -612,15 +561,16 @@ function switchTab(id){
   if(id==='new-order'){document.getElementById('pinv').textContent=genInv();}
 }
 
-// 🛑 RANDOM INVOICE GENERATOR
 function genInv(){
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let res = 'INVSA-';
-  for(let i=0; i<5; i++) res += chars.charAt(Math.floor(Math.random()*chars.length));
-  return res;
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let res = 'INVSA-';
+  for(let i=0; i<5; i++) res += chars.charAt(Math.floor(Math.random()*chars.length)); return res;
+}
+// 🛑 Tracking ID Generator
+function genTrackId() {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let res = '';
+  for(let i=0; i<8; i++) res += chars.charAt(Math.floor(Math.random()*chars.length)); return res;
 }
 
-// Dashboard Data
 let stFilter='';
 function renderDash(){
   const pend=orders.filter(o=>o.status==='Pending').length;
@@ -629,12 +579,9 @@ function renderDash(){
   const bal=orders.filter(o=>o.status!=='Delivered').reduce((s,o)=>s+(Number(o.quotedPrice)-Number(o.advance)),0);
   const sv=inv.reduce((s,i)=>s+Number(i.cost)*Number(i.qty),0);
   
-  document.getElementById('dp').textContent=pend;
-  document.getElementById('dw').textContent='Rs.'+wrev.toLocaleString();
-  document.getElementById('de').textContent='Rs.'+wexp.toLocaleString();
-  document.getElementById('db').textContent='Rs.'+bal.toLocaleString();
-  document.getElementById('ds').textContent='Rs.'+sv.toLocaleString();
-  renderOrders();
+  document.getElementById('dp').textContent=pend; document.getElementById('dw').textContent='Rs.'+wrev.toLocaleString();
+  document.getElementById('de').textContent='Rs.'+wexp.toLocaleString(); document.getElementById('db').textContent='Rs.'+bal.toLocaleString();
+  document.getElementById('ds').textContent='Rs.'+sv.toLocaleString(); renderOrders();
 }
 function filterStatus(s){stFilter=s; switchTab('dashboard'); setTimeout(()=>{document.getElementById('dsrch').value='';renderOrders();},50)}
 function renderOrders(){
@@ -643,12 +590,10 @@ function renderOrders(){
     const mq=!q||o.invoiceNo.toLowerCase().includes(q)||o.customerName.toLowerCase().includes(q)||(o.phone||'').includes(q);
     const ms=!stFilter||stFilter==='All'||o.status===stFilter; return mq&&ms;
   }).slice(0,30);
-  document.getElementById('obadge').textContent=list.length;
-  const tb=document.getElementById('otbody');
+  document.getElementById('obadge').textContent=list.length; const tb=document.getElementById('otbody');
   if(!list.length){tb.innerHTML=`<tr><td colspan="6" class="text-center py-6 text-gray-400 text-xs">No orders</td></tr>`;return;}
   tb.innerHTML=list.map(o=>{
-    const bl=Number(o.quotedPrice)-Number(o.advance);
-    const items=o.items||[{fault:o.fault}]; const fstr=items.map(i=>i.fault).join(', ');
+    const bl=Number(o.quotedPrice)-Number(o.advance); const items=o.items||[{fault:o.fault}]; const fstr=items.map(i=>i.fault).join(', ');
     const sc=o.status==='Pending'?'pill-p':o.status==='Completed'?'pill-c':'pill-d';
     return `<tr class="order-row" onclick="openOM('${o.invoiceNo}')">
       <td class="py-2.5 px-4"><p class="font-black text-indigo-600 text-xs">${o.invoiceNo}</p></td>
@@ -663,7 +608,6 @@ function renderOrders(){
   }).join('');
 }
 
-// New Order Form
 let rids=[];
 function addRow(){
   const id='r'+Date.now(); rids.push(id);
@@ -683,6 +627,7 @@ function calcT(){
   document.getElementById('tb').textContent='Rs.'+(tp-Number(document.getElementById('fa').value||0));
 }
 function clearForm(){ ['fc','fp','fm','fa','fn'].forEach(id=>document.getElementById(id).value=''); document.getElementById('icontainer').innerHTML=''; rids=[]; addRow(); document.getElementById('pinv').textContent=genInv(); calcT();}
+
 function saveOrd(print){
   const name=document.getElementById('fc').value.trim(), phone=document.getElementById('fp').value.trim();
   if(!name||!phone){tst('Name & Phone required!','err');return}
@@ -690,26 +635,23 @@ function saveOrd(print){
   if(!items.length){tst('Add repair item!','err');return}
   items.forEach(it=>{const si=inv.find(i=>i.name===it.fault);if(si&&si.qty>0)si.qty--;});
   const tp=items.reduce((s,i)=>s+i.price,0), ad=Number(document.getElementById('fa').value||0);
-  const o={invoiceNo:document.getElementById('pinv').textContent,customerName:name,phone:'0'+phone,model:document.getElementById('fm').value,items,fault:items.map(i=>i.fault).join(', '),quotedPrice:tp,advance:ad,balance:tp-ad,customerMessage:document.getElementById('fn').value,date:new Date().toISOString(),status:'Pending'};
+  
+  // 🛑 Tracking ID Generate කරනවා
+  const tId = genTrackId();
+  
+  const o={invoiceNo:document.getElementById('pinv').textContent, trackingId: tId, customerName:name,phone:'0'+phone,model:document.getElementById('fm').value,items,fault:items.map(i=>i.fault).join(', '),quotedPrice:tp,advance:ad,balance:tp-ad,customerMessage:document.getElementById('fn').value,date:new Date().toISOString(),status:'Pending'};
   orders.push(o); sa(); syncData(); tst('Saved: '+o.invoiceNo);
   if(print){localStorage.setItem('currentOrder',JSON.stringify(o));window.open('bil.html','_blank')}
   clearForm(); switchTab('dashboard');
 }
 
-// 🛑 EDIT ORDER LOGIC 🛑
-let curInv=null;
-let tempOMItems=[];
-
+let curInv=null; let tempOMItems=[];
 function openOM(invNo){
   const o=orders.find(x=>x.invoiceNo===invNo); if(!o)return;
   curInv=invNo;
   document.getElementById('om-inv').textContent=o.invoiceNo;
-  document.getElementById('om-n').value=o.customerName;
-  document.getElementById('om-ph').value=o.phone;
-  document.getElementById('om-ad').value=o.advance;
-  
-  tempOMItems = JSON.parse(JSON.stringify(o.items || [{fault:o.fault, warranty:o.warranty||'None', price:o.quotedPrice, cost:o.cost||0}]));
-  renderOMItems();
+  document.getElementById('om-n').value=o.customerName; document.getElementById('om-ph').value=o.phone; document.getElementById('om-ad').value=o.advance;
+  tempOMItems = JSON.parse(JSON.stringify(o.items || [{fault:o.fault, warranty:o.warranty||'None', price:o.quotedPrice, cost:o.cost||0}])); renderOMItems();
   
   ['Pending','Completed','Delivered'].forEach(s=>{
     const b=document.getElementById('sb-'+s); const on=o.status===s;
@@ -718,63 +660,44 @@ function openOM(invNo){
   });
   document.getElementById('omodal').classList.remove('hidden');
 }
-
 function renderOMItems(){
-  let h='';
-  tempOMItems.forEach((it,i)=>{
+  let h=''; tempOMItems.forEach((it,i)=>{
     h+=`<div class="flex gap-2 items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
       <input type="text" value="${it.fault}" onchange="tempOMItems[${i}].fault=this.value" class="inp py-1 text-xs w-1/3" placeholder="Item Name">
       <input type="number" value="${it.price}" onchange="tempOMItems[${i}].price=Number(this.value); calcOMTot()" class="inp py-1 text-xs w-1/4" placeholder="Price">
       <select onchange="tempOMItems[${i}].warranty=this.value" class="inp py-1 text-xs w-1/4">${['None','1 Month','3 Months','6 Months','1 Year'].map(w=>`<option${it.warranty===w?' selected':''}>${w}</option>`).join('')}</select>
       <button onclick="remModalItem(${i})" class="w-6 h-6 bg-red-100 text-red-500 rounded flex-shrink-0 text-[10px]"><i class="fas fa-trash"></i></button>
     </div>`;
-  });
-  document.getElementById('om-items').innerHTML=h;
-  calcOMTot();
+  }); document.getElementById('om-items').innerHTML=h; calcOMTot();
 }
 function addModalItem(){ tempOMItems.push({fault:'', price:0, cost:0, warranty:'None'}); renderOMItems(); }
 function remModalItem(i){ tempOMItems.splice(i,1); renderOMItems(); }
-function calcOMTot(){
-  const tPrice = tempOMItems.reduce((s,it)=>s+(Number(it.price)||0), 0);
-  document.getElementById('om-pr').value = tPrice;
-  rcM();
-}
-function rcM(){
-  const p=Number(document.getElementById('om-pr').value||0), a=Number(document.getElementById('om-ad').value||0);
-  document.getElementById('om-bl').value='Rs.'+(p-a);
-}
+function calcOMTot(){ document.getElementById('om-pr').value = tempOMItems.reduce((s,it)=>s+(Number(it.price)||0), 0); rcM(); }
+function rcM(){ const p=Number(document.getElementById('om-pr').value||0), a=Number(document.getElementById('om-ad').value||0); document.getElementById('om-bl').value='Rs.'+(p-a); }
 function closeOM(){document.getElementById('omodal').classList.add('hidden');curInv=null}
 
-function setSt(s){
-  const o=orders.find(x=>x.invoiceNo===curInv); if(!o)return;
-  o.status=s; if(s==='Delivered')o.deliveredDate=new Date().toISOString();
-  sa(); syncData(); tst('Status: '+s); openOM(curInv);
-}
+function setSt(s){ const o=orders.find(x=>x.invoiceNo===curInv); if(!o)return; o.status=s; if(s==='Delivered')o.deliveredDate=new Date().toISOString(); sa(); syncData(); tst('Status: '+s); openOM(curInv); }
 function saveOM(){
   const o=orders.find(x=>x.invoiceNo===curInv); if(!o)return;
-  o.customerName=document.getElementById('om-n').value;
-  o.phone=document.getElementById('om-ph').value;
-  o.items=tempOMItems.filter(i=>i.fault); // Save the updated items array
-  o.fault=o.items.map(i=>i.fault).join(', ');
-  o.quotedPrice=Number(document.getElementById('om-pr').value);
-  o.advance=Number(document.getElementById('om-ad').value);
-  o.balance=o.quotedPrice-o.advance;
+  o.customerName=document.getElementById('om-n').value; o.phone=document.getElementById('om-ph').value;
+  o.items=tempOMItems.filter(i=>i.fault); o.fault=o.items.map(i=>i.fault).join(', ');
+  o.quotedPrice=Number(document.getElementById('om-pr').value); o.advance=Number(document.getElementById('om-ad').value); o.balance=o.quotedPrice-o.advance;
   sa(); syncData(true); closeOM(); renderDash(); tst('✓ Updated Successfully');
 }
 function prtOrdModal(){ const o=orders.find(x=>x.invoiceNo===curInv); localStorage.setItem('currentOrder',JSON.stringify(o)); window.open('bil.html','_blank'); }
 
-// 🛑 WHATSAPP INTEGRATION 🛑
 function sendWARow(invNo) { generateWA(orders.find(x=>x.invoiceNo===invNo)); }
 function sendWA() { generateWA(orders.find(x=>x.invoiceNo===curInv)); }
 function generateWA(o) {
   if(!o) return;
-  let p = o.phone.trim();
-  if(p.startsWith('0')) p = '94' + p.substring(1);
-  const text = `Hello ${o.customerName},%0A%0AYour SmartX repair order *${o.invoiceNo}* has been updated.%0ATotal Amount: Rs.${o.quotedPrice}%0AAdvance: Rs.${o.advance}%0A%0ATrack your repair live here:%0A${CONFIG_TRACK_URL}?inv=${o.invoiceNo}%0A%0AThank you!`;
+  let p = o.phone.trim(); if(p.startsWith('0')) p = '94' + p.substring(1);
+  
+  // 🛑 WhatsApp Message එකේ යන්නේ Random Tracking ID එක 🛑
+  const tId = o.trackingId || o.invoiceNo;
+  const text = `Hello ${o.customerName},%0A%0AYour SmartX repair order *${o.invoiceNo}* has been updated.%0ATotal Amount: Rs.${o.quotedPrice}%0AAdvance: Rs.${o.advance}%0A%0ATrack your repair live here:%0A${CONFIG_TRACK_URL}?id=${tId}%0A%0AThank you!`;
   window.open(`https://wa.me/${p}?text=${text}`, '_blank');
 }
 
-// Stock Picker
 let stgId=null;
 function openSM(id){stgId=id;document.getElementById('ss2').value='';renderSL();document.getElementById('stkmodal').classList.remove('hidden')}
 function closeSM(){document.getElementById('stkmodal').classList.add('hidden')}
@@ -784,17 +707,13 @@ function renderSL(){
 }
 function pickS(n,c){ const fn=document.getElementById('ff-'+stgId), cn=document.getElementById('fc-'+stgId); if(fn)fn.value=n; if(cn){cn.value=c; calcT();} closeSM(); }
 
-// Inventory & Exps
 function renderInv(){
-  const q=(document.getElementById('isrch')?.value||'').toLowerCase();
-  const tb=document.getElementById('itbody');
-  const f=inv.filter(i=>!q||i.name.toLowerCase().includes(q));
+  const q=(document.getElementById('isrch')?.value||'').toLowerCase(); const tb=document.getElementById('itbody'); const f=inv.filter(i=>!q||i.name.toLowerCase().includes(q));
   tb.innerHTML=f.length?f.map((i,idx)=>`<tr><td class="py-2 font-bold">${i.name}</td><td class="py-2 text-red-500">${i.cost}</td><td class="py-2">${i.qty}</td><td class="py-2 text-right"><button onclick="requireAuth(()=>delInv('${i.name}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan=\"4\" class=\"text-center py-4 text-xs text-gray-400\">Empty</td></tr>';
 }
 function addInv(){
   const n=document.getElementById('in').value, c=Number(document.getElementById('ic').value), q=Number(document.getElementById('iq').value);
-  if(!n||!c)return tst('Fill details','err');
-  inv.push({name:n,cost:c,qty:q}); sa(); syncData();
+  if(!n||!c)return tst('Fill details','err'); inv.push({name:n,cost:c,qty:q}); sa(); syncData();
   document.getElementById('in').value=''; document.getElementById('ic').value=''; document.getElementById('iq').value=''; renderInv();
 }
 function delInv(name){ const idx=inv.findIndex(i=>i.name===name); if(idx>-1){ inv.splice(idx,1); delInvs.push(name); sa(); syncData(); renderInv(); tst('Deleted','err'); } }
@@ -805,24 +724,18 @@ function renderExps(){
 }
 function addExp(){
   const d=document.getElementById('ed').value, b=document.getElementById('eb').value, c=Number(document.getElementById('ec').value);
-  if(!d||!c)return;
-  exps.push({date:new Date().toLocaleDateString('en-GB'),desc:d,brand:b,cost:c}); sa(); syncData();
+  if(!d||!c)return; exps.push({date:new Date().toLocaleDateString('en-GB'),desc:d,brand:b,cost:c}); sa(); syncData();
   document.getElementById('ed').value=''; document.getElementById('eb').value=''; document.getElementById('ec').value=''; renderExps();
 }
 function delExp(dt,ds){ const idx=exps.findIndex(e=>e.date===dt&&e.desc===ds); if(idx>-1){ exps.splice(idx,1); delExps.push(dt+ds); sa(); syncData(); renderExps(); tst('Deleted','err'); } }
 
-// 🛑 INVOICE SEARCHBAR (Search by Invoice/Name)
 function renderSales(){
-  const q=(document.getElementById('ss')?.value||'').toLowerCase();
-  const f=[...orders].reverse().filter(o=>!q||o.invoiceNo.toLowerCase().includes(q)||o.customerName.toLowerCase().includes(q));
+  const q=(document.getElementById('ss')?.value||'').toLowerCase(); const f=[...orders].reverse().filter(o=>!q||o.invoiceNo.toLowerCase().includes(q)||o.customerName.toLowerCase().includes(q));
   document.getElementById('stbody').innerHTML=f.length?f.map(o=>`<tr><td class="py-2">${new Date(o.date).toLocaleDateString('en-GB')}</td><td class="py-2 font-black text-indigo-600">${o.invoiceNo}</td><td class="py-2 font-bold">${o.customerName}</td><td class="py-2 font-black">${o.quotedPrice}</td><td class="py-2 font-black ${o.balance<=0?'text-emerald-500':'text-red-500'}">${o.balance<=0?'PAID ✓':o.balance}</td><td class="py-2"><span class="pill ${o.status==='Pending'?'pill-p':'pill-c'}">${o.status}</span></td><td class="py-2 text-right"><button onclick="requireAuth(()=>delOrd('${o.invoiceNo}'))" class="text-red-400"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan=\"7\" class=\"text-center py-4 text-xs text-gray-400\">Empty</td></tr>';
 }
-function delOrd(invNo){
-  orders=orders.filter(o=>o.invoiceNo!==invNo); delOrds.push(invNo); sa(); syncData(); renderSales(); renderDash(); tst('Deleted','err');
-}
+function delOrd(invNo){ orders=orders.filter(o=>o.invoiceNo!==invNo); delOrds.push(invNo); sa(); syncData(); renderSales(); renderDash(); tst('Deleted','err'); }
 
-initLock();
-clearForm(); switchTab('dashboard');
+initLock(); clearForm(); switchTab('dashboard');
 </script>
 </body>
 </html>
